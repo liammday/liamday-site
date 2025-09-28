@@ -1,0 +1,102 @@
+---
+layout: default
+---
+<section class="hero" id="about">
+  <div class="container">
+    <p class="eyebrow">Product Design Leader · London, UK</p>
+    <h1>Designing equitable experiences and coaching teams to deliver their best work.</h1>
+    <p>
+      Liam Day is a product design leader with over a decade of experience shaping inclusive services across government,
+      healthcare, and fintech. He helps organisations define product strategy, build healthy design cultures, and ship
+      experiences that improve lives.
+    </p>
+    <a class="button" href="mailto:{{ site.social.email }}">Start a conversation</a>
+  </div>
+</section>
+
+<section class="section" id="experience">
+  <div class="container">
+    <div class="section__header">
+      <h2>Experience</h2>
+      <p>Highlights from Liam’s journey leading multidisciplinary teams and scaling product design practices.</p>
+    </div>
+    <div class="timeline">
+      {% for role in site.data.experience %}
+      <article class="timeline__item">
+        <div class="timeline__meta">
+          <span class="timeline__time">{{ role.period }}</span>
+          <span class="timeline__location">{{ role.location }}</span>
+        </div>
+        <div class="timeline__body">
+          <h3>{{ role.title }} · {{ role.company }}</h3>
+          <p>{{ role.summary }}</p>
+          {% if role.highlights %}
+          <ul>
+            {% for highlight in role.highlights %}
+            <li>{{ highlight }}</li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt" id="projects">
+  <div class="container">
+    <div class="section__header">
+      <h2>Selected projects</h2>
+      <p>Case studies that showcase Liam’s approach to research-driven product strategy and craft.</p>
+    </div>
+    <div class="card-grid">
+      {% assign featured_projects = site.projects | where: "hero", true %}
+      {% for project in featured_projects %}
+      <article class="card">
+        <a class="card__link" href="{{ project.url | relative_url }}">
+          <div class="card__body">
+            <h3>{{ project.title }}</h3>
+            <p>{{ project.summary }}</p>
+            <span class="card__cta">Read the case study →</span>
+          </div>
+          {% if project.thumbnail %}
+          <img src="{{ project.thumbnail | relative_url }}" alt="{{ project.thumbnail_alt | default: project.title }}" />
+          {% endif %}
+        </a>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section" id="writing">
+  <div class="container">
+    <div class="section__header">
+      <h2>Writing</h2>
+      <p>Articles and talks sharing lessons on leadership, design operations, and inclusive practices.</p>
+    </div>
+    <div class="writing-list">
+      {% for post in site.posts limit: 3 %}
+      <article class="writing-list__item">
+        <h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
+        <p>{{ post.excerpt | strip_html | truncate: 160 }}</p>
+        <span class="writing-list__meta">{{ post.date | date: "%b %Y" }}</span>
+      </article>
+      {% endfor %}
+      {% if site.posts == empty %}
+      <p class="writing-list__empty">Writing coming soon. In the meantime, explore Liam’s latest thinking on <a href="{{ site.social.medium }}">Medium</a>.</p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="container">
+    <h2>Need a partner to ship meaningful products?</h2>
+    <p>
+      From defining product visions to coaching teams, Liam can help you accelerate progress on your most important problems.
+    </p>
+    <a class="button button--secondary" href="mailto:{{ site.social.email }}">Book a call</a>
+  </div>
+</section>
