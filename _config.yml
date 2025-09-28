@@ -1,7 +1,7 @@
 title: Liam Day
 name: Liam Day
 description: >-
-  Product design leader crafting inclusive digital experiences and empowering teams to deliver impactful work.
+  Technical product specialist and ex-British Army officer blending operational leadership with mobile app development expertise.
 url: https://www.liamday.co.uk
 baseurl: "/liamday-site"
 
@@ -38,20 +38,30 @@ kramdown:
   input: GFM
 
 nav_links:
-  - title: About
-    url: /#about
+  - title: Profile
+    url: /#profile
+  - title: Competencies
+    url: /#competencies
   - title: Experience
     url: /#experience
   - title: Projects
     url: /#projects
-  - title: Writing
-    url: /#writing
+  - title: Education
+    url: /#education
   - title: Contact
-    url: /#contact
+    url: /#connect
 
 social:
-  email: hello@liamday.co.uk
-  linkedin: https://www.linkedin.com/in/liamday/
-  dribbble: https://dribbble.com/liamday
-  github: https://github.com/liamday
-  medium: https://medium.com/@liamday
+  email: liam@liamday.co.uk
+  linkedin: https://www.linkedin.com/in/liammday/
+  github:
+  medium:
+
+contact:
+  location: Winchester, Hampshire, UK
+  phone: 07590 836171
+  email: liam@liamday.co.uk
+  linkedin: https://www.linkedin.com/in/liammday/
+  website: https://www.liamday.co.uk
+  security_clearance: DV-cleared (details on request)
+  right_to_work: UK citizen

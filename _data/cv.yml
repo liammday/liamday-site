@@ -1,0 +1,65 @@
+profile: >-
+  A results-driven leader with 10 years of British Army management experience and expertise in mobile app development within the consumer software sector. Proven ability to leverage technology for enhanced efficiency and team performance. Skilled in project and product management, and operational efficiency. Recognised for strong interpersonal skills, adaptability, and a commitment to excellence. Currently pursuing an MBA in Technology Management.
+competencies:
+  - title: Project Leadership & Strategic Influence
+    description: Proven ability to establish clear purpose, influence cross-functional teams, and champion business requirements to achieve strategic objectives and deliver complex software projects effectively.
+  - title: Risk, Issue & Budget Management
+    description: Skilled at proactively identifying and mitigating risks, quantifying business impact, managing budgets, forecasting resources, and ensuring successful outcomes through disciplined governance and decision-making.
+  - title: Stakeholder Engagement & Communication
+    description: Exceptional ability to engage, influence, and negotiate with internal and external stakeholders, delivering compelling presentations and concise reporting that align diverse perspectives to reach consensus.
+  - title: Collaboration & Facilitation
+    description: Strong record of fostering inclusive, innovative, and collaborative team environments, facilitating effective meetings, driving consensus, and improving project efficiency.
+  - title: Technical & Domain Expertise
+    description: In-depth knowledge of software product development lifecycles, enabling effective collaboration with engineering and product teams to translate technical concepts into clear, actionable strategies. Application developer (Swift).
+employment:
+  - title: Technical Product Specialist
+    company: Outdooractive
+    location: Remote (Cambridge, UK and Immenstadt, Germany)
+    period: Sep 2023 – Present
+    highlights:
+      - Conducted fortnightly QA on release candidates across iOS, Android, and Web platforms, identifying 15–20 pre-deployment bugs weekly and catching early indicators of post-deployment issues from customer reports.
+      - Facilitated rapid iteration of new features with UX teams, reducing feature request and feedback tickets by 59% and requests for information about new features by 46% year-on-year.
+      - Delivered quantitative and qualitative reporting to the CEO and CTO UK to inform product roadmapping and engineering priorities.
+      - Resolved 1,000+ complex 2nd line technical support tickets over 12 months, contributing to a 19% year-on-year reduction in routine support requests through help centre optimisation and UX improvements.
+      - Enhanced help centre UX, reducing routine queries by 21% and enabling direct-to-answer responses by Community Support Managers in 70% of remaining requests.
+  - title: Senior Project Manager & Operations Manager (SO3 Dismounted Close Combat, Combat CIS School)
+    company: British Army
+    location: Dorset, UK
+    period: Jul 2020 – Sep 2023
+    highlights:
+      - Spearheaded Project HERMES, streamlining the training pathway by reducing nine courses into five through syllabus and qualification refactoring, cutting 960 instructor training hours annually while increasing qualified student outputs by 30%.
+      - Led professional development for 32 Subject Matter Experts, resulting in the qualification and promotion of 12 team members and retention of six SMEs through strategic role rotation.
+      - Introduced Agile frameworks for Project HERMES to coordinate intra-organisational planning and execution under strict timelines, improving collaboration and efficiency.
+  - title: Senior Project Manager & Technical Coordinator (Regimental Signals Officer, 1LANCS)
+    company: British Army
+    location: Chester, UK
+    period: Jul 2018 – Jul 2020
+    highlights:
+      - Achieved gold-standard operational coordination during key organisational assessment activities in Kenya by ensuring seamless, secure communications across all operational areas.
+      - Increased trained communication specialists across departments from 2 in 30 to 8 in 30, significantly elevating operational capability and readiness.
+      - Maintained 100% compliance with cryptographic material security protocols through organisation-wide training and rigorous adherence to policy.
+  - title: Project Manager & Operations Manager (Company Second in Command, 1LANCS)
+    company: British Army
+    location: Cyprus
+    period: Jul 2016 – Jul 2018
+    highlights:
+      - Ensured training readiness of 130 soldiers for consecutive deployments to the USA, Kenya, and Jordan by managing critical risk-to-life certifications, including weapons handling and combat first aid.
+      - Managed and accounted for £3M of serialised equipment across complex international deployments, maintaining 100% accountability and operational readiness.
+  - title: Team Leader (Infantry Platoon Commander, 1LANCS)
+    company: British Army
+    location: Cyprus
+    period: Jul 2014 – Jul 2016
+    highlights:
+      - Led the change in operational role and reintegration back to the UK from Cyprus, coordinating necessary training and certification updates for new operational requirements.
+      - Directed professional development across four seniority levels, ensuring education and training requirements were met on time to support mission readiness and career progression.
+education:
+  - qualification: MBA (Technology Management) Candidate
+    institution: Open University
+    period: 2022 – 2026 (expected)
+  - qualification: BSc International Relations (2:1)
+    institution: University of Southampton
+    period: 2010 – 2013
+certifications:
+  - Level 7 Award in Leadership and Management, City & Guilds (2022)
+  - Level 5 Certificate in Management and Leadership (QCF), CMI (2014)
+  - AgilePM Foundation, APMG (2022)
