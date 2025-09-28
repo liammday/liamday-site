@@ -63,7 +63,7 @@ ul {
 }
 
 .container {
-  width: min(100%, $container-width);
+  width: min(100%, #{$container-width});
   margin: 0 auto;
   padding: 0 1.5rem;
 }
