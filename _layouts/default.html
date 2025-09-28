@@ -3,51 +3,74 @@
   <head>
     {% include head.html %}
   </head>
-  <body class="site">
-    <a class="skip-link" href="#main">Skip to content</a>
-    <header class="site-header">
-      <div class="container">
-        <a class="site-logo" href="{{ "/" | relative_url }}">{{ site.title }}</a>
-        <nav class="site-nav" aria-label="Primary">
-          <button class="site-nav__toggle" aria-expanded="false" aria-controls="primary-navigation">
+  <body class="flex min-h-screen flex-col font-sans">
+    <a
+      class="sr-only focus:not-sr-only focus:absolute focus:left-6 focus:top-6 focus:rounded-full focus:bg-brand focus:px-4 focus:py-2 focus:text-white focus:shadow-lg"
+      href="#main"
+      >Skip to content</a
+    >
+    <header class="sticky top-0 z-50 border-b border-slate-200 bg-white/95 shadow-sm backdrop-blur">
+      <div class="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
+        <a class="text-lg font-semibold tracking-tight text-slate-900" href="{{ "/" | relative_url }}">{{ site.title }}</a>
+        <nav class="relative" aria-label="Primary">
+          <button
+            class="inline-flex h-11 w-11 flex-col items-center justify-center gap-1 rounded-lg border border-slate-200 text-slate-600 shadow-sm transition hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand md:hidden"
+            aria-expanded="false"
+            aria-controls="primary-navigation"
+            type="button"
+          >
             <span class="sr-only">Menu</span>
-            <span></span>
-            <span></span>
-            <span></span>
+            <span aria-hidden="true" class="block h-0.5 w-5 bg-slate-900"></span>
+            <span aria-hidden="true" class="block h-0.5 w-5 bg-slate-900"></span>
+            <span aria-hidden="true" class="block h-0.5 w-4 bg-slate-900"></span>
           </button>
-          <ul id="primary-navigation">
+          <ul
+            id="primary-navigation"
+            class="absolute right-0 top-12 hidden w-56 flex-col gap-2 rounded-2xl border border-slate-200 bg-white p-4 text-base font-medium text-slate-600 shadow-lg md:static md:flex md:w-auto md:flex-row md:items-center md:gap-6 md:border-0 md:bg-transparent md:p-0 md:shadow-none"
+          >
             {% for link in site.nav_links %}
-            <li><a href="{{ link.url | relative_url }}">{{ link.title }}</a></li>
+            <li>
+              <a class="inline-flex items-center rounded-lg px-3 py-2 text-slate-600 transition hover:text-brand" href="{{ link.url | relative_url }}"
+                >{{ link.title }}</a
+              >
+            </li>
             {% endfor %}
           </ul>
         </nav>
       </div>
     </header>
 
-    <main id="main" class="site-main">
+    <main id="main" class="flex-1">
       {{ content }}
     </main>
 
-    <footer class="site-footer">
-      <div class="container">
-        <p>Let’s collaborate. <a href="mailto:{{ site.social.email }}">{{ site.social.email }}</a></p>
-        <ul class="site-footer__social" aria-label="Social links">
-          {% if site.social.linkedin %}<li><a href="{{ site.social.linkedin }}">LinkedIn</a></li>{% endif %}
-          {% if site.social.dribbble %}<li><a href="{{ site.social.dribbble }}">Dribbble</a></li>{% endif %}
-          {% if site.social.github %}<li><a href="{{ site.social.github }}">GitHub</a></li>{% endif %}
-          {% if site.social.medium %}<li><a href="{{ site.social.medium }}">Medium</a></li>{% endif %}
-        </ul>
-        <p class="site-footer__copyright">© {{ "now" | date: "%Y" }} {{ site.title }}. Built with Jekyll.</p>
+    <footer class="border-t border-slate-200 bg-white py-12">
+      <div class="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 text-sm text-slate-600 sm:text-base lg:flex-row lg:items-start lg:justify-between">
+        <div class="space-y-3">
+          <p class="text-lg font-semibold text-slate-900">Let’s collaborate.</p>
+          <a class="inline-flex items-center gap-2 text-brand-dark hover:text-brand" href="mailto:{{ site.social.email }}">
+            <span>{{ site.social.email }}</span>
+          </a>
+        </div>
+        <div class="flex flex-1 flex-col gap-4 sm:flex-row sm:items-end sm:justify-end">
+          <ul class="flex flex-wrap gap-4 text-sm font-medium text-slate-600" aria-label="Social links">
+            {% if site.social.linkedin %}<li><a class="hover:text-brand" href="{{ site.social.linkedin }}">LinkedIn</a></li>{% endif %}
+            {% if site.social.dribbble %}<li><a class="hover:text-brand" href="{{ site.social.dribbble }}">Dribbble</a></li>{% endif %}
+            {% if site.social.github %}<li><a class="hover:text-brand" href="{{ site.social.github }}">GitHub</a></li>{% endif %}
+            {% if site.social.medium %}<li><a class="hover:text-brand" href="{{ site.social.medium }}">Medium</a></li>{% endif %}
+          </ul>
+          <p class="text-xs text-slate-400 sm:text-right">© {{ "now" | date: "%Y" }} {{ site.title }} · Built with Jekyll.</p>
+        </div>
       </div>
     </footer>
 
     <script>
-      const navToggle = document.querySelector('.site-nav__toggle');
+      const navToggle = document.querySelector('nav button[aria-controls="primary-navigation"]');
       const navList = document.querySelector('#primary-navigation');
       navToggle?.addEventListener('click', () => {
         const expanded = navToggle.getAttribute('aria-expanded') === 'true';
-        navToggle.setAttribute('aria-expanded', !expanded);
-        navList.classList.toggle('is-open');
+        navToggle.setAttribute('aria-expanded', (!expanded).toString());
+        navList?.classList.toggle('hidden');
       });
     </script>
   </body>
