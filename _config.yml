@@ -32,6 +32,9 @@ sass:
 exclude:
   - README.md
   - vendor
+  - node_modules
+  - package-lock.json
+  - package.json
 
 markdown: kramdown
 kramdown:
