@@ -17,11 +17,10 @@ employment:
     location: Remote (Cambridge, UK and Immenstadt, Germany)
     period: Sep 2023 – Present
     highlights:
-      - Conducted fortnightly QA on release candidates across iOS, Android, and Web platforms, identifying 15–20 pre-deployment bugs weekly and catching early indicators of post-deployment issues from customer reports.
-      - Facilitated rapid iteration of new features with UX teams, reducing feature request and feedback tickets by 59% and requests for information about new features by 46% year-on-year.
-      - Delivered quantitative and qualitative reporting to the CEO and CTO UK to inform product roadmapping and engineering priorities.
-      - Resolved 1,000+ complex 2nd line technical support tickets over 12 months, contributing to a 19% year-on-year reduction in routine support requests through help centre optimisation and UX improvements.
-      - Enhanced help centre UX, reducing routine queries by 21% and enabling direct-to-answer responses by Community Support Managers in 70% of remaining requests.
+      - Lead cross-platform QA for iOS, Android, and web release candidates, coordinating fixes with engineering teams prior to launch.
+      - Translate customer and partner feedback into actionable insights with UX and product managers to guide feature refinement.
+      - Prepare regular performance and roadmap updates for senior leadership, highlighting delivery risks and opportunities.
+      - Own the second-line technical support queue, managing escalations and maintaining knowledge base resources with community teams.
   - title: Senior Project Manager & Operations Manager (SO3 Dismounted Close Combat, Combat CIS School)
     company: British Army
     location: Dorset, UK
