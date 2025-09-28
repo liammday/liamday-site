@@ -1,20 +1,24 @@
 ---
 layout: default
 ---
-<article class="project">
-  <div class="project__hero">
-    <div class="container">
-      <a class="project__back" href="{{ '/' | relative_url }}#projects">← Back to projects</a>
-      <h1>{{ page.title }}</h1>
-      {% if page.summary %}<p class="project__summary">{{ page.summary }}</p>{% endif %}
-      <ul class="project__meta">
-        {% if page.role %}<li><strong>Role:</strong> {{ page.role }}</li>{% endif %}
-        {% if page.year %}<li><strong>Year:</strong> {{ page.year }}</li>{% endif %}
-        {% if page.client %}<li><strong>Client:</strong> {{ page.client }}</li>{% endif %}
+<article class="pb-16">
+  <div class="bg-slate-900 py-16 text-slate-100">
+    <div class="mx-auto max-w-5xl px-6">
+      <a class="inline-flex items-center text-sm font-semibold text-brand hover:text-brand-dark" href="{{ '/' | relative_url }}#projects"
+        >← Back to projects</a
+      >
+      <h1 class="mt-6 text-3xl font-semibold sm:text-4xl">{{ page.title }}</h1>
+      {% if page.summary %}
+      <p class="mt-4 text-lg text-slate-200">{{ page.summary }}</p>
+      {% endif %}
+      <ul class="mt-8 flex flex-wrap gap-4 text-sm text-slate-200/90">
+        {% if page.role %}<li class="rounded-full border border-white/20 px-4 py-2"><strong class="font-semibold">Role:</strong> {{ page.role }}</li>{% endif %}
+        {% if page.year %}<li class="rounded-full border border-white/20 px-4 py-2"><strong class="font-semibold">Year:</strong> {{ page.year }}</li>{% endif %}
+        {% if page.client %}<li class="rounded-full border border-white/20 px-4 py-2"><strong class="font-semibold">Client:</strong> {{ page.client }}</li>{% endif %}
       </ul>
     </div>
   </div>
-  <div class="container project__content">
+  <div class="prose prose-lg prose-slate mx-auto mt-16 max-w-3xl px-6">
     {{ content }}
   </div>
 </article>
