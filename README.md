@@ -5,15 +5,23 @@ Webflow implementation with a fully version-controlled static site.
 
 ## Getting started
 
-1. Install dependencies with Bundler:
+1. Install Ruby dependencies with Bundler:
    ```bash
    bundle install
    ```
-2. Run the development server:
+2. Install Node.js dependencies (Tailwind CSS build tooling):
+   ```bash
+   npm install
+   ```
+3. Generate the Tailwind CSS bundle:
+   ```bash
+   npm run build:css
+   ```
+4. Run the development server:
    ```bash
    bundle exec jekyll serve
    ```
-3. Build the production site:
+5. Build the production site:
    ```bash
    bundle exec jekyll build
    ```
@@ -25,6 +33,7 @@ Webflow implementation with a fully version-controlled static site.
 - `_data/experience.yml` — Structured data for the experience timeline.
 - `projects/` — Case study content powered by a custom collection.
 - `_posts/` — Articles listed in the Writing section.
+- `assets/css/tailwind-source.css` — Tailwind entrypoint compiled via the Tailwind CLI.
 - `assets/css/style.scss` — Global styles compiled by Jekyll’s Sass pipeline.
 
 ## Deployment
