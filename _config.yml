@@ -1,0 +1,57 @@
+title: Liam Day
+name: Liam Day
+description: >-
+  Product design leader crafting inclusive digital experiences and empowering teams to deliver impactful work.
+url: https://www.liamday.co.uk
+baseurl: ""
+
+permalink: pretty
+timezone: Europe/London
+
+collections:
+  projects:
+    output: true
+    permalink: /projects/:name/
+
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+defaults:
+  - scope:
+      path: ""
+      type: "projects"
+    values:
+      layout: project
+      hero: true
+
+sass:
+  sass_dir: assets/css
+  style: compressed
+
+exclude:
+  - README.md
+  - vendor
+
+markdown: kramdown
+kramdown:
+  input: GFM
+
+nav_links:
+  - title: About
+    url: /#about
+  - title: Experience
+    url: /#experience
+  - title: Projects
+    url: /#projects
+  - title: Writing
+    url: /#writing
+  - title: Contact
+    url: /#contact
+
+social:
+  email: hello@liamday.co.uk
+  linkedin: https://www.linkedin.com/in/liamday/
+  dribbble: https://dribbble.com/liamday
+  github: https://github.com/liamday
+  medium: https://medium.com/@liamday
