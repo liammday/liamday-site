@@ -3,7 +3,7 @@ name: Liam Day
 description: >-
   Product design leader crafting inclusive digital experiences and empowering teams to deliver impactful work.
 url: https://www.liamday.co.uk
-baseurl: ""
+baseurl: "/liamday-site"
 
 permalink: pretty
 timezone: Europe/London
