@@ -185,6 +185,7 @@
 
       const applyGradient = () => {
         const { gradient, top, bottom } = getGradientForTime(new Date());
+        document.documentElement.style.setProperty('--sky-gradient', gradient);
         document.body.style.setProperty('--sky-gradient', gradient);
         applyDynamicPalette(top, bottom);
       };
