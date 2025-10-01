@@ -66,7 +66,9 @@
       integrity="sha384-hYHKH/s7frgVxH98p4J8C79yD6qxQFDoa+iMlO07mg51gUgJOMJ2K72I1H9EZGQw"
       crossorigin="anonymous"
     ></script>
+    <script src="https://cdn.jsdelivr.net/npm/twgl.js@5.5.4/dist/twgl-full.min.js"></script>
     <script src="{{ '/assets/js/liquid-glass-gsap.js' | relative_url }}"></script>
+    <script src="{{ '/assets/js/liquid-glass-nav.js' | relative_url }}"></script>
     <script>
       const gradientStops = [
         { time: 0, top: '#020024', bottom: '#090979' },
@@ -187,6 +189,11 @@
         const { gradient, top, bottom } = getGradientForTime(new Date());
         document.documentElement.style.setProperty('--sky-gradient', gradient);
         document.body.style.setProperty('--sky-gradient', gradient);
+        document.documentElement.style.setProperty('--sky-gradient-top-rgb', `${top.r}, ${top.g}, ${top.b}`);
+        document.documentElement.style.setProperty(
+          '--sky-gradient-bottom-rgb',
+          `${bottom.r}, ${bottom.g}, ${bottom.b}`
+        );
         applyDynamicPalette(top, bottom);
       };
 
