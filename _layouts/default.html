@@ -206,6 +206,8 @@
       const navOverlay = nav?.querySelector('[data-nav-overlay]');
       const navLinks = nav?.querySelectorAll('.site-nav__link');
       const root = document.documentElement;
+      const isDesktop = () => window.matchMedia('(min-width: 768px)').matches;
+
       const setMobileOpen = (state) => {
         if (!navToggle) return;
         nav?.setAttribute('data-mobile-open', state.toString());
@@ -214,9 +216,11 @@
       };
 
       const setNavCollapsed = (state) => {
-        nav?.setAttribute('data-collapsed', state.toString());
-        header?.setAttribute('data-collapsed', state.toString());
-        if (state) {
+        const shouldForceExpanded = isDesktop();
+        const finalState = shouldForceExpanded ? false : state;
+        nav?.setAttribute('data-collapsed', finalState.toString());
+        header?.setAttribute('data-collapsed', finalState.toString());
+        if (finalState) {
           setMobileOpen(false);
         }
       };
@@ -226,19 +230,13 @@
 
       const handleScroll = () => {
         const currentY = window.scrollY;
-        const isDesktop = window.matchMedia('(min-width: 768px)').matches;
-
-        if (!isDesktop) {
+        if (!isDesktop()) {
           setNavCollapsed(true);
           lastScrollY = currentY;
           return;
         }
 
-        if (currentY > lastScrollY + 12 && currentY > 120) {
-          setNavCollapsed(true);
-        } else if (currentY < lastScrollY - 12 || currentY <= 80) {
-          setNavCollapsed(false);
-        }
+        setNavCollapsed(false);
 
         lastScrollY = currentY;
       };
@@ -254,13 +252,8 @@
       });
 
       const handleResize = () => {
-        const isDesktop = window.matchMedia('(min-width: 768px)').matches;
-        if (isDesktop) {
-          if (window.scrollY <= 80) {
-            setNavCollapsed(false);
-          } else {
-            handleScroll();
-          }
+        if (isDesktop()) {
+          setNavCollapsed(false);
         } else {
           setNavCollapsed(true);
         }
@@ -271,8 +264,7 @@
       handleResize();
 
       navToggle?.addEventListener('click', () => {
-        const isDesktop = window.matchMedia('(min-width: 768px)').matches;
-        if (isDesktop) {
+        if (isDesktop()) {
           setNavCollapsed(false);
           return;
         }
