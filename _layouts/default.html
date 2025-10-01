@@ -25,6 +25,7 @@
             <span aria-hidden="true" class="site-nav__toggle-bar"></span>
             <span aria-hidden="true" class="site-nav__toggle-bar site-nav__toggle-bar--short"></span>
           </button>
+          <div class="site-nav__overlay" data-nav-overlay></div>
           <ul id="primary-navigation" class="site-nav__list" data-nav-list>
             {% for link in site.nav_links %}
             <li class="site-nav__item">
@@ -40,7 +41,7 @@
       {{ content }}
     </main>
 
-    <footer class="border-t border-slate-200 bg-white py-12">
+    <footer class="border-t border-slate-200 py-12">
       <div class="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 text-sm text-slate-600 sm:text-base lg:flex-row lg:items-start lg:justify-between">
         <div class="space-y-3">
           <p class="text-lg font-semibold text-slate-900">Let’s collaborate.</p>
@@ -128,11 +129,14 @@
       const header = document.querySelector('[data-site-header]');
       const nav = document.querySelector('[data-nav]');
       const navToggle = nav?.querySelector('[data-nav-toggle]');
+      const navOverlay = nav?.querySelector('[data-nav-overlay]');
       const navLinks = nav?.querySelectorAll('.site-nav__link');
+      const root = document.documentElement;
       const setMobileOpen = (state) => {
         if (!navToggle) return;
         nav?.setAttribute('data-mobile-open', state.toString());
         navToggle.setAttribute('aria-expanded', state.toString());
+        root.classList.toggle('has-mobile-nav', state);
       };
 
       const setNavCollapsed = (state) => {
@@ -202,12 +206,22 @@
         setMobileOpen(!expanded);
       });
 
+      navOverlay?.addEventListener('click', () => {
+        setMobileOpen(false);
+      });
+
       navLinks?.forEach((link) => {
         link.addEventListener('click', () => {
           if (!window.matchMedia('(min-width: 768px)').matches) {
             setMobileOpen(false);
           }
         });
+      });
+
+      window.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && nav?.getAttribute('data-mobile-open') === 'true') {
+          setMobileOpen(false);
+        }
       });
     </script>
   </body>
