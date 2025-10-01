@@ -3,36 +3,32 @@
   <head>
     {% include head.html %}
   </head>
-  <body class="flex min-h-screen flex-col font-sans">
+  <body class="flex min-h-screen flex-col font-sans text-slate-900">
     <a
       class="sr-only focus:not-sr-only focus:absolute focus:left-6 focus:top-6 focus:rounded-full focus:bg-brand focus:px-4 focus:py-2 focus:text-white focus:shadow-lg"
       href="#main"
       >Skip to content</a
     >
-    <header class="sticky top-0 z-50 border-b border-slate-200 bg-white/95 shadow-sm backdrop-blur">
-      <div class="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
-        <a class="text-lg font-semibold tracking-tight text-slate-900" href="{{ "/" | relative_url }}">{{ site.title }}</a>
-        <nav class="relative" aria-label="Primary">
+    <header class="site-header" data-site-header>
+      <div class="site-header__bar">
+        <a class="site-header__brand" href="{{ "/" | relative_url }}">{{ site.title }}</a>
+        <nav class="site-nav" aria-label="Primary" data-nav>
           <button
-            class="inline-flex h-11 w-11 flex-col items-center justify-center gap-1 rounded-lg border border-slate-200 text-slate-600 shadow-sm transition hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand md:hidden"
+            class="site-nav__toggle"
             aria-expanded="false"
             aria-controls="primary-navigation"
             type="button"
+            data-nav-toggle
           >
-            <span class="sr-only">Menu</span>
-            <span aria-hidden="true" class="block h-0.5 w-5 bg-slate-900"></span>
-            <span aria-hidden="true" class="block h-0.5 w-5 bg-slate-900"></span>
-            <span aria-hidden="true" class="block h-0.5 w-4 bg-slate-900"></span>
+            <span class="sr-only">Toggle navigation</span>
+            <span aria-hidden="true" class="site-nav__toggle-bar"></span>
+            <span aria-hidden="true" class="site-nav__toggle-bar"></span>
+            <span aria-hidden="true" class="site-nav__toggle-bar site-nav__toggle-bar--short"></span>
           </button>
-          <ul
-            id="primary-navigation"
-            class="absolute right-0 top-12 hidden w-56 flex-col gap-2 rounded-2xl border border-slate-200 bg-white p-4 text-base font-medium text-slate-600 shadow-lg md:static md:flex md:w-auto md:flex-row md:items-center md:gap-6 md:border-0 md:bg-transparent md:p-0 md:shadow-none"
-          >
+          <ul id="primary-navigation" class="site-nav__list" data-nav-list>
             {% for link in site.nav_links %}
-            <li>
-              <a class="inline-flex items-center rounded-lg px-3 py-2 text-slate-600 transition hover:text-brand" href="{{ link.url | relative_url }}"
-                >{{ link.title }}</a
-              >
+            <li class="site-nav__item">
+              <a class="site-nav__link" href="{{ link.url | relative_url }}">{{ link.title }}</a>
             </li>
             {% endfor %}
           </ul>
@@ -40,7 +36,7 @@
       </div>
     </header>
 
-    <main id="main" class="flex-1">
+    <main id="main" class="flex-1 pt-28 md:pt-32">
       {{ content }}
     </main>
 
@@ -65,12 +61,153 @@
     </footer>
 
     <script>
-      const navToggle = document.querySelector('nav button[aria-controls="primary-navigation"]');
-      const navList = document.querySelector('#primary-navigation');
+      const gradientStops = [
+        { time: 0, top: '#020024', bottom: '#090979' },
+        { time: 3.5, top: '#040b29', bottom: '#1d2951' },
+        { time: 6, top: '#ff8a65', bottom: '#ffd194' },
+        { time: 9, top: '#87ceeb', bottom: '#f5f7fa' },
+        { time: 12, top: '#56ccf2', bottom: '#2f80ed' },
+        { time: 16.5, top: '#f2994a', bottom: '#f2c94c' },
+        { time: 19, top: '#6a11cb', bottom: '#2575fc' },
+        { time: 21.5, top: '#1b2735', bottom: '#090a27' },
+        { time: 24, top: '#020024', bottom: '#090979' }
+      ];
+
+      const hexToRgb = (hex) => {
+        const parsed = hex.replace('#', '');
+        const bigint = parseInt(parsed, 16);
+        return {
+          r: (bigint >> 16) & 255,
+          g: (bigint >> 8) & 255,
+          b: bigint & 255
+        };
+      };
+
+      const interpolateChannel = (start, end, factor) => Math.round(start + (end - start) * factor);
+
+      const interpolateColor = (start, end, factor) => {
+        const startRgb = hexToRgb(start);
+        const endRgb = hexToRgb(end);
+        const r = interpolateChannel(startRgb.r, endRgb.r, factor);
+        const g = interpolateChannel(startRgb.g, endRgb.g, factor);
+        const b = interpolateChannel(startRgb.b, endRgb.b, factor);
+        return `rgb(${r}, ${g}, ${b})`;
+      };
+
+      const getGradientForTime = (date) => {
+        const minutes = date.getHours() * 60 + date.getMinutes();
+        const currentTime = minutes / 60;
+        let previousStop = gradientStops[0];
+        let nextStop = gradientStops[gradientStops.length - 1];
+
+        for (let i = 0; i < gradientStops.length - 1; i += 1) {
+          const stop = gradientStops[i];
+          const upcoming = gradientStops[i + 1];
+          if (currentTime >= stop.time && currentTime < upcoming.time) {
+            previousStop = stop;
+            nextStop = upcoming;
+            break;
+          }
+        }
+
+        const span = nextStop.time - previousStop.time || 1;
+        const factor = Math.min(Math.max((currentTime - previousStop.time) / span, 0), 1);
+        const top = interpolateColor(previousStop.top, nextStop.top, factor);
+        const bottom = interpolateColor(previousStop.bottom, nextStop.bottom, factor);
+        return `linear-gradient(180deg, ${top} 0%, ${bottom} 100%)`;
+      };
+
+      const applyGradient = () => {
+        const gradient = getGradientForTime(new Date());
+        document.body.style.setProperty('--sky-gradient', gradient);
+      };
+
+      applyGradient();
+      setInterval(applyGradient, 60000);
+
+      const header = document.querySelector('[data-site-header]');
+      const nav = document.querySelector('[data-nav]');
+      const navToggle = nav?.querySelector('[data-nav-toggle]');
+      const navLinks = nav?.querySelectorAll('.site-nav__link');
+      const setMobileOpen = (state) => {
+        if (!navToggle) return;
+        nav?.setAttribute('data-mobile-open', state.toString());
+        navToggle.setAttribute('aria-expanded', state.toString());
+      };
+
+      const setNavCollapsed = (state) => {
+        nav?.setAttribute('data-collapsed', state.toString());
+        header?.setAttribute('data-collapsed', state.toString());
+        if (state) {
+          setMobileOpen(false);
+        }
+      };
+
+      let lastScrollY = window.scrollY;
+      let scrollTicking = false;
+
+      const handleScroll = () => {
+        const currentY = window.scrollY;
+        const isDesktop = window.matchMedia('(min-width: 768px)').matches;
+
+        if (!isDesktop) {
+          setNavCollapsed(true);
+          lastScrollY = currentY;
+          return;
+        }
+
+        if (currentY > lastScrollY + 12 && currentY > 120) {
+          setNavCollapsed(true);
+        } else if (currentY < lastScrollY - 12 || currentY <= 80) {
+          setNavCollapsed(false);
+        }
+
+        lastScrollY = currentY;
+      };
+
+      window.addEventListener('scroll', () => {
+        if (!scrollTicking) {
+          window.requestAnimationFrame(() => {
+            handleScroll();
+            scrollTicking = false;
+          });
+          scrollTicking = true;
+        }
+      });
+
+      const handleResize = () => {
+        const isDesktop = window.matchMedia('(min-width: 768px)').matches;
+        if (isDesktop) {
+          if (window.scrollY <= 80) {
+            setNavCollapsed(false);
+          } else {
+            handleScroll();
+          }
+        } else {
+          setNavCollapsed(true);
+        }
+        setMobileOpen(false);
+      };
+
+      window.addEventListener('resize', handleResize);
+      handleResize();
+
       navToggle?.addEventListener('click', () => {
-        const expanded = navToggle.getAttribute('aria-expanded') === 'true';
-        navToggle.setAttribute('aria-expanded', (!expanded).toString());
-        navList?.classList.toggle('hidden');
+        const isDesktop = window.matchMedia('(min-width: 768px)').matches;
+        if (isDesktop) {
+          setNavCollapsed(false);
+          return;
+        }
+        const expanded = nav?.getAttribute('data-mobile-open') === 'true';
+        setMobileOpen(!expanded);
+      });
+
+      navLinks?.forEach((link) => {
+        link.addEventListener('click', () => {
+          if (!window.matchMedia('(min-width: 768px)').matches) {
+            setMobileOpen(false);
+          }
+        });
       });
     </script>
   </body>
