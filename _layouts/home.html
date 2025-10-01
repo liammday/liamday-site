@@ -17,10 +17,32 @@ layout: default
           accelerate delivery, and elevate customer experience.
         </p>
       </div>
-      <div class="glass-panel glass-dynamic ring-dynamic rounded-3xl border p-6 shadow-soft-xl ring-1">
+      <div class="glass-panel glass-dynamic ring-dynamic rounded-3xl border p-6 shadow-soft-xl ring-1" data-liquid-glass-panel>
         <div class="flex items-center justify-between gap-4">
-          <p class="text-on-glass-muted text-sm font-semibold uppercase tracking-[0.2em]">Key contact details</p>
+          <div class="space-y-1">
+            <p class="text-on-glass-muted text-sm font-semibold uppercase tracking-[0.2em]">Key contact details</p>
+            <span class="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.3em] text-on-glass-muted liquid-glass-status lg:hidden">
+              <span class="liquid-glass-pip"></span>
+              Liquid glass active
+            </span>
+          </div>
           <span class="hidden rounded-full bg-brand/10 px-3 py-1 text-xs font-medium text-brand lg:inline-flex">Always open to new conversations</span>
+          <div class="liquid-glass-badge" data-liquid-glass>
+            <div class="liquid-glass-badge__shimmer"></div>
+            <svg class="liquid-glass-badge__icon" viewBox="0 0 48 48" aria-hidden="true">
+              <defs>
+                <linearGradient id="liquid-glass-icon-gradient" x1="0%" x2="100%" y1="0%" y2="100%">
+                  <stop offset="0%" stop-color="rgba(255,255,255,0.9)" />
+                  <stop offset="100%" stop-color="rgba(148,163,184,0.55)" />
+                </linearGradient>
+              </defs>
+              <g fill="none" stroke="url(#liquid-glass-icon-gradient)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="10" y="12" width="28" height="24" rx="7" ry="7"></rect>
+                <path d="M16 20h16M16 28h9"></path>
+                <circle cx="31.5" cy="27.5" r="3.5"></circle>
+              </g>
+            </svg>
+          </div>
         </div>
         <ul class="mt-6 grid gap-4 sm:grid-cols-2">
           <li class="glass-dynamic rounded-2xl border p-4 shadow-sm">
