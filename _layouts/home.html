@@ -9,43 +9,43 @@ layout: default
         <p class="text-sm font-semibold uppercase tracking-[0.35em] text-sky-700">
           Ex-British Army Officer | MBA (Technology Management) Candidate
         </p>
-        <h1 class="text-3xl font-semibold leading-tight text-slate-900 sm:text-4xl lg:text-5xl">
+        <h1 class="text-dynamic text-3xl font-semibold leading-tight sm:text-4xl lg:text-5xl">
           Technical product specialist delivering resilient digital experiences.
         </h1>
-        <p class="text-lg leading-relaxed text-slate-600">
+        <p class="text-dynamic-muted text-lg leading-relaxed">
           Liam combines a decade of operational leadership with hands-on mobile app development expertise to drive product quality,
           accelerate delivery, and elevate customer experience.
         </p>
       </div>
-      <div class="glass-panel rounded-3xl border border-white/40 bg-white/80 p-6 shadow-soft-xl ring-1 ring-slate-100">
+      <div class="glass-panel glass-dynamic ring-dynamic rounded-3xl border p-6 shadow-soft-xl ring-1">
         <div class="flex items-center justify-between gap-4">
-          <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Key contact details</p>
+          <p class="text-on-glass-muted text-sm font-semibold uppercase tracking-[0.2em]">Key contact details</p>
           <span class="hidden rounded-full bg-brand/10 px-3 py-1 text-xs font-medium text-brand lg:inline-flex">Always open to new conversations</span>
         </div>
         <ul class="mt-6 grid gap-4 sm:grid-cols-2">
-          <li class="rounded-2xl border border-slate-100 bg-white/90 p-4 shadow-sm">
-            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Location</p>
-            <p class="mt-1 text-base font-medium text-slate-900">{{ site.contact.location }}</p>
+          <li class="glass-dynamic rounded-2xl border p-4 shadow-sm">
+            <p class="text-on-glass-muted text-xs font-semibold uppercase tracking-wide">Location</p>
+            <p class="text-on-glass mt-1 text-base font-medium">{{ site.contact.location }}</p>
           </li>
-          <li class="rounded-2xl border border-slate-100 bg-white/90 p-4 shadow-sm">
-            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Phone</p>
-            <a class="mt-1 inline-flex text-base font-medium text-slate-900 hover:text-brand" href="tel:{{ site.contact.phone | replace: ' ', '' }}">{{ site.contact.phone }}</a>
+          <li class="glass-dynamic rounded-2xl border p-4 shadow-sm">
+            <p class="text-on-glass-muted text-xs font-semibold uppercase tracking-wide">Phone</p>
+            <a class="text-on-glass mt-1 inline-flex text-base font-medium hover:text-brand" href="tel:{{ site.contact.phone | replace: ' ', '' }}">{{ site.contact.phone }}</a>
           </li>
-          <li class="rounded-2xl border border-slate-100 bg-white/90 p-4 shadow-sm">
-            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Email</p>
-            <a class="mt-1 inline-flex text-base font-medium text-slate-900 hover:text-brand" href="mailto:{{ site.contact.email }}">{{ site.contact.email }}</a>
+          <li class="glass-dynamic rounded-2xl border p-4 shadow-sm">
+            <p class="text-on-glass-muted text-xs font-semibold uppercase tracking-wide">Email</p>
+            <a class="text-on-glass mt-1 inline-flex text-base font-medium hover:text-brand" href="mailto:{{ site.contact.email }}">{{ site.contact.email }}</a>
           </li>
-          <li class="rounded-2xl border border-slate-100 bg-white/90 p-4 shadow-sm">
-            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">LinkedIn</p>
-            <a class="mt-1 inline-flex text-base font-medium text-slate-900 hover:text-brand" href="{{ site.contact.linkedin }}">linkedin.com/in/liammday</a>
+          <li class="glass-dynamic rounded-2xl border p-4 shadow-sm">
+            <p class="text-on-glass-muted text-xs font-semibold uppercase tracking-wide">LinkedIn</p>
+            <a class="text-on-glass mt-1 inline-flex text-base font-medium hover:text-brand" href="{{ site.contact.linkedin }}">linkedin.com/in/liammday</a>
           </li>
-          <li class="rounded-2xl border border-slate-100 bg-white/90 p-4 shadow-sm">
-            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Website</p>
-            <a class="mt-1 inline-flex text-base font-medium text-slate-900 hover:text-brand" href="{{ site.contact.website }}">www.liamday.co.uk</a>
+          <li class="glass-dynamic rounded-2xl border p-4 shadow-sm">
+            <p class="text-on-glass-muted text-xs font-semibold uppercase tracking-wide">Website</p>
+            <a class="text-on-glass mt-1 inline-flex text-base font-medium hover:text-brand" href="{{ site.contact.website }}">www.liamday.co.uk</a>
           </li>
-          <li class="rounded-2xl border border-slate-100 bg-white/90 p-4 shadow-sm sm:col-span-2">
-            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Right to Work</p>
-            <p class="mt-1 text-base font-medium text-slate-900">{{ site.contact.right_to_work }}</p>
+          <li class="glass-dynamic rounded-2xl border p-4 shadow-sm sm:col-span-2">
+            <p class="text-on-glass-muted text-xs font-semibold uppercase tracking-wide">Right to Work</p>
+            <p class="text-on-glass mt-1 text-base font-medium">{{ site.contact.right_to_work }}</p>
           </li>
         </ul>
       </div>
@@ -57,9 +57,9 @@ layout: default
   <div class="mx-auto max-w-6xl px-6">
     <div class="grid gap-10 lg:grid-cols-[minmax(0,0.45fr)_minmax(0,1fr)]">
       <div>
-        <h2 class="text-2xl font-semibold text-slate-900 sm:text-3xl">Profile</h2>
+        <h2 class="text-dynamic text-2xl font-semibold sm:text-3xl">Profile</h2>
       </div>
-      <div class="text-lg leading-relaxed text-slate-600">
+      <div class="text-dynamic-muted text-lg leading-relaxed">
         <p>{{ cv.profile }}</p>
       </div>
     </div>
@@ -86,8 +86,8 @@ layout: default
 <section class="py-16" id="experience">
   <div class="mx-auto max-w-6xl px-6">
     <div class="max-w-3xl space-y-4">
-      <h2 class="text-2xl font-semibold text-slate-900 sm:text-3xl">Employment</h2>
-      <p class="text-lg text-slate-600">Leadership roles spanning mobile software, large-scale training programmes, and secure communications operations.</p>
+      <h2 class="text-dynamic text-2xl font-semibold sm:text-3xl">Employment</h2>
+      <p class="text-dynamic-muted text-lg">Leadership roles spanning mobile software, large-scale training programmes, and secure communications operations.</p>
     </div>
     <div class="mt-12 space-y-12 border-l border-slate-200 pl-8">
       {% for role in cv.employment %}
@@ -101,9 +101,9 @@ layout: default
           <span>{{ role.location }}</span>
         </div>
         <div class="space-y-3">
-          <h3 class="text-xl font-semibold text-slate-900">{{ role.title }}</h3>
-          <p class="text-base font-medium text-slate-600">{{ role.company }}</p>
-          <ul class="list-disc space-y-2 pl-5 text-base leading-relaxed text-slate-600">
+          <h3 class="text-dynamic text-xl font-semibold">{{ role.title }}</h3>
+          <p class="text-dynamic-muted text-base font-medium">{{ role.company }}</p>
+          <ul class="text-dynamic-muted list-disc space-y-2 pl-5 text-base leading-relaxed">
             {% for highlight in role.highlights %}
             <li>{{ highlight }}</li>
             {% endfor %}
@@ -118,8 +118,8 @@ layout: default
 <section class="py-16" id="projects">
   <div class="mx-auto max-w-6xl px-6">
     <div class="max-w-3xl space-y-4">
-      <h2 class="text-2xl font-semibold text-slate-900 sm:text-3xl">Projects</h2>
-      <p class="text-lg text-slate-600">Selected case studies from apps and digital platforms Liam has shaped across defence and outdoor sectors.</p>
+      <h2 class="text-dynamic text-2xl font-semibold sm:text-3xl">Projects</h2>
+      <p class="text-dynamic-muted text-lg">Selected case studies from apps and digital platforms Liam has shaped across defence and outdoor sectors.</p>
     </div>
     <div class="mt-12 grid gap-6 sm:grid-cols-2">
       {% assign ordered_projects = site.projects | sort: "order" %}
@@ -145,7 +145,7 @@ layout: default
   <div class="mx-auto max-w-6xl px-6">
     <div class="grid gap-10 lg:grid-cols-[minmax(0,0.45fr)_minmax(0,1fr)]">
       <div>
-        <h2 class="text-2xl font-semibold text-slate-900 sm:text-3xl">Education &amp; Certifications</h2>
+        <h2 class="text-dynamic text-2xl font-semibold sm:text-3xl">Education &amp; Certifications</h2>
       </div>
       <div class="grid gap-8 md:grid-cols-2">
         <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">

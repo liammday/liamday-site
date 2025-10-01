@@ -89,10 +89,65 @@
       const interpolateColor = (start, end, factor) => {
         const startRgb = hexToRgb(start);
         const endRgb = hexToRgb(end);
-        const r = interpolateChannel(startRgb.r, endRgb.r, factor);
-        const g = interpolateChannel(startRgb.g, endRgb.g, factor);
-        const b = interpolateChannel(startRgb.b, endRgb.b, factor);
-        return `rgb(${r}, ${g}, ${b})`;
+        return {
+          r: interpolateChannel(startRgb.r, endRgb.r, factor),
+          g: interpolateChannel(startRgb.g, endRgb.g, factor),
+          b: interpolateChannel(startRgb.b, endRgb.b, factor)
+        };
+      };
+
+      const rgbToString = ({ r, g, b }) => `rgb(${r}, ${g}, ${b})`;
+
+      const mixRgb = (start, end, factor = 0.5) => ({
+        r: Math.round(start.r + (end.r - start.r) * factor),
+        g: Math.round(start.g + (end.g - start.g) * factor),
+        b: Math.round(start.b + (end.b - start.b) * factor)
+      });
+
+      const srgbChannelToLinear = (value) => {
+        const channel = value / 255;
+        if (channel <= 0.04045) {
+          return channel / 12.92;
+        }
+        return Math.pow((channel + 0.055) / 1.055, 2.4);
+      };
+
+      const getRelativeLuminance = ({ r, g, b }) =>
+        0.2126 * srgbChannelToLinear(r) + 0.7152 * srgbChannelToLinear(g) + 0.0722 * srgbChannelToLinear(b);
+
+      const applyDynamicPalette = (topColor, bottomColor) => {
+        const midpoint = mixRgb(topColor, bottomColor, 0.5);
+        const luminance = getRelativeLuminance(midpoint);
+        const isDarkBackground = luminance < 0.55;
+
+        const palette = isDarkBackground
+          ? {
+              '--dynamic-text-on-background': '#f8fafc',
+              '--dynamic-text-muted': 'rgba(248, 250, 252, 0.72)',
+              '--dynamic-glass-background': 'rgba(248, 250, 252, 0.78)',
+              '--dynamic-glass-border': 'rgba(248, 250, 252, 0.45)',
+              '--dynamic-glass-text': '#0f172a',
+              '--dynamic-glass-text-muted': 'rgba(15, 23, 42, 0.72)',
+              '--dynamic-control-surface': 'rgba(248, 250, 252, 0.18)',
+              '--dynamic-control-surface-hover': 'rgba(248, 250, 252, 0.28)',
+              '--dynamic-control-text': '#0f172a'
+            }
+          : {
+              '--dynamic-text-on-background': '#0f172a',
+              '--dynamic-text-muted': 'rgba(15, 23, 42, 0.68)',
+              '--dynamic-glass-background': 'rgba(15, 23, 42, 0.58)',
+              '--dynamic-glass-border': 'rgba(15, 23, 42, 0.35)',
+              '--dynamic-glass-text': '#f8fafc',
+              '--dynamic-glass-text-muted': 'rgba(248, 250, 252, 0.78)',
+              '--dynamic-control-surface': 'rgba(15, 23, 42, 0.16)',
+              '--dynamic-control-surface-hover': 'rgba(15, 23, 42, 0.26)',
+              '--dynamic-control-text': '#f8fafc'
+            };
+
+        const rootElement = document.documentElement;
+        Object.entries(palette).forEach(([variable, value]) => {
+          rootElement.style.setProperty(variable, value);
+        });
       };
 
       const getGradientForTime = (date) => {
@@ -115,12 +170,17 @@
         const factor = Math.min(Math.max((currentTime - previousStop.time) / span, 0), 1);
         const top = interpolateColor(previousStop.top, nextStop.top, factor);
         const bottom = interpolateColor(previousStop.bottom, nextStop.bottom, factor);
-        return `linear-gradient(180deg, ${top} 0%, ${bottom} 100%)`;
+        return {
+          gradient: `linear-gradient(180deg, ${rgbToString(top)} 0%, ${rgbToString(bottom)} 100%)`,
+          top,
+          bottom
+        };
       };
 
       const applyGradient = () => {
-        const gradient = getGradientForTime(new Date());
+        const { gradient, top, bottom } = getGradientForTime(new Date());
         document.body.style.setProperty('--sky-gradient', gradient);
+        applyDynamicPalette(top, bottom);
       };
 
       applyGradient();

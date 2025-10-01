@@ -19,6 +19,15 @@
 
 :root {
   --sky-gradient: linear-gradient(180deg, #0b1936 0%, #030712 100%);
+  --dynamic-text-on-background: #0f172a;
+  --dynamic-text-muted: rgba(15, 23, 42, 0.72);
+  --dynamic-glass-background: rgba(248, 250, 252, 0.78);
+  --dynamic-glass-border: rgba(248, 250, 252, 0.45);
+  --dynamic-glass-text: #0f172a;
+  --dynamic-glass-text-muted: rgba(15, 23, 42, 0.72);
+  --dynamic-control-surface: rgba(255, 255, 255, 0.14);
+  --dynamic-control-surface-hover: rgba(255, 255, 255, 0.24);
+  --dynamic-control-text: #f8fafc;
   --header-max-width: 72rem;
   --header-padding-x: 1.5rem;
   --header-height: 5.75rem;
@@ -36,8 +45,41 @@ body {
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center top;
-  color: #0f172a;
-  transition: background-image 1s ease;
+  color: var(--dynamic-text-on-background);
+  transition: background-image 1s ease, color 0.6s ease;
+}
+
+.text-dynamic {
+  color: var(--dynamic-text-on-background);
+  transition: color 0.6s ease;
+}
+
+.text-dynamic-muted {
+  color: var(--dynamic-text-muted);
+  transition: color 0.6s ease;
+}
+
+.text-on-glass {
+  color: var(--dynamic-glass-text);
+  transition: color 0.6s ease;
+}
+
+.text-on-glass-muted {
+  color: var(--dynamic-glass-text-muted);
+  transition: color 0.6s ease;
+}
+
+.glass-dynamic {
+  background: var(--dynamic-glass-background);
+  border-color: var(--dynamic-glass-border);
+  color: var(--dynamic-glass-text);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  transition: background-color 0.6s ease, border-color 0.6s ease, color 0.6s ease, box-shadow 0.6s ease;
+}
+
+.ring-dynamic {
+  --tw-ring-color: var(--dynamic-glass-border);
 }
 
 .site-header {
@@ -111,7 +153,7 @@ body {
   font-size: 1.05rem;
   font-weight: 600;
   letter-spacing: -0.01em;
-  color: #f8fafc;
+  color: var(--dynamic-text-on-background);
   text-decoration: none;
   pointer-events: auto;
   text-shadow: 0 8px 24px rgba(15, 23, 42, 0.55);
@@ -138,15 +180,15 @@ body {
   height: 2.75rem;
   border-radius: 9999px;
   border: none;
-  background: rgba(255, 255, 255, 0.12);
-  color: #f8fafc;
+  background: var(--dynamic-control-surface);
+  color: var(--dynamic-control-text);
   cursor: pointer;
   transition: background 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
 }
 
 .site-nav__toggle:hover,
 .site-nav__toggle:focus-visible {
-  background: rgba(255, 255, 255, 0.24);
+  background: var(--dynamic-control-surface-hover);
   outline: none;
 }
 
@@ -232,7 +274,7 @@ body {
   font-size: 0.95rem;
   font-weight: 500;
   letter-spacing: 0.02em;
-  color: #f8fafc;
+  color: var(--dynamic-text-on-background);
   text-decoration: none;
   text-shadow: 0 8px 20px rgba(15, 23, 42, 0.6);
   transition: color 0.2s ease, transform 0.2s ease;
@@ -240,7 +282,8 @@ body {
 
 .site-nav__link:hover,
 .site-nav__link:focus-visible {
-  color: #fff;
+  color: var(--dynamic-text-on-background);
+  opacity: 0.78;
   transform: translateY(-1px);
   outline: none;
 }
