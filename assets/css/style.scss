@@ -247,9 +247,10 @@ body::before {
 .site-header__brand {
   position: relative;
   z-index: auto;
-  font-size: 1.05rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.1;
   color: var(--dynamic-text-on-background);
   text-decoration: none;
   text-shadow: 0 8px 24px rgba(15, 23, 42, 0.55);
@@ -403,6 +404,13 @@ body::before {
 }
 
 @media (min-width: 768px) {
+  .site-nav {
+    position: relative;
+    top: auto;
+    right: auto;
+    align-self: center;
+  }
+
   .site-nav__list {
     position: relative;
     top: auto;
