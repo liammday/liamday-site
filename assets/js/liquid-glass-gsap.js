@@ -86,6 +86,87 @@
     });
   };
 
+  const registerPointerEffect = (panel, layers) => {
+    if (!panel || !layers.length) {
+      return null;
+    }
+
+    const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const supportsPointer = 'PointerEvent' in window;
+    const pointerState = { x: 0.5, y: 0.5 };
+
+    const updateLayerOffsets = () => {
+      layers.forEach((layer, index) => {
+        const intensity = Math.max(4, 10 - index * 3);
+        const offsetX = ((pointerState.x - 0.5) * intensity).toFixed(3);
+        const offsetY = ((pointerState.y - 0.5) * intensity).toFixed(3);
+
+        if (window.gsap?.to) {
+          window.gsap.to(layer, {
+            '--pointer-shift-x': `${offsetX}%`,
+            '--pointer-shift-y': `${offsetY}%`,
+            duration: 0.6,
+            ease: 'sine.out',
+            overwrite: 'auto',
+          });
+        } else {
+          layer.style.setProperty('--pointer-shift-x', `${offsetX}%`);
+          layer.style.setProperty('--pointer-shift-y', `${offsetY}%`);
+        }
+      });
+    };
+
+    const setActive = (isActive) => {
+      if (isActive) {
+        panel.setAttribute('data-liquid-glass-active', 'true');
+      } else {
+        panel.removeAttribute('data-liquid-glass-active');
+      }
+    };
+
+    const handlePointerMove = (event) => {
+      const rect = panel.getBoundingClientRect();
+      if (!rect.width || !rect.height) {
+        return;
+      }
+
+      const x = (event.clientX - rect.left) / rect.width;
+      const y = (event.clientY - rect.top) / rect.height;
+
+      pointerState.x = Math.min(Math.max(x, 0), 1);
+      pointerState.y = Math.min(Math.max(y, 0), 1);
+      updateLayerOffsets();
+      setActive(true);
+    };
+
+    const resetPointer = () => {
+      pointerState.x = 0.5;
+      pointerState.y = 0.5;
+      updateLayerOffsets();
+      setActive(false);
+    };
+
+    updateLayerOffsets();
+    panel.setAttribute('data-liquid-glass-ready', 'true');
+
+    if (reduceMotionQuery.matches || !supportsPointer) {
+      return null;
+    }
+
+    panel.addEventListener('pointermove', handlePointerMove, { passive: true });
+    panel.addEventListener('pointerdown', handlePointerMove, { passive: true });
+    panel.addEventListener('pointerleave', resetPointer);
+    panel.addEventListener('pointercancel', resetPointer);
+
+    return () => {
+      panel.removeEventListener('pointermove', handlePointerMove);
+      panel.removeEventListener('pointerdown', handlePointerMove);
+      panel.removeEventListener('pointerleave', resetPointer);
+      panel.removeEventListener('pointercancel', resetPointer);
+      setActive(false);
+    };
+  };
+
   document.addEventListener('DOMContentLoaded', () => {
     if (!window.gsap) return;
 
@@ -100,5 +181,7 @@
 
     const pip = panel.querySelector('.liquid-glass-pip');
     animateStatus(pip);
+
+    registerPointerEffect(panel, layers);
   });
 })();
