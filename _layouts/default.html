@@ -70,7 +70,14 @@
     <script src="{{ '/assets/js/liquid-glass-gsap.js' | relative_url }}"></script>
     <script src="{{ '/assets/js/liquid-glass-nav.js' | relative_url }}"></script>
     <script>
-      const baseBackgroundHex = '{{ site.data.background.color | default: "#030712" }}';
+      const backgroundData = {{ site.data.background | jsonify | replace: '</', '<\/' }};
+
+      const FALLBACK_BACKGROUND_HEX = (() => {
+        if (backgroundData && typeof backgroundData.color === 'string' && backgroundData.color.trim()) {
+          return backgroundData.color;
+        }
+        return '#030712';
+      })();
 
       const hexToRgb = (hex) => {
         if (typeof hex !== 'string') {
@@ -161,6 +168,127 @@
         const { r, g, b } = color;
         return `${r}, ${g}, ${b}`;
       };
+
+      const componentToHex = (value) => {
+        const clamped = Math.max(0, Math.min(255, Math.round(value)));
+        return clamped.toString(16).padStart(2, '0');
+      };
+
+      const rgbToHex = (color) => {
+        if (!color) {
+          return '';
+        }
+        return `#${componentToHex(color.r)}${componentToHex(color.g)}${componentToHex(color.b)}`;
+      };
+
+      const normalizeHex = (hex) => {
+        const color = hexToRgb(hex);
+        return color ? rgbToHex(color) : null;
+      };
+
+      const buildBackgroundConfig = (entry, fallbackLabel) => {
+        if (!entry || typeof entry !== 'object') {
+          return null;
+        }
+
+        const gradient = entry.gradient && typeof entry.gradient === 'object' ? entry.gradient : {};
+        const top =
+          (typeof gradient.top === 'string' && gradient.top.trim()) ||
+          (typeof entry.top === 'string' && entry.top.trim()) ||
+          (typeof entry.color === 'string' && entry.color.trim()) ||
+          null;
+        const bottom =
+          (typeof gradient.bottom === 'string' && gradient.bottom.trim()) ||
+          (typeof entry.bottom === 'string' && entry.bottom.trim()) ||
+          (typeof entry.color === 'string' && entry.color.trim()) ||
+          top;
+        const label =
+          (typeof entry.label === 'string' && entry.label.trim()) ||
+          (typeof fallbackLabel === 'string' && fallbackLabel.trim()) ||
+          '';
+
+        return { top, bottom, label };
+      };
+
+      const mapTimeRanges = () => {
+        if (!backgroundData || !Array.isArray(backgroundData.time_ranges)) {
+          return [];
+        }
+
+        return backgroundData.time_ranges
+          .map((range) => {
+            if (!range || typeof range !== 'object') {
+              return null;
+            }
+
+            const config = buildBackgroundConfig(range, backgroundData.label);
+            if (!config) {
+              return null;
+            }
+
+            const startHour = typeof range.start_hour === 'number' ? range.start_hour : null;
+            const endHour = typeof range.end_hour === 'number' ? range.end_hour : null;
+
+            return { ...config, startHour, endHour };
+          })
+          .filter(Boolean);
+      };
+
+      const getDefaultBackground = () => {
+        const fallback = buildBackgroundConfig(backgroundData?.default || backgroundData, backgroundData?.label);
+        if (fallback && fallback.top) {
+          fallback.bottom = fallback.bottom || fallback.top;
+          return fallback;
+        }
+
+        return { top: FALLBACK_BACKGROUND_HEX, bottom: FALLBACK_BACKGROUND_HEX, label: backgroundData?.label || '' };
+      };
+
+      const resolveActiveTimeRange = () => {
+        const ranges = mapTimeRanges();
+        if (!ranges.length) {
+          return null;
+        }
+
+        const now = new Date();
+        const currentHour = now.getHours() + now.getMinutes() / 60 + now.getSeconds() / 3600;
+
+        for (const range of ranges) {
+          if (typeof range.startHour !== 'number' || typeof range.endHour !== 'number') {
+            continue;
+          }
+
+          const start = Math.max(0, Math.min(24, range.startHour));
+          const rawEnd = Math.max(0, Math.min(24, range.endHour));
+          const end = rawEnd === 0 && range.endHour !== 0 ? 24 : rawEnd;
+
+          if (start <= end) {
+            if (currentHour >= start && currentHour < end) {
+              return range;
+            }
+          } else {
+            if (currentHour >= start || currentHour < end) {
+              return range;
+            }
+          }
+        }
+
+        return ranges[0];
+      };
+
+      const getActiveBackground = () => {
+        const activeRange = resolveActiveTimeRange();
+        if (activeRange) {
+          const { startHour, endHour, ...config } = activeRange;
+          return config;
+        }
+
+        return getDefaultBackground();
+      };
+
+      const fallbackHexNormalized = normalizeHex(FALLBACK_BACKGROUND_HEX) || '#030712';
+      const fallbackColor = hexToRgb(fallbackHexNormalized) || { r: 3, g: 7, b: 18 };
+      const BACKGROUND_UPDATE_INTERVAL = 5 * 60 * 1000;
 
       const rgbToHsl = (color) => {
         if (!color) {
@@ -329,27 +457,44 @@
       };
 
       const applyBackground = () => {
-        const baseColor = hexToRgb(baseBackgroundHex);
-        if (!baseColor) {
-          return;
-        }
+        const activeBackground = getActiveBackground();
+        const topHex = normalizeHex(activeBackground?.top) || fallbackHexNormalized;
+        const bottomHex = normalizeHex(activeBackground?.bottom) || topHex || fallbackHexNormalized;
+
+        const topColor = hexToRgb(topHex) || fallbackColor;
+        const bottomColor = hexToRgb(bottomHex) || topColor || fallbackColor;
+        const baseColor = mixRgb(topColor, bottomColor, 0.5) || topColor || fallbackColor;
+        const baseHex = rgbToHex(baseColor) || fallbackHexNormalized;
 
         const rootElement = document.documentElement;
-        const rgbString = `${baseColor.r}, ${baseColor.g}, ${baseColor.b}`;
+        rootElement.style.setProperty('--sky-background-color', baseHex);
+        rootElement.style.setProperty('--sky-background-rgb', rgbValuesToString(baseColor));
+        rootElement.style.setProperty('--sky-gradient-top', topHex);
+        rootElement.style.setProperty('--sky-gradient-bottom', bottomHex);
+        rootElement.style.backgroundColor = baseHex;
 
-        rootElement.style.setProperty('--sky-background-color', baseBackgroundHex);
-        rootElement.style.setProperty('--sky-background-rgb', rgbString);
-        rootElement.style.backgroundColor = baseBackgroundHex;
+        if (topHex && bottomHex && topHex !== bottomHex) {
+          rootElement.style.backgroundImage = `linear-gradient(180deg, ${topHex}, ${bottomHex})`;
+        } else {
+          rootElement.style.backgroundImage = 'none';
+        }
+
+        if (activeBackground?.label) {
+          rootElement.setAttribute('data-sky-label', activeBackground.label);
+        } else {
+          rootElement.removeAttribute('data-sky-label');
+        }
 
         const themeColorMeta = document.querySelector('meta[name="theme-color"]');
         if (themeColorMeta) {
-          themeColorMeta.setAttribute('content', baseBackgroundHex);
+          themeColorMeta.setAttribute('content', baseHex);
         }
 
-        applyDynamicPalette(baseColor, baseColor);
+        applyDynamicPalette(topColor, bottomColor);
       };
 
       applyBackground();
+      window.setInterval(applyBackground, BACKGROUND_UPDATE_INTERVAL);
 
       const header = document.querySelector('[data-site-header]');
       const nav = document.querySelector('[data-nav]');

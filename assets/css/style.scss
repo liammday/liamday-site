@@ -56,7 +56,9 @@ html.has-mobile-nav {
 html {
   min-height: 100%;
   background-color: var(--sky-background-color, #030712);
-  transition: background-color 0.6s ease;
+  background-image: none;
+  background-repeat: no-repeat;
+  transition: background-color 0.6s ease, background-image 0.6s ease;
 }
 
 body {
