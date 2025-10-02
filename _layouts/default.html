@@ -3,7 +3,7 @@
   <head>
     {% include head.html %}
   </head>
-  <body class="flex min-h-screen flex-col font-sans text-slate-900">
+  <body class="flex min-h-screen flex-col font-sans">
     <a
       class="sr-only focus:not-sr-only focus:absolute focus:left-6 focus:top-6 focus:rounded-full focus:bg-brand focus:px-4 focus:py-2 focus:text-white focus:shadow-lg"
       href="#main"
@@ -41,22 +41,22 @@
       {{ content }}
     </main>
 
-    <footer class="border-t border-slate-200 py-12">
-      <div class="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 text-sm text-slate-600 sm:text-base lg:flex-row lg:items-start lg:justify-between">
+    <footer class="border-t border-dynamic py-12">
+      <div class="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 text-sm text-dynamic-muted sm:text-base lg:flex-row lg:items-start lg:justify-between">
         <div class="space-y-3">
-          <p class="text-lg font-semibold text-slate-900">Let’s collaborate.</p>
+          <p class="text-lg font-semibold text-dynamic">Let’s collaborate.</p>
           <a class="inline-flex items-center gap-2 text-brand-dark hover:text-brand" href="mailto:{{ site.social.email }}">
             <span>{{ site.social.email }}</span>
           </a>
         </div>
         <div class="flex flex-1 flex-col gap-4 sm:flex-row sm:items-end sm:justify-end">
-          <ul class="flex flex-wrap gap-4 text-sm font-medium text-slate-600" aria-label="Social links">
+          <ul class="flex flex-wrap gap-4 text-sm font-medium text-dynamic-muted" aria-label="Social links">
             {% if site.social.linkedin %}<li><a class="hover:text-brand" href="{{ site.social.linkedin }}">LinkedIn</a></li>{% endif %}
             {% if site.social.dribbble %}<li><a class="hover:text-brand" href="{{ site.social.dribbble }}">Dribbble</a></li>{% endif %}
             {% if site.social.github %}<li><a class="hover:text-brand" href="{{ site.social.github }}">GitHub</a></li>{% endif %}
             {% if site.social.medium %}<li><a class="hover:text-brand" href="{{ site.social.medium }}">Medium</a></li>{% endif %}
           </ul>
-          <p class="text-xs text-slate-400 sm:text-right">© {{ "now" | date: "%Y" }} {{ site.title }} · Built with Jekyll.</p>
+          <p class="text-xs text-dynamic-muted sm:text-right">© {{ "now" | date: "%Y" }} {{ site.title }} · Built with Jekyll.</p>
         </div>
       </div>
     </footer>
@@ -152,6 +152,24 @@
       const mixWith = (color, target, factor) => mixRgb(color, target, factor);
       const lighten = (color, factor = 0.5) => mixWith(color, WHITE, factor);
       const darken = (color, factor = 0.5) => mixWith(color, BLACK, factor);
+
+      const getReadableTextOn = (background) => {
+        if (!background) {
+          return WHITE;
+        }
+
+        const luminance = getRelativeLuminance(background);
+
+        if (luminance >= 0.75) {
+          return darken(background, 0.85);
+        }
+
+        if (luminance <= 0.25) {
+          return lighten(background, 0.85);
+        }
+
+        return luminance > 0.5 ? darken(background, 0.7) : lighten(background, 0.7);
+      };
 
       const rgbaToString = (color, alpha = 1) => {
         if (!color) {
@@ -402,6 +420,12 @@
         const textPrimaryTint = isDarkBackground ? lighten(midpoint, 0.98) : darken(midpoint, 0.92);
         const textMutedTint = isDarkBackground ? lighten(midpoint, 0.9) : darken(midpoint, 0.82);
 
+        const cardBackgroundTint = isDarkBackground ? lighten(midpoint, 0.92) : darken(midpoint, 0.68);
+        const cardBorderTint = isDarkBackground ? lighten(midpoint, 0.82) : darken(midpoint, 0.58);
+        const cardShadowTint = darken(midpoint, isDarkBackground ? 0.88 : 0.54);
+        const cardTextTint = getReadableTextOn(cardBackgroundTint);
+        const cardTextMutedTint = mixRgb(cardTextTint, cardBackgroundTint, 0.45);
+
         const glassBackgroundAlpha = isDarkBackground ? 0.78 : 0.62;
         const controlSurfaceAlpha = isDarkBackground ? 0.42 : 0.26;
         const controlSurfaceHoverAlpha = isDarkBackground ? 0.48 : 0.34;
@@ -421,6 +445,11 @@
           '--dynamic-glass-border': rgbaToString(glassBorderTint, isDarkBackground ? 0.5 : 0.42),
           '--dynamic-glass-text': rgbToString(glassTextTint),
           '--dynamic-glass-text-muted': rgbaToString(glassTextMutedTint, isDarkBackground ? 0.8 : 0.76),
+          '--dynamic-card-background': rgbToString(cardBackgroundTint),
+          '--dynamic-card-border': rgbaToString(cardBorderTint, isDarkBackground ? 0.3 : 0.36),
+          '--dynamic-card-text': rgbToString(cardTextTint),
+          '--dynamic-card-text-muted': rgbaToString(cardTextMutedTint, 0.82),
+          '--dynamic-card-shadow-rgb': rgbValuesToString(cardShadowTint),
           '--dynamic-control-surface': rgbaToString(controlSurfaceTint, controlSurfaceAlpha),
           '--dynamic-control-surface-hover': rgbaToString(controlSurfaceHoverTint, controlSurfaceHoverAlpha),
           '--dynamic-control-text': rgbToString(controlTextTint),

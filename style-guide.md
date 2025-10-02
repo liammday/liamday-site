@@ -9,10 +9,12 @@ permalink: /style-guide/
     display: grid;
     gap: 1.25rem;
     border-radius: 1.5rem;
-    border: 1px solid rgba(15, 23, 42, 0.12);
-    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid var(--dynamic-card-border, rgba(203, 213, 225, 0.4));
+    background: var(--dynamic-card-background, rgba(248, 250, 252, 0.95));
+    color: var(--dynamic-card-text, #0f172a);
     padding: 1.75rem;
-    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.1);
+    box-shadow: 0 20px 40px rgba(var(--dynamic-card-shadow-rgb, 15, 23, 42), 0.12);
+    transition: background-color 0.6s ease, border-color 0.6s ease, color 0.6s ease, box-shadow 0.6s ease;
   }
 
   .sg-background-card__swatch {
@@ -40,7 +42,7 @@ permalink: /style-guide/
     flex-direction: column;
     gap: 0.25rem;
     font-size: 0.85rem;
-    color: #475569;
+    color: var(--dynamic-card-text-muted, rgba(71, 85, 105, 0.9));
   }
 
   .sg-token-list__item dt {
@@ -48,16 +50,16 @@ permalink: /style-guide/
     font-weight: 600;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: #334155;
+    color: var(--dynamic-card-text, #0f172a);
   }
 
   .sg-token-list__item code {
     font-size: 0.85rem;
     font-weight: 600;
-    background: rgba(15, 23, 42, 0.08);
+    background: rgba(var(--dynamic-card-shadow-rgb, 15, 23, 42), 0.08);
     border-radius: 0.4rem;
     padding: 0.15rem 0.5rem;
-    color: #0f172a;
+    color: var(--dynamic-card-text, #0f172a);
   }
 </style>
 
@@ -108,8 +110,8 @@ permalink: /style-guide/
     <div class="space-y-6">
       <div class="sg-background-card" style="--sg-background-color: {{ background.color | default: '#030712' }};">
         <div class="sg-background-card__meta">
-          <h3 class="text-lg font-semibold text-slate-900">{{ background.label | default: 'Site background' }}</h3>
-          <p class="text-sm text-slate-600">{{ background.description | default: 'Primary background colour applied across the site.' }}</p>
+          <h3 class="text-lg font-semibold text-on-card">{{ background.label | default: 'Site background' }}</h3>
+          <p class="text-sm text-on-card-muted">{{ background.description | default: 'Primary background colour applied across the site.' }}</p>
         </div>
         <div class="sg-background-card__swatch" aria-hidden="true"></div>
         <dl class="sg-token-list">
@@ -132,9 +134,9 @@ permalink: /style-guide/
         </dl>
       </div>
       {% if background.time_ranges %}
-      <div class="rounded-3xl border border-slate-200 bg-white/70 p-6 shadow-sm backdrop-blur">
-        <h3 class="text-base font-semibold text-slate-900">Time-aware sky colours</h3>
-        <p class="mt-2 text-sm text-slate-600">
+      <div class="card-surface rounded-3xl border p-6 backdrop-blur">
+        <h3 class="text-base font-semibold text-on-card">Time-aware sky colours</h3>
+        <p class="mt-2 text-sm text-on-card-muted">
           These ranges animate automatically in the browser, ensuring cards and navigation pick light or dark treatments that
           match the current sky tone.
         </p>
@@ -149,13 +151,13 @@ permalink: /style-guide/
           {% assign end_display = '%02d' | format: end_hour %}
           {% endif %}
           {% assign solid_color = range.color | default: range.top | default: background.color %}
-          <div class="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white/80 p-4 shadow-sm backdrop-blur">
+          <div class="card-surface rounded-2xl border p-4 backdrop-blur">
             <div class="flex flex-wrap items-center justify-between gap-3">
-              <p class="text-sm font-semibold uppercase tracking-[0.25em] text-slate-500">{{ range.label }}</p>
-              <p class="font-mono text-xs text-slate-500">{{ start_display }}:00 – {{ end_display }}:00</p>
+              <p class="text-sm font-semibold uppercase tracking-[0.25em] text-on-card-muted">{{ range.label }}</p>
+              <p class="font-mono text-xs text-on-card-muted">{{ start_display }}:00 – {{ end_display }}:00</p>
             </div>
             <div
-              class="h-12 w-full rounded-xl border border-slate-200"
+              class="h-12 w-full rounded-xl border border-dynamic"
               style="background: {{ solid_color }};"
             ></div>
           </div>
@@ -163,82 +165,82 @@ permalink: /style-guide/
         </div>
       </div>
       {% endif %}
-      <div class="rounded-3xl border border-slate-200 bg-white/70 p-6 shadow-sm backdrop-blur">
-        <h3 class="text-base font-semibold text-slate-900">Dynamic CSS variables</h3>
-        <dl class="mt-4 grid gap-4 text-sm text-slate-600 sm:grid-cols-2">
+      <div class="card-surface rounded-3xl border p-6 backdrop-blur">
+        <h3 class="text-base font-semibold text-on-card">Dynamic CSS variables</h3>
+        <dl class="mt-4 grid gap-4 text-sm text-on-card-muted sm:grid-cols-2">
           <div>
-            <dt class="font-semibold text-slate-900">--sky-background-color</dt>
+            <dt class="font-semibold text-on-card">--sky-background-color</dt>
             <dd>Current sky midpoint applied to the document root and theme colour meta tag.</dd>
           </div>
           <div>
-            <dt class="font-semibold text-slate-900">--sky-background-rgb</dt>
+            <dt class="font-semibold text-on-card">--sky-background-rgb</dt>
             <dd>Pre-calculated RGB channel values for WebGL and canvas effects.</dd>
           </div>
           <div>
-            <dt class="font-semibold text-slate-900">--dynamic-text-on-background</dt>
+            <dt class="font-semibold text-on-card">--dynamic-text-on-background</dt>
             <dd>Primary type colour that adapts based on the background’s luminance.</dd>
           </div>
           <div>
-            <dt class="font-semibold text-slate-900">--dynamic-glass-background</dt>
+            <dt class="font-semibold text-on-card">--dynamic-glass-background</dt>
             <dd>Controls glassmorphism surfaces, ensuring cards stay legible whether the sky is bright or midnight dark.</dd>
           </div>
           <div>
-            <dt class="font-semibold text-slate-900">--dynamic-control-surface</dt>
+            <dt class="font-semibold text-on-card">--dynamic-control-surface</dt>
             <dd>Base background for buttons, chips, and interactive controls layered on glass panels.</dd>
           </div>
         </dl>
       </div>
-      <div class="rounded-3xl border border-slate-200 bg-white/70 p-6 shadow-sm backdrop-blur">
-        <h3 class="text-base font-semibold text-slate-900">Adaptive accent palette</h3>
-        <p class="mt-2 text-sm text-slate-600">
+      <div class="card-surface rounded-3xl border p-6 backdrop-blur">
+        <h3 class="text-base font-semibold text-on-card">Adaptive accent palette</h3>
+        <p class="mt-2 text-sm text-on-card-muted">
           Accent tokens are generated by <code class="font-mono text-xs text-slate-500">applyDynamicPalette</code> so that buttons, links, and highlights shift harmoniously with the sky background.
         </p>
         <div class="mt-4 grid gap-4 sm:grid-cols-2">
           <div class="flex items-center gap-3">
-            <span class="h-10 w-10 rounded-full border border-slate-200" style="background: var(--dynamic-accent);"></span>
+            <span class="h-10 w-10 rounded-full border border-dynamic" style="background: var(--dynamic-accent);"></span>
             <div>
-              <p class="text-sm font-semibold text-slate-900">Accent base</p>
-              <p class="text-xs text-slate-500"><code>--dynamic-accent</code></p>
+              <p class="text-sm font-semibold text-on-card">Accent base</p>
+              <p class="text-xs text-on-card-muted"><code>--dynamic-accent</code></p>
             </div>
           </div>
           <div class="flex items-center gap-3">
-            <span class="h-10 w-10 rounded-full border border-slate-200" style="background: var(--dynamic-accent-hover);"></span>
+            <span class="h-10 w-10 rounded-full border border-dynamic" style="background: var(--dynamic-accent-hover);"></span>
             <div>
-              <p class="text-sm font-semibold text-slate-900">Hover state</p>
-              <p class="text-xs text-slate-500"><code>--dynamic-accent-hover</code></p>
+              <p class="text-sm font-semibold text-on-card">Hover state</p>
+              <p class="text-xs text-on-card-muted"><code>--dynamic-accent-hover</code></p>
             </div>
           </div>
           <div class="flex items-center gap-3">
-            <span class="h-10 w-10 rounded-full border border-slate-200" style="background: var(--dynamic-accent-strong);"></span>
+            <span class="h-10 w-10 rounded-full border border-dynamic" style="background: var(--dynamic-accent-strong);"></span>
             <div>
-              <p class="text-sm font-semibold text-slate-900">Emphasis fill</p>
-              <p class="text-xs text-slate-500"><code>--dynamic-accent-strong</code></p>
+              <p class="text-sm font-semibold text-on-card">Emphasis fill</p>
+              <p class="text-xs text-on-card-muted"><code>--dynamic-accent-strong</code></p>
             </div>
           </div>
           <div class="flex items-center gap-3">
-            <span class="h-10 w-10 rounded-full border border-slate-200" style="background: var(--dynamic-accent-muted);"></span>
+            <span class="h-10 w-10 rounded-full border border-dynamic" style="background: var(--dynamic-accent-muted);"></span>
             <div>
-              <p class="text-sm font-semibold text-slate-900">Muted wash</p>
-              <p class="text-xs text-slate-500"><code>--dynamic-accent-muted</code></p>
+              <p class="text-sm font-semibold text-on-card">Muted wash</p>
+              <p class="text-xs text-on-card-muted"><code>--dynamic-accent-muted</code></p>
             </div>
           </div>
           <div class="flex items-center gap-3">
             <span
-              class="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200"
+              class="flex h-10 w-10 items-center justify-center rounded-full border border-dynamic"
               style="background: var(--dynamic-accent); color: var(--dynamic-accent-contrast);"
             >
               Aa
             </span>
             <div>
-              <p class="text-sm font-semibold text-slate-900">Contrast text</p>
-              <p class="text-xs text-slate-500"><code>--dynamic-accent-contrast</code></p>
+              <p class="text-sm font-semibold text-on-card">Contrast text</p>
+              <p class="text-xs text-on-card-muted"><code>--dynamic-accent-contrast</code></p>
             </div>
           </div>
         </div>
       </div>
-      <div class="rounded-3xl border border-slate-200 bg-white/70 p-6 shadow-sm backdrop-blur">
-        <h3 class="text-base font-semibold text-slate-900">Navigation glass tokens</h3>
-        <p class="mt-2 text-sm text-slate-600">
+      <div class="card-surface rounded-3xl border p-6 backdrop-blur">
+        <h3 class="text-base font-semibold text-on-card">Navigation glass tokens</h3>
+        <p class="mt-2 text-sm text-on-card-muted">
           Overlay, divider, and shadow colours used by the floating navigation are also palette-aware, keeping the menu legible regardless of background choice.
         </p>
         <div class="mt-4 grid gap-4 sm:grid-cols-2">
@@ -248,32 +250,32 @@ permalink: /style-guide/
               style="background: var(--dynamic-nav-panel-background); border-color: var(--dynamic-nav-panel-border);"
             ></span>
             <div>
-              <p class="text-sm font-semibold text-slate-900">Nav panel</p>
-              <p class="text-xs text-slate-500"><code>--dynamic-nav-panel-background</code></p>
+              <p class="text-sm font-semibold text-on-card">Nav panel</p>
+              <p class="text-xs text-on-card-muted"><code>--dynamic-nav-panel-background</code></p>
             </div>
           </div>
           <div class="flex items-center gap-3">
-            <span class="h-10 w-10 rounded-full border border-slate-200" style="background: var(--dynamic-nav-overlay);"></span>
+            <span class="h-10 w-10 rounded-full border border-dynamic" style="background: var(--dynamic-nav-overlay);"></span>
             <div>
-              <p class="text-sm font-semibold text-slate-900">Backdrop overlay</p>
-              <p class="text-xs text-slate-500"><code>--dynamic-nav-overlay</code></p>
+              <p class="text-sm font-semibold text-on-card">Backdrop overlay</p>
+              <p class="text-xs text-on-card-muted"><code>--dynamic-nav-overlay</code></p>
             </div>
           </div>
           <div class="flex items-center gap-3">
-            <span class="h-10 w-10 rounded-full border border-slate-200" style="background: rgba(var(--dynamic-nav-divider-rgb), 1);"></span>
+            <span class="h-10 w-10 rounded-full border border-dynamic" style="background: rgba(var(--dynamic-nav-divider-rgb), 1);"></span>
             <div>
-              <p class="text-sm font-semibold text-slate-900">Divider tint</p>
-              <p class="text-xs text-slate-500"><code>--dynamic-nav-divider-rgb</code></p>
+              <p class="text-sm font-semibold text-on-card">Divider tint</p>
+              <p class="text-xs text-on-card-muted"><code>--dynamic-nav-divider-rgb</code></p>
             </div>
           </div>
           <div class="flex items-center gap-3">
             <span
-              class="h-10 w-10 rounded-full border border-slate-200 shadow-lg"
+              class="h-10 w-10 rounded-full border border-dynamic shadow-lg"
               style="background: rgba(var(--dynamic-shadow-rgb), 0.18); box-shadow: 0 12px 22px rgba(var(--dynamic-shadow-rgb), 0.25);"
             ></span>
             <div>
-              <p class="text-sm font-semibold text-slate-900">Shadow colour</p>
-              <p class="text-xs text-slate-500"><code>--dynamic-shadow-rgb</code></p>
+              <p class="text-sm font-semibold text-on-card">Shadow colour</p>
+              <p class="text-xs text-on-card-muted"><code>--dynamic-shadow-rgb</code></p>
             </div>
           </div>
         </div>
@@ -290,15 +292,15 @@ permalink: /style-guide/
         helpers so colour adapts with the sky.
       </p>
     </div>
-    <div class="space-y-6 rounded-3xl border border-slate-200 bg-white/80 p-6 shadow-sm backdrop-blur">
+    <div class="card-surface space-y-6 rounded-3xl border p-6 backdrop-blur">
       <div class="space-y-2">
-        <p class="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Headings</p>
+        <p class="text-on-card-muted text-xs font-semibold uppercase tracking-[0.3em]">Headings</p>
         <h1 class="text-dynamic text-4xl font-semibold sm:text-5xl">H1 – Impact headline</h1>
         <h2 class="text-dynamic text-3xl font-semibold sm:text-4xl">H2 – Section title</h2>
         <h3 class="text-dynamic text-2xl font-semibold">H3 – Card or panel title</h3>
       </div>
       <div class="space-y-3">
-        <p class="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Body copy</p>
+        <p class="text-on-card-muted text-xs font-semibold uppercase tracking-[0.3em]">Body copy</p>
         <p class="text-dynamic-muted text-lg leading-relaxed">
           Use <code class="font-mono text-sm text-slate-500">text-lg</code> for introductions and lead paragraphs, stepping down to
           <code class="font-mono text-sm text-slate-500">text-base</code> for supporting content.
@@ -318,14 +320,14 @@ permalink: /style-guide/
         Buttons either sit directly on the dynamic background or on glass panels. Keep padding generous and maintain rounded-full silhouettes for primary calls to action.
       </p>
     </div>
-    <div class="space-y-4 rounded-3xl border border-slate-200 bg-white/80 p-6 shadow-sm backdrop-blur">
+    <div class="card-surface space-y-4 rounded-3xl border p-6 backdrop-blur">
       <div class="flex flex-wrap items-center gap-4">
         <a
           class="inline-flex items-center justify-center rounded-full bg-brand px-6 py-3 text-base font-semibold text-white shadow-soft-xl transition hover:bg-brand-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
           href="#"
         >Primary action</a>
         <a
-          class="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white/80 px-6 py-3 text-base font-semibold text-slate-900 shadow-sm transition hover:border-brand hover:text-brand focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+          class="inline-flex items-center justify-center rounded-full border border-transparent bg-[var(--dynamic-card-background)] px-6 py-3 text-base font-semibold text-[var(--dynamic-card-text)] shadow-sm transition hover:bg-[var(--dynamic-control-surface-hover)] hover:text-[var(--dynamic-card-text)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
           href="#"
         >Secondary</a>
         <button
@@ -336,7 +338,7 @@ permalink: /style-guide/
           Glass toggle
         </button>
       </div>
-      <p class="text-sm text-slate-600">
+      <p class="text-on-card-muted text-sm">
         Controls inherit stateful colours from the CSS custom properties updated by <code class="font-mono text-xs text-slate-500">applyDynamicPalette</code> in <code class="font-mono text-xs text-slate-500">_layouts/default.html</code>.
       </p>
     </div>
@@ -346,7 +348,7 @@ permalink: /style-guide/
     <div class="space-y-4">
       <h2 class="text-dynamic text-2xl font-semibold">Cards &amp; glass surfaces</h2>
       <p class="text-dynamic-muted text-base leading-relaxed">
-        Two primary surface treatments are available: frosted glass for hero panels and solid white cards for dense content. Mix them to create visual hierarchy.
+        Two primary surface treatments are available: pair <code class="font-mono text-sm text-slate-500">glass-dynamic</code> panels with luminous backgrounds and rely on <code class="font-mono text-sm text-slate-500">card-surface</code> for dense content blocks. Mix them to create visual hierarchy.
       </p>
     </div>
     <div class="grid gap-6 md:grid-cols-2">
@@ -370,13 +372,13 @@ permalink: /style-guide/
           </div>
         </div>
       </div>
-      <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-        <p class="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Solid card</p>
-        <h3 class="text-slate-900 text-xl font-semibold">Supporting detail</h3>
-        <p class="mt-3 text-base text-slate-600">
+      <div class="card-surface rounded-3xl border p-6">
+        <p class="text-on-card-muted text-xs font-semibold uppercase tracking-[0.3em]">Solid card</p>
+        <h3 class="text-on-card text-xl font-semibold">Supporting detail</h3>
+        <p class="mt-3 text-base text-on-card-muted">
           Solid cards are ideal for structured lists, metrics, and dense content that benefits from a calm backdrop.
         </p>
-        <ul class="mt-4 space-y-2 text-sm text-slate-500">
+        <ul class="mt-4 space-y-2 text-sm text-on-card-muted">
           <li class="flex items-center gap-2">
             <span class="h-1.5 w-1.5 rounded-full bg-brand"></span>
             Uses standard border + shadow stack
@@ -397,7 +399,7 @@ permalink: /style-guide/
         Quick copy/paste helpers when building new sections. Adjust copy only; structural classes keep spacing, alignment, and colour rules intact.
       </p>
     </div>
-    <div class="space-y-4 rounded-3xl border border-slate-200 bg-white/80 p-6 shadow-sm backdrop-blur">
+    <div class="card-surface space-y-4 rounded-3xl border p-6 backdrop-blur">
       <pre class="overflow-x-auto rounded-2xl bg-slate-900 p-4 text-sm text-slate-100"><code>&lt;section class=&quot;py-16&quot;&gt;
   &lt;div class=&quot;mx-auto max-w-6xl px-6&quot;&gt;
     &lt;div class=&quot;grid gap-10 lg:grid-cols-[minmax(0,0.45fr)_minmax(0,1fr)]&quot;&gt;
@@ -410,9 +412,9 @@ permalink: /style-guide/
     &lt;/div&gt;
   &lt;/div&gt;
 &lt;/section&gt;</code></pre>
-      <pre class="overflow-x-auto rounded-2xl bg-slate-900 p-4 text-sm text-slate-100"><code>&lt;article class=&quot;group rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl&quot;&gt;
-  &lt;h3 class=&quot;text-xl font-semibold text-slate-900 group-hover:text-brand&quot;&gt;Card title&lt;/h3&gt;
-  &lt;p class=&quot;mt-3 text-base text-slate-600&quot;&gt;Body copy for a supporting card.&lt;/p&gt;
+      <pre class="overflow-x-auto rounded-2xl bg-slate-900 p-4 text-sm text-slate-100"><code>&lt;article class=&quot;card-surface group rounded-3xl border p-6 transition hover:-translate-y-1&quot;&gt;
+  &lt;h3 class=&quot;text-xl font-semibold text-on-card group-hover:text-brand&quot;&gt;Card title&lt;/h3&gt;
+  &lt;p class=&quot;mt-3 text-base text-on-card-muted&quot;&gt;Body copy for a supporting card.&lt;/p&gt;
   &lt;span class=&quot;mt-4 inline-flex items-center text-sm font-semibold text-brand&quot;&gt;Call to action →&lt;/span&gt;
 &lt;/article&gt;</code></pre>
     </div>
