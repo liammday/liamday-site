@@ -8,12 +8,13 @@
   }
 
   a {
-    @apply text-brand-dark transition-colors duration-150 ease-in-out;
+    color: var(--dynamic-accent-strong);
+    transition: color 150ms ease-in-out;
   }
 
   a:hover,
   a:focus {
-    @apply text-brand;
+    color: var(--dynamic-accent);
   }
 }
 
