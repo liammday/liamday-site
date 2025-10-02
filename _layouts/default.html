@@ -135,46 +135,158 @@
       const lighten = (color, factor = 0.5) => mixWith(color, WHITE, factor);
       const darken = (color, factor = 0.5) => mixWith(color, BLACK, factor);
       const rgbaToString = ({ r, g, b }, alpha = 1) => `rgba(${r}, ${g}, ${b}, ${alpha})`;
+      const rgbValuesToString = ({ r, g, b }) => `${r}, ${g}, ${b}`;
+
+      const rgbToHsl = ({ r, g, b }) => {
+        const rNorm = r / 255;
+        const gNorm = g / 255;
+        const bNorm = b / 255;
+        const max = Math.max(rNorm, gNorm, bNorm);
+        const min = Math.min(rNorm, gNorm, bNorm);
+        const delta = max - min;
+        let h = 0;
+        let s = 0;
+        const l = (max + min) / 2;
+
+        if (delta !== 0) {
+          s = l > 0.5 ? delta / (2 - max - min) : delta / (max + min);
+
+          switch (max) {
+            case rNorm:
+              h = (gNorm - bNorm) / delta + (gNorm < bNorm ? 6 : 0);
+              break;
+            case gNorm:
+              h = (bNorm - rNorm) / delta + 2;
+              break;
+            default:
+              h = (rNorm - gNorm) / delta + 4;
+              break;
+          }
+
+          h /= 6;
+        }
+
+        return { h, s, l };
+      };
+
+      const hslToRgb = ({ h, s, l }) => {
+        const hueToRgb = (p, q, t) => {
+          let tempT = t;
+          if (tempT < 0) tempT += 1;
+          if (tempT > 1) tempT -= 1;
+          if (tempT < 1 / 6) return p + (q - p) * 6 * tempT;
+          if (tempT < 1 / 2) return q;
+          if (tempT < 2 / 3) return p + (q - p) * (2 / 3 - tempT) * 6;
+          return p;
+        };
+
+        if (s === 0) {
+          const gray = Math.round(l * 255);
+          return { r: gray, g: gray, b: gray };
+        }
+
+        const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+        const p = 2 * l - q;
+
+        const r = Math.round(hueToRgb(p, q, h + 1 / 3) * 255);
+        const g = Math.round(hueToRgb(p, q, h) * 255);
+        const b = Math.round(hueToRgb(p, q, h - 1 / 3) * 255);
+
+        return { r, g, b };
+      };
+
+      const createAccentPalette = (color, isDarkBackground) => {
+        const { h, s, l } = rgbToHsl(color);
+        const boostedSaturation = clamp01(s * 1.35 + 0.08);
+        const baseLightness = isDarkBackground
+          ? Math.min(0.72, Math.max(l + 0.18, 0.55))
+          : Math.max(0.3, Math.min(l - 0.2, 0.44));
+
+        const base = hslToRgb({ h, s: boostedSaturation, l: baseLightness });
+        const hover = hslToRgb({
+          h,
+          s: clamp01(boostedSaturation * (isDarkBackground ? 1.05 : 0.95)),
+          l: isDarkBackground ? Math.min(0.82, baseLightness + 0.08) : Math.max(0.22, baseLightness - 0.08)
+        });
+        const strong = hslToRgb({
+          h,
+          s: clamp01(boostedSaturation * (isDarkBackground ? 1.02 : 1.1)),
+          l: isDarkBackground ? Math.min(0.65, baseLightness + 0.02) : Math.max(0.18, baseLightness - 0.12)
+        });
+        const muted = hslToRgb({
+          h,
+          s: clamp01(boostedSaturation * 0.6),
+          l: isDarkBackground ? Math.min(0.9, baseLightness + 0.18) : Math.max(0.16, baseLightness - 0.18)
+        });
+
+        const contrast = getRelativeLuminance(base) > 0.55 ? '#0f172a' : '#f8fafc';
+
+        return { base, hover, strong, muted, contrast };
+      };
 
       const applyDynamicPalette = (topColor, bottomColor) => {
         const midpoint = mixRgb(topColor, bottomColor, 0.5);
         const luminance = getRelativeLuminance(midpoint);
-        const isDarkBackground = luminance < 0.55;
+        const isDarkBackground = luminance < 0.48;
 
-        const glassBackgroundTint = isDarkBackground ? lighten(midpoint, 0.92) : darken(midpoint, 0.82);
-        const glassBorderTint = isDarkBackground ? lighten(midpoint, 0.78) : darken(midpoint, 0.72);
-        const glassTextTint = isDarkBackground ? darken(midpoint, 0.88) : lighten(midpoint, 0.94);
-        const glassTextMutedTint = isDarkBackground ? darken(midpoint, 0.72) : lighten(midpoint, 0.8);
-        const controlSurfaceTint = isDarkBackground ? lighten(midpoint, 0.88) : darken(midpoint, 0.78);
-        const controlSurfaceHoverTint = isDarkBackground ? lighten(midpoint, 0.94) : darken(midpoint, 0.84);
-        const controlTextTint = isDarkBackground ? darken(midpoint, 0.9) : lighten(midpoint, 0.96);
+        const glassBackgroundTint = isDarkBackground ? darken(midpoint, 0.72) : lighten(midpoint, 0.82);
+        const glassBorderTint = isDarkBackground ? darken(midpoint, 0.62) : lighten(midpoint, 0.7);
+        const glassTextTint = isDarkBackground ? lighten(midpoint, 0.96) : darken(midpoint, 0.92);
+        const glassTextMutedTint = isDarkBackground ? lighten(midpoint, 0.88) : darken(midpoint, 0.8);
+        const controlSurfaceTint = isDarkBackground ? darken(midpoint, 0.64) : lighten(midpoint, 0.78);
+        const controlSurfaceHoverTint = isDarkBackground ? darken(midpoint, 0.58) : lighten(midpoint, 0.86);
+        const controlTextTint = isDarkBackground ? lighten(midpoint, 0.98) : darken(midpoint, 0.94);
+        const textPrimaryTint = isDarkBackground ? lighten(midpoint, 0.98) : darken(midpoint, 0.92);
+        const textMutedTint = isDarkBackground ? lighten(midpoint, 0.9) : darken(midpoint, 0.82);
 
-        const palette = isDarkBackground
-          ? {
-              '--dynamic-text-on-background': '#f8fafc',
-              '--dynamic-text-muted': 'rgba(248, 250, 252, 0.72)',
-              '--dynamic-glass-background': rgbaToString(glassBackgroundTint, 0.76),
-              '--dynamic-glass-border': rgbaToString(glassBorderTint, 0.45),
-              '--dynamic-glass-text': rgbToString(glassTextTint),
-              '--dynamic-glass-text-muted': rgbaToString(glassTextMutedTint, 0.78),
-              '--dynamic-control-surface': rgbaToString(controlSurfaceTint, 0.2),
-              '--dynamic-control-surface-hover': rgbaToString(controlSurfaceHoverTint, 0.32),
-              '--dynamic-control-text': rgbToString(controlTextTint)
-            }
-          : {
-              '--dynamic-text-on-background': '#0f172a',
-              '--dynamic-text-muted': 'rgba(15, 23, 42, 0.68)',
-              '--dynamic-glass-background': rgbaToString(glassBackgroundTint, 0.6),
-              '--dynamic-glass-border': rgbaToString(glassBorderTint, 0.38),
-              '--dynamic-glass-text': rgbToString(glassTextTint),
-              '--dynamic-glass-text-muted': rgbaToString(glassTextMutedTint, 0.74),
-              '--dynamic-control-surface': rgbaToString(controlSurfaceTint, 0.18),
-              '--dynamic-control-surface-hover': rgbaToString(controlSurfaceHoverTint, 0.28),
-              '--dynamic-control-text': rgbToString(controlTextTint)
-            };
+        const glassBackgroundAlpha = isDarkBackground ? 0.78 : 0.62;
+        const controlSurfaceAlpha = isDarkBackground ? 0.42 : 0.26;
+        const controlSurfaceHoverAlpha = isDarkBackground ? 0.48 : 0.34;
+
+        const navPanelTint = isDarkBackground ? darken(midpoint, 0.68) : lighten(midpoint, 0.86);
+        const navPanelAlpha = isDarkBackground ? 0.88 : 0.72;
+        const navBorderTint = isDarkBackground ? darken(midpoint, 0.58) : lighten(midpoint, 0.7);
+        const navDividerTint = isDarkBackground ? lighten(midpoint, 0.78) : darken(midpoint, 0.62);
+        const navOverlayTint = isDarkBackground ? darken(midpoint, 0.94) : darken(midpoint, 0.7);
+        const navOverlayAlpha = isDarkBackground ? 0.68 : 0.5;
+        const shadowTint = darken(midpoint, isDarkBackground ? 0.9 : 0.75);
+
+        const palette = {
+          '--dynamic-text-on-background': rgbToString(textPrimaryTint),
+          '--dynamic-text-muted': rgbaToString(textMutedTint, isDarkBackground ? 0.82 : 0.78),
+          '--dynamic-glass-background': rgbaToString(glassBackgroundTint, glassBackgroundAlpha),
+          '--dynamic-glass-border': rgbaToString(glassBorderTint, isDarkBackground ? 0.5 : 0.42),
+          '--dynamic-glass-text': rgbToString(glassTextTint),
+          '--dynamic-glass-text-muted': rgbaToString(glassTextMutedTint, isDarkBackground ? 0.8 : 0.76),
+          '--dynamic-control-surface': rgbaToString(controlSurfaceTint, controlSurfaceAlpha),
+          '--dynamic-control-surface-hover': rgbaToString(controlSurfaceHoverTint, controlSurfaceHoverAlpha),
+          '--dynamic-control-text': rgbToString(controlTextTint),
+          '--dynamic-nav-panel-background': rgbaToString(navPanelTint, navPanelAlpha),
+          '--dynamic-nav-panel-border': rgbaToString(navBorderTint, isDarkBackground ? 0.55 : 0.4),
+          '--dynamic-nav-divider-rgb': rgbValuesToString(navDividerTint),
+          '--dynamic-nav-overlay': rgbaToString(navOverlayTint, navOverlayAlpha),
+          '--dynamic-shadow-rgb': rgbValuesToString(shadowTint)
+        };
 
         const rootElement = document.documentElement;
         Object.entries(palette).forEach(([variable, value]) => {
+          rootElement.style.setProperty(variable, value);
+        });
+
+        const { base, hover, strong, muted, contrast } = createAccentPalette(midpoint, isDarkBackground);
+        const accentVariables = {
+          '--dynamic-accent': rgbToString(base),
+          '--dynamic-accent-rgb': rgbValuesToString(base),
+          '--dynamic-accent-hover': rgbToString(hover),
+          '--dynamic-accent-hover-rgb': rgbValuesToString(hover),
+          '--dynamic-accent-strong': rgbToString(strong),
+          '--dynamic-accent-strong-rgb': rgbValuesToString(strong),
+          '--dynamic-accent-muted': rgbToString(muted),
+          '--dynamic-accent-muted-rgb': rgbValuesToString(muted),
+          '--dynamic-accent-contrast': contrast
+        };
+
+        Object.entries(accentVariables).forEach(([variable, value]) => {
           rootElement.style.setProperty(variable, value);
         });
       };
