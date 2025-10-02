@@ -5,30 +5,20 @@ time_ranges:
   - label: "Night watch"
     start_hour: 0
     end_hour: 5
-    gradient:
-      top: "#020617"
-      bottom: "#0b1120"
+    color: "#070c1c"
   - label: "First light"
     start_hour: 5
     end_hour: 8
-    gradient:
-      top: "#0f172a"
-      bottom: "#1d4ed8"
+    color: "#163381"
   - label: "Daybreak blue"
     start_hour: 8
     end_hour: 17
-    gradient:
-      top: "#eff6ff"
-      bottom: "#60a5fa"
+    color: "#a8cefd"
   - label: "Golden hour"
     start_hour: 17
     end_hour: 20
-    gradient:
-      top: "#172554"
-      bottom: "#f97316"
+    color: "#884c35"
   - label: "Evening hush"
     start_hour: 20
     end_hour: 24
-    gradient:
-      top: "#030712"
-      bottom: "#0b1120"
+    color: "#070c19"

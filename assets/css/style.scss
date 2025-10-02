@@ -26,6 +26,11 @@
   --dynamic-glass-border: rgba(248, 250, 252, 0.45);
   --dynamic-glass-text: #0f172a;
   --dynamic-glass-text-muted: rgba(15, 23, 42, 0.72);
+  --dynamic-card-background: rgba(248, 250, 252, 0.95);
+  --dynamic-card-border: rgba(203, 213, 225, 0.62);
+  --dynamic-card-text: #0f172a;
+  --dynamic-card-text-muted: rgba(15, 23, 42, 0.72);
+  --dynamic-card-shadow-rgb: 15, 23, 42;
   --dynamic-control-surface: rgba(255, 255, 255, 0.14);
   --dynamic-control-surface-hover: rgba(255, 255, 255, 0.24);
   --dynamic-control-text: #f8fafc;
@@ -93,6 +98,34 @@ body {
   border-color: var(--dynamic-glass-border);
   color: var(--dynamic-glass-text);
   transition: background-color 0.6s ease, border-color 0.6s ease, color 0.6s ease, box-shadow 0.6s ease;
+}
+
+.card-surface {
+  background: var(--dynamic-card-background);
+  border-color: var(--dynamic-card-border);
+  color: var(--dynamic-card-text);
+  box-shadow: 0 20px 45px rgba(var(--dynamic-card-shadow-rgb, var(--dynamic-shadow-rgb, 15, 23, 42)), 0.14);
+  transition: background-color 0.6s ease, border-color 0.6s ease, color 0.6s ease, box-shadow 0.6s ease;
+}
+
+.card-surface:hover,
+.card-surface:focus-visible {
+  box-shadow: 0 28px 65px rgba(var(--dynamic-card-shadow-rgb, var(--dynamic-shadow-rgb, 15, 23, 42)), 0.2);
+}
+
+.text-on-card {
+  color: var(--dynamic-card-text);
+  transition: color 0.6s ease;
+}
+
+.text-on-card-muted {
+  color: var(--dynamic-card-text-muted);
+  transition: color 0.6s ease;
+}
+
+.border-dynamic {
+  border-color: rgba(var(--dynamic-nav-divider-rgb, 148, 163, 184), 0.28) !important;
+  transition: border-color 0.6s ease;
 }
 
 .glass-panel {
