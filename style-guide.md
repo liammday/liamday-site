@@ -133,10 +133,10 @@ permalink: /style-guide/
       </div>
       {% if background.time_ranges %}
       <div class="rounded-3xl border border-slate-200 bg-white/70 p-6 shadow-sm backdrop-blur">
-        <h3 class="text-base font-semibold text-slate-900">Time-aware sky gradients</h3>
+        <h3 class="text-base font-semibold text-slate-900">Time-aware sky colours</h3>
         <p class="mt-2 text-sm text-slate-600">
           These ranges animate automatically in the browser, ensuring cards and navigation pick light or dark treatments that
-          match the current sky.
+          match the current sky tone.
         </p>
         <div class="mt-5 grid gap-4 lg:grid-cols-2">
           {% for range in background.time_ranges %}
@@ -148,8 +148,7 @@ permalink: /style-guide/
           {% else %}
           {% assign end_display = '%02d' | format: end_hour %}
           {% endif %}
-          {% assign top_color = range.gradient.top | default: range.top | default: range.color | default: background.color %}
-          {% assign bottom_color = range.gradient.bottom | default: range.bottom | default: range.color | default: top_color %}
+          {% assign solid_color = range.color | default: range.top | default: background.color %}
           <div class="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white/80 p-4 shadow-sm backdrop-blur">
             <div class="flex flex-wrap items-center justify-between gap-3">
               <p class="text-sm font-semibold uppercase tracking-[0.25em] text-slate-500">{{ range.label }}</p>
@@ -157,7 +156,7 @@ permalink: /style-guide/
             </div>
             <div
               class="h-12 w-full rounded-xl border border-slate-200"
-              style="background: linear-gradient(135deg, {{ top_color }}, {{ bottom_color }});"
+              style="background: {{ solid_color }};"
             ></div>
           </div>
           {% endfor %}
@@ -174,14 +173,6 @@ permalink: /style-guide/
           <div>
             <dt class="font-semibold text-slate-900">--sky-background-rgb</dt>
             <dd>Pre-calculated RGB channel values for WebGL and canvas effects.</dd>
-          </div>
-          <div>
-            <dt class="font-semibold text-slate-900">--sky-gradient-top</dt>
-            <dd>Active gradient start colour mirrored from the current sky preset.</dd>
-          </div>
-          <div>
-            <dt class="font-semibold text-slate-900">--sky-gradient-bottom</dt>
-            <dd>Active gradient end colour that complements navigation and card treatments.</dd>
           </div>
           <div>
             <dt class="font-semibold text-slate-900">--dynamic-text-on-background</dt>

@@ -469,15 +469,10 @@
         const rootElement = document.documentElement;
         rootElement.style.setProperty('--sky-background-color', baseHex);
         rootElement.style.setProperty('--sky-background-rgb', rgbValuesToString(baseColor));
-        rootElement.style.setProperty('--sky-gradient-top', topHex);
-        rootElement.style.setProperty('--sky-gradient-bottom', bottomHex);
+        rootElement.style.removeProperty('--sky-gradient-top');
+        rootElement.style.removeProperty('--sky-gradient-bottom');
         rootElement.style.backgroundColor = baseHex;
-
-        if (topHex && bottomHex && topHex !== bottomHex) {
-          rootElement.style.backgroundImage = `linear-gradient(180deg, ${topHex}, ${bottomHex})`;
-        } else {
-          rootElement.style.backgroundImage = 'none';
-        }
+        rootElement.style.backgroundImage = 'none';
 
         if (activeBackground?.label) {
           rootElement.setAttribute('data-sky-label', activeBackground.label);
