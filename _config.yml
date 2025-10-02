@@ -53,6 +53,8 @@ nav_links:
     url: /#education
   - title: Contact
     url: /#connect
+  - title: Style Guide
+    url: /style-guide/
 
 social:
   email: liam@liamday.co.uk
