@@ -308,6 +308,25 @@
       const fallbackColor = hexToRgb(fallbackHexNormalized) || { r: 3, g: 7, b: 18 };
       const BACKGROUND_UPDATE_INTERVAL = 5 * 60 * 1000;
 
+      let backgroundTransitionsReady = false;
+      const enableBackgroundTransitions = () => {
+        if (backgroundTransitionsReady) {
+          return;
+        }
+
+        const rootElement = document.documentElement;
+        if (!rootElement) {
+          return;
+        }
+
+        backgroundTransitionsReady = true;
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            rootElement.classList.add('sky-background-transition-ready');
+          });
+        });
+      };
+
       const rgbToHsl = (color) => {
         if (!color) {
           return { h: 0, s: 0, l: 0 };
@@ -515,6 +534,7 @@
         }
 
         applyDynamicPalette(topColor, bottomColor);
+        enableBackgroundTransitions();
       };
 
       applyBackground();
