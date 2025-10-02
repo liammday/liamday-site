@@ -158,8 +158,7 @@
     });
 
     const defaults = {
-      top: [0.043, 0.098, 0.212],
-      bottom: [0.012, 0.027, 0.071],
+      base: [0.012, 0.027, 0.071],
     };
 
     const uniforms = {
@@ -168,8 +167,8 @@
       u_pointer: [0.5, 0.5],
       u_noiseScale: 3.25,
       u_opacity: 0.52,
-      u_topColor: defaults.top.slice(),
-      u_bottomColor: defaults.bottom.slice(),
+      u_topColor: defaults.base.slice(),
+      u_bottomColor: defaults.base.slice(),
     };
 
     const pointerState = { x: 0.5, y: 0.5 };
@@ -220,19 +219,17 @@
 
     const updateColors = () => {
       const rootStyle = getComputedStyle(document.documentElement);
-      const topValue = rootStyle.getPropertyValue('--sky-gradient-top-rgb');
-      const bottomValue = rootStyle.getPropertyValue('--sky-gradient-bottom-rgb');
+      const backgroundValue = rootStyle.getPropertyValue('--sky-background-rgb');
 
-      const parsedTop = parseColorVariable(topValue, defaults.top);
-      const parsedBottom = parseColorVariable(bottomValue, defaults.bottom);
+      const parsedBackground = parseColorVariable(backgroundValue, defaults.base);
 
-      uniforms.u_topColor[0] = parsedTop[0];
-      uniforms.u_topColor[1] = parsedTop[1];
-      uniforms.u_topColor[2] = parsedTop[2];
+      uniforms.u_topColor[0] = parsedBackground[0];
+      uniforms.u_topColor[1] = parsedBackground[1];
+      uniforms.u_topColor[2] = parsedBackground[2];
 
-      uniforms.u_bottomColor[0] = parsedBottom[0];
-      uniforms.u_bottomColor[1] = parsedBottom[1];
-      uniforms.u_bottomColor[2] = parsedBottom[2];
+      uniforms.u_bottomColor[0] = parsedBackground[0];
+      uniforms.u_bottomColor[1] = parsedBackground[1];
+      uniforms.u_bottomColor[2] = parsedBackground[2];
     };
 
     const render = (time) => {

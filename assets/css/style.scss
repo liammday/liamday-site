@@ -18,10 +18,8 @@
 }
 
 :root {
-  --sky-gradient: linear-gradient(180deg, #0b1936 0%, #030712 100%);
   --sky-background-color: #030712;
-  --sky-gradient-top-rgb: 11, 25, 54;
-  --sky-gradient-bottom-rgb: 3, 7, 18;
+  --sky-background-rgb: 3, 7, 18;
   --dynamic-text-on-background: #0f172a;
   --dynamic-text-muted: rgba(15, 23, 42, 0.72);
   --dynamic-glass-background: rgba(248, 250, 252, 0.78);
@@ -58,12 +56,7 @@ html.has-mobile-nav {
 html {
   min-height: 100%;
   background-color: var(--sky-background-color, #030712);
-  background-image: var(--sky-gradient);
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  background-size: 100% calc(100% + 40vh);
-  background-position: center calc(-20vh);
-  transition: background-image 1s ease;
+  transition: background-color 0.6s ease;
 }
 
 body {
@@ -71,20 +64,6 @@ body {
   background: transparent;
   color: var(--dynamic-text-on-background);
   transition: color 0.6s ease;
-}
-
-body::before {
-  content: '';
-  position: fixed;
-  inset: -30vh 0 -20vh;
-  background-image: var(--sky-gradient);
-  background-repeat: no-repeat;
-  background-size: 100% calc(100% + 50vh);
-  background-position: center top;
-  pointer-events: none;
-  z-index: -2;
-  transform: translateZ(0);
-  transition: background-image 1s ease;
 }
 
 .text-dynamic {

@@ -70,21 +70,25 @@
     <script src="{{ '/assets/js/liquid-glass-gsap.js' | relative_url }}"></script>
     <script src="{{ '/assets/js/liquid-glass-nav.js' | relative_url }}"></script>
     <script>
-      const gradientStops = [
-        { time: 0, top: '#020024', bottom: '#090979' },
-        { time: 3.5, top: '#040b29', bottom: '#1d2951' },
-        { time: 6, top: '#ff8a65', bottom: '#ffd194' },
-        { time: 9, top: '#87ceeb', bottom: '#f5f7fa' },
-        { time: 12, top: '#56ccf2', bottom: '#2f80ed' },
-        { time: 16.5, top: '#f2994a', bottom: '#f2c94c' },
-        { time: 19, top: '#6a11cb', bottom: '#2575fc' },
-        { time: 21.5, top: '#1b2735', bottom: '#090a27' },
-        { time: 24, top: '#020024', bottom: '#090979' }
-      ];
+      const baseBackgroundHex = '{{ site.data.background.color | default: "#030712" }}';
 
       const hexToRgb = (hex) => {
-        const parsed = hex.replace('#', '');
-        const bigint = parseInt(parsed, 16);
+        if (typeof hex !== 'string') {
+          return null;
+        }
+
+        const trimmed = hex.trim().replace('#', '');
+        if (![3, 6].includes(trimmed.length)) {
+          return null;
+        }
+
+        const normalized = trimmed.length === 3 ? trimmed.split('').map((char) => char + char).join('') : trimmed;
+        const bigint = Number.parseInt(normalized, 16);
+
+        if (Number.isNaN(bigint)) {
+          return null;
+        }
+
         return {
           r: (bigint >> 16) & 255,
           g: (bigint >> 8) & 255,
@@ -92,23 +96,26 @@
         };
       };
 
-      const interpolateChannel = (start, end, factor) => Math.round(start + (end - start) * factor);
-
-      const interpolateColor = (start, end, factor) => {
-        const startRgb = hexToRgb(start);
-        const endRgb = hexToRgb(end);
-        return {
-          r: interpolateChannel(startRgb.r, endRgb.r, factor),
-          g: interpolateChannel(startRgb.g, endRgb.g, factor),
-          b: interpolateChannel(startRgb.b, endRgb.b, factor)
-        };
+      const rgbToString = (color) => {
+        if (!color) {
+          return '';
+        }
+        return `rgb(${color.r}, ${color.g}, ${color.b})`;
       };
 
-      const rgbToString = ({ r, g, b }) => `rgb(${r}, ${g}, ${b})`;
-
-      const clamp01 = (value) => Math.min(Math.max(value, 0), 1);
+      const clamp01 = (value) => {
+        const numeric = Number(value);
+        if (Number.isNaN(numeric)) {
+          return 0;
+        }
+        return Math.min(Math.max(numeric, 0), 1);
+      };
 
       const mixRgb = (start, end, factor = 0.5) => {
+        if (!start || !end) {
+          return start || end || null;
+        }
+
         const mixFactor = clamp01(factor);
         return {
           r: Math.round(start.r + (end.r - start.r) * mixFactor),
@@ -128,12 +135,64 @@
         return Math.pow((channel + 0.055) / 1.055, 2.4);
       };
 
-      const getRelativeLuminance = ({ r, g, b }) =>
-        0.2126 * srgbChannelToLinear(r) + 0.7152 * srgbChannelToLinear(g) + 0.0722 * srgbChannelToLinear(b);
+      const getRelativeLuminance = (color) => {
+        if (!color) {
+          return 0;
+        }
+        return 0.2126 * srgbChannelToLinear(color.r) + 0.7152 * srgbChannelToLinear(color.g) + 0.0722 * srgbChannelToLinear(color.b);
+      };
 
       const mixWith = (color, target, factor) => mixRgb(color, target, factor);
       const lighten = (color, factor = 0.5) => mixWith(color, WHITE, factor);
       const darken = (color, factor = 0.5) => mixWith(color, BLACK, factor);
+
+      const rgbaToString = (color, alpha = 1) => {
+        if (!color) {
+          return '';
+        }
+        return `rgba(${color.r}, ${color.g}, ${color.b}, ${alpha})`;
+      };
+
+      const applyDynamicPalette = (baseColor) => {
+        if (!baseColor) {
+          return;
+        }
+
+        const luminance = getRelativeLuminance(baseColor);
+        const isDarkBackground = luminance < 0.55;
+
+        const glassBackgroundTint = isDarkBackground ? lighten(baseColor, 0.92) : darken(baseColor, 0.82);
+        const glassBorderTint = isDarkBackground ? lighten(baseColor, 0.78) : darken(baseColor, 0.72);
+        const glassTextTint = isDarkBackground ? darken(baseColor, 0.88) : lighten(baseColor, 0.94);
+        const glassTextMutedTint = isDarkBackground ? darken(baseColor, 0.72) : lighten(baseColor, 0.8);
+        const controlSurfaceTint = isDarkBackground ? lighten(baseColor, 0.88) : darken(baseColor, 0.78);
+        const controlSurfaceHoverTint = isDarkBackground ? lighten(baseColor, 0.94) : darken(baseColor, 0.84);
+        const controlTextTint = isDarkBackground ? darken(baseColor, 0.9) : lighten(baseColor, 0.96);
+
+        const palette = isDarkBackground
+          ? {
+              '--dynamic-text-on-background': '#f8fafc',
+              '--dynamic-text-muted': 'rgba(248, 250, 252, 0.72)',
+              '--dynamic-glass-background': rgbaToString(glassBackgroundTint, 0.76),
+              '--dynamic-glass-border': rgbaToString(glassBorderTint, 0.45),
+              '--dynamic-glass-text': rgbToString(glassTextTint),
+              '--dynamic-glass-text-muted': rgbaToString(glassTextMutedTint, 0.78),
+              '--dynamic-control-surface': rgbaToString(controlSurfaceTint, 0.2),
+              '--dynamic-control-surface-hover': rgbaToString(controlSurfaceHoverTint, 0.32),
+              '--dynamic-control-text': rgbToString(controlTextTint)
+            }
+          : {
+              '--dynamic-text-on-background': '#0f172a',
+              '--dynamic-text-muted': 'rgba(15, 23, 42, 0.68)',
+              '--dynamic-glass-background': rgbaToString(glassBackgroundTint, 0.6),
+              '--dynamic-glass-border': rgbaToString(glassBorderTint, 0.38),
+              '--dynamic-glass-text': rgbToString(glassTextTint),
+              '--dynamic-glass-text-muted': rgbaToString(glassTextMutedTint, 0.74),
+              '--dynamic-control-surface': rgbaToString(controlSurfaceTint, 0.18),
+              '--dynamic-control-surface-hover': rgbaToString(controlSurfaceHoverTint, 0.28),
+              '--dynamic-control-text': rgbToString(controlTextTint)
+            };
+=======
       const rgbaToString = ({ r, g, b }, alpha = 1) => `rgba(${r}, ${g}, ${b}, ${alpha})`;
       const rgbValuesToString = ({ r, g, b }) => `${r}, ${g}, ${b}`;
 
@@ -270,7 +329,9 @@
 
         const rootElement = document.documentElement;
         Object.entries(palette).forEach(([variable, value]) => {
-          rootElement.style.setProperty(variable, value);
+          if (value) {
+            rootElement.style.setProperty(variable, value);
+          }
         });
 
         const { base, hover, strong, muted, contrast } = createAccentPalette(midpoint, isDarkBackground);
@@ -291,56 +352,28 @@
         });
       };
 
-      const getGradientForTime = (date) => {
-        const minutes = date.getHours() * 60 + date.getMinutes();
-        const currentTime = minutes / 60;
-        let previousStop = gradientStops[0];
-        let nextStop = gradientStops[gradientStops.length - 1];
-
-        for (let i = 0; i < gradientStops.length - 1; i += 1) {
-          const stop = gradientStops[i];
-          const upcoming = gradientStops[i + 1];
-          if (currentTime >= stop.time && currentTime < upcoming.time) {
-            previousStop = stop;
-            nextStop = upcoming;
-            break;
-          }
+      const applyBackground = () => {
+        const baseColor = hexToRgb(baseBackgroundHex);
+        if (!baseColor) {
+          return;
         }
 
-        const span = nextStop.time - previousStop.time || 1;
-        const factor = Math.min(Math.max((currentTime - previousStop.time) / span, 0), 1);
-        const top = interpolateColor(previousStop.top, nextStop.top, factor);
-        const bottom = interpolateColor(previousStop.bottom, nextStop.bottom, factor);
-        return {
-          top,
-          bottom
-        };
-      };
-
-      const applyGradient = () => {
-        const { top, bottom } = getGradientForTime(new Date());
-        const midpoint = mixRgb(top, bottom, 0.5);
-        const solidColor = rgbToString(midpoint);
-        const solidGradient = `linear-gradient(180deg, ${solidColor} 0%, ${solidColor} 100%)`;
         const rootElement = document.documentElement;
+        const rgbString = `${baseColor.r}, ${baseColor.g}, ${baseColor.b}`;
 
-        rootElement.style.setProperty('--sky-gradient', solidGradient);
-        document.body.style.setProperty('--sky-gradient', solidGradient);
-        rootElement.style.setProperty('--sky-gradient-top-rgb', `${top.r}, ${top.g}, ${top.b}`);
-        rootElement.style.setProperty('--sky-gradient-bottom-rgb', `${bottom.r}, ${bottom.g}, ${bottom.b}`);
-        rootElement.style.setProperty('--sky-background-color', solidColor);
-        rootElement.style.backgroundColor = solidColor;
+        rootElement.style.setProperty('--sky-background-color', baseBackgroundHex);
+        rootElement.style.setProperty('--sky-background-rgb', rgbString);
+        rootElement.style.backgroundColor = baseBackgroundHex;
 
         const themeColorMeta = document.querySelector('meta[name="theme-color"]');
         if (themeColorMeta) {
-          themeColorMeta.setAttribute('content', solidColor);
+          themeColorMeta.setAttribute('content', baseBackgroundHex);
         }
 
-        applyDynamicPalette(top, bottom);
+        applyDynamicPalette(baseColor);
       };
 
-      applyGradient();
-      setInterval(applyGradient, 60000);
+      applyBackground();
 
       const header = document.querySelector('[data-site-header]');
       const nav = document.querySelector('[data-nav]');
