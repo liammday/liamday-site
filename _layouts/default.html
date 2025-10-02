@@ -106,11 +106,19 @@
 
       const rgbToString = ({ r, g, b }) => `rgb(${r}, ${g}, ${b})`;
 
-      const mixRgb = (start, end, factor = 0.5) => ({
-        r: Math.round(start.r + (end.r - start.r) * factor),
-        g: Math.round(start.g + (end.g - start.g) * factor),
-        b: Math.round(start.b + (end.b - start.b) * factor)
-      });
+      const clamp01 = (value) => Math.min(Math.max(value, 0), 1);
+
+      const mixRgb = (start, end, factor = 0.5) => {
+        const mixFactor = clamp01(factor);
+        return {
+          r: Math.round(start.r + (end.r - start.r) * mixFactor),
+          g: Math.round(start.g + (end.g - start.g) * mixFactor),
+          b: Math.round(start.b + (end.b - start.b) * mixFactor)
+        };
+      };
+
+      const WHITE = { r: 255, g: 255, b: 255 };
+      const BLACK = { r: 0, g: 0, b: 0 };
 
       const srgbChannelToLinear = (value) => {
         const channel = value / 255;
@@ -123,33 +131,46 @@
       const getRelativeLuminance = ({ r, g, b }) =>
         0.2126 * srgbChannelToLinear(r) + 0.7152 * srgbChannelToLinear(g) + 0.0722 * srgbChannelToLinear(b);
 
+      const mixWith = (color, target, factor) => mixRgb(color, target, factor);
+      const lighten = (color, factor = 0.5) => mixWith(color, WHITE, factor);
+      const darken = (color, factor = 0.5) => mixWith(color, BLACK, factor);
+      const rgbaToString = ({ r, g, b }, alpha = 1) => `rgba(${r}, ${g}, ${b}, ${alpha})`;
+
       const applyDynamicPalette = (topColor, bottomColor) => {
         const midpoint = mixRgb(topColor, bottomColor, 0.5);
         const luminance = getRelativeLuminance(midpoint);
         const isDarkBackground = luminance < 0.55;
 
+        const glassBackgroundTint = isDarkBackground ? lighten(midpoint, 0.92) : darken(midpoint, 0.82);
+        const glassBorderTint = isDarkBackground ? lighten(midpoint, 0.78) : darken(midpoint, 0.72);
+        const glassTextTint = isDarkBackground ? darken(midpoint, 0.88) : lighten(midpoint, 0.94);
+        const glassTextMutedTint = isDarkBackground ? darken(midpoint, 0.72) : lighten(midpoint, 0.8);
+        const controlSurfaceTint = isDarkBackground ? lighten(midpoint, 0.88) : darken(midpoint, 0.78);
+        const controlSurfaceHoverTint = isDarkBackground ? lighten(midpoint, 0.94) : darken(midpoint, 0.84);
+        const controlTextTint = isDarkBackground ? darken(midpoint, 0.9) : lighten(midpoint, 0.96);
+
         const palette = isDarkBackground
           ? {
               '--dynamic-text-on-background': '#f8fafc',
               '--dynamic-text-muted': 'rgba(248, 250, 252, 0.72)',
-              '--dynamic-glass-background': 'rgba(248, 250, 252, 0.78)',
-              '--dynamic-glass-border': 'rgba(248, 250, 252, 0.45)',
-              '--dynamic-glass-text': '#0f172a',
-              '--dynamic-glass-text-muted': 'rgba(15, 23, 42, 0.72)',
-              '--dynamic-control-surface': 'rgba(248, 250, 252, 0.18)',
-              '--dynamic-control-surface-hover': 'rgba(248, 250, 252, 0.28)',
-              '--dynamic-control-text': '#0f172a'
+              '--dynamic-glass-background': rgbaToString(glassBackgroundTint, 0.76),
+              '--dynamic-glass-border': rgbaToString(glassBorderTint, 0.45),
+              '--dynamic-glass-text': rgbToString(glassTextTint),
+              '--dynamic-glass-text-muted': rgbaToString(glassTextMutedTint, 0.78),
+              '--dynamic-control-surface': rgbaToString(controlSurfaceTint, 0.2),
+              '--dynamic-control-surface-hover': rgbaToString(controlSurfaceHoverTint, 0.32),
+              '--dynamic-control-text': rgbToString(controlTextTint)
             }
           : {
               '--dynamic-text-on-background': '#0f172a',
               '--dynamic-text-muted': 'rgba(15, 23, 42, 0.68)',
-              '--dynamic-glass-background': 'rgba(15, 23, 42, 0.58)',
-              '--dynamic-glass-border': 'rgba(15, 23, 42, 0.35)',
-              '--dynamic-glass-text': '#f8fafc',
-              '--dynamic-glass-text-muted': 'rgba(248, 250, 252, 0.78)',
-              '--dynamic-control-surface': 'rgba(15, 23, 42, 0.16)',
-              '--dynamic-control-surface-hover': 'rgba(15, 23, 42, 0.26)',
-              '--dynamic-control-text': '#f8fafc'
+              '--dynamic-glass-background': rgbaToString(glassBackgroundTint, 0.6),
+              '--dynamic-glass-border': rgbaToString(glassBorderTint, 0.38),
+              '--dynamic-glass-text': rgbToString(glassTextTint),
+              '--dynamic-glass-text-muted': rgbaToString(glassTextMutedTint, 0.74),
+              '--dynamic-control-surface': rgbaToString(controlSurfaceTint, 0.18),
+              '--dynamic-control-surface-hover': rgbaToString(controlSurfaceHoverTint, 0.28),
+              '--dynamic-control-text': rgbToString(controlTextTint)
             };
 
         const rootElement = document.documentElement;
@@ -179,21 +200,30 @@
         const top = interpolateColor(previousStop.top, nextStop.top, factor);
         const bottom = interpolateColor(previousStop.bottom, nextStop.bottom, factor);
         return {
-          gradient: `linear-gradient(180deg, ${rgbToString(top)} 0%, ${rgbToString(bottom)} 100%)`,
           top,
           bottom
         };
       };
 
       const applyGradient = () => {
-        const { gradient, top, bottom } = getGradientForTime(new Date());
-        document.documentElement.style.setProperty('--sky-gradient', gradient);
-        document.body.style.setProperty('--sky-gradient', gradient);
-        document.documentElement.style.setProperty('--sky-gradient-top-rgb', `${top.r}, ${top.g}, ${top.b}`);
-        document.documentElement.style.setProperty(
-          '--sky-gradient-bottom-rgb',
-          `${bottom.r}, ${bottom.g}, ${bottom.b}`
-        );
+        const { top, bottom } = getGradientForTime(new Date());
+        const midpoint = mixRgb(top, bottom, 0.5);
+        const solidColor = rgbToString(midpoint);
+        const solidGradient = `linear-gradient(180deg, ${solidColor} 0%, ${solidColor} 100%)`;
+        const rootElement = document.documentElement;
+
+        rootElement.style.setProperty('--sky-gradient', solidGradient);
+        document.body.style.setProperty('--sky-gradient', solidGradient);
+        rootElement.style.setProperty('--sky-gradient-top-rgb', `${top.r}, ${top.g}, ${top.b}`);
+        rootElement.style.setProperty('--sky-gradient-bottom-rgb', `${bottom.r}, ${bottom.g}, ${bottom.b}`);
+        rootElement.style.setProperty('--sky-background-color', solidColor);
+        rootElement.style.backgroundColor = solidColor;
+
+        const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+        if (themeColorMeta) {
+          themeColorMeta.setAttribute('content', solidColor);
+        }
+
         applyDynamicPalette(top, bottom);
       };
 

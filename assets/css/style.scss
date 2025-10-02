@@ -19,6 +19,7 @@
 
 :root {
   --sky-gradient: linear-gradient(180deg, #0b1936 0%, #030712 100%);
+  --sky-background-color: #030712;
   --sky-gradient-top-rgb: 11, 25, 54;
   --sky-gradient-bottom-rgb: 3, 7, 18;
   --dynamic-text-on-background: #0f172a;
@@ -42,7 +43,7 @@ html.has-mobile-nav {
 
 html {
   min-height: 100%;
-  background-color: #030712;
+  background-color: var(--sky-background-color, #030712);
   background-image: var(--sky-gradient);
   background-attachment: fixed;
   background-repeat: no-repeat;
