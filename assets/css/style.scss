@@ -508,10 +508,9 @@ body {
 
 @media (min-width: 768px) {
   .site-nav {
-    position: relative;
-    top: auto;
-    right: auto;
-    align-self: center;
+    position: fixed;
+    top: var(--header-nav-top);
+    right: var(--header-edge);
   }
 
   .site-nav__list {
