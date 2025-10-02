@@ -228,28 +228,100 @@
         return { top, bottom, label };
       };
 
-      const mapTimeRanges = () => {
-        if (!backgroundData || !Array.isArray(backgroundData.time_ranges)) {
-          return [];
+      const parseTimeToMinutes = (value) => {
+        const TOTAL_MINUTES = 24 * 60;
+
+        if (typeof value === 'number' && Number.isFinite(value)) {
+          const clampedHours = Math.max(0, Math.min(24, value));
+          return Math.round(clampedHours * 60);
         }
 
-        return backgroundData.time_ranges
-          .map((range) => {
+        if (typeof value === 'string') {
+          const trimmed = value.trim();
+          if (!trimmed) {
+            return null;
+          }
+
+          const match = trimmed.match(/^(\d{1,2})(?::(\d{1,2}))?$/);
+          if (!match) {
+            return null;
+          }
+
+          const hours = Number.parseInt(match[1], 10);
+          const minutes = match[2] ? Number.parseInt(match[2], 10) : 0;
+
+          if (Number.isNaN(hours) || Number.isNaN(minutes)) {
+            return null;
+          }
+
+          if (hours === 24 && minutes === 0) {
+            return 0;
+          }
+
+          if (hours < 0 || hours > 23 || minutes < 0 || minutes > 59) {
+            return null;
+          }
+
+          return hours * 60 + minutes;
+        }
+
+        return null;
+      };
+
+      const mapTimeAnchors = () => {
+        const anchors = new Map();
+        const TOTAL_MINUTES = 24 * 60;
+
+        const registerAnchor = (minutes, entry) => {
+          if (!Number.isFinite(minutes)) {
+            return;
+          }
+
+          const normalizedMinutes = ((minutes % TOTAL_MINUTES) + TOTAL_MINUTES) % TOTAL_MINUTES;
+          const config = buildBackgroundConfig(entry, backgroundData?.label);
+          if (!config) {
+            return;
+          }
+
+          const topHex = normalizeHex(config.top);
+          const bottomHex = normalizeHex(config.bottom || config.top);
+
+          if (!topHex && !bottomHex) {
+            return;
+          }
+
+          anchors.set(normalizedMinutes, {
+            minutes: normalizedMinutes,
+            top: topHex || bottomHex,
+            bottom: bottomHex || topHex,
+            label: config.label
+          });
+        };
+
+        if (backgroundData && Array.isArray(backgroundData.time_points)) {
+          backgroundData.time_points.forEach((point) => {
+            if (!point || typeof point !== 'object') {
+              return;
+            }
+
+            const minutes =
+              parseTimeToMinutes(point.time) ??
+              parseTimeToMinutes(typeof point.hour === 'number' ? point.hour : null);
+
+            registerAnchor(minutes, point);
+          });
+        } else if (backgroundData && Array.isArray(backgroundData.time_ranges)) {
+          backgroundData.time_ranges.forEach((range) => {
             if (!range || typeof range !== 'object') {
-              return null;
+              return;
             }
 
-            const config = buildBackgroundConfig(range, backgroundData.label);
-            if (!config) {
-              return null;
-            }
+            const startMinutes = parseTimeToMinutes(range.start_hour);
+            registerAnchor(startMinutes, range);
+          });
+        }
 
-            const startHour = typeof range.start_hour === 'number' ? range.start_hour : null;
-            const endHour = typeof range.end_hour === 'number' ? range.end_hour : null;
-
-            return { ...config, startHour, endHour };
-          })
-          .filter(Boolean);
+        return Array.from(anchors.values()).sort((a, b) => a.minutes - b.minutes);
       };
 
       const getDefaultBackground = () => {
@@ -262,43 +334,81 @@
         return { top: FALLBACK_BACKGROUND_HEX, bottom: FALLBACK_BACKGROUND_HEX, label: backgroundData?.label || '' };
       };
 
-      const resolveActiveTimeRange = () => {
-        const ranges = mapTimeRanges();
-        if (!ranges.length) {
+      const resolveInterpolatedBackground = () => {
+        const anchors = mapTimeAnchors();
+        if (!anchors.length) {
           return null;
         }
 
+        if (anchors.length === 1) {
+          const single = anchors[0];
+          return {
+            top: single.top,
+            bottom: single.bottom,
+            label: single.label
+          };
+        }
+
+        const TOTAL_MINUTES = 24 * 60;
         const now = new Date();
-        const currentHour = now.getHours() + now.getMinutes() / 60 + now.getSeconds() / 3600;
+        const currentMinutes = now.getHours() * 60 + now.getMinutes() + now.getSeconds() / 60;
 
-        for (const range of ranges) {
-          if (typeof range.startHour !== 'number' || typeof range.endHour !== 'number') {
-            continue;
-          }
+        let previous = anchors[anchors.length - 1];
+        let next = anchors[0];
 
-          const start = Math.max(0, Math.min(24, range.startHour));
-          const rawEnd = Math.max(0, Math.min(24, range.endHour));
-          const end = rawEnd === 0 && range.endHour !== 0 ? 24 : rawEnd;
-
-          if (start <= end) {
-            if (currentHour >= start && currentHour < end) {
-              return range;
-            }
+        for (const anchor of anchors) {
+          if (currentMinutes >= anchor.minutes) {
+            previous = anchor;
           } else {
-            if (currentHour >= start || currentHour < end) {
-              return range;
-            }
+            next = anchor;
+            break;
           }
         }
 
-        return ranges[0];
+        if (previous.minutes === next.minutes) {
+          return {
+            top: previous.top,
+            bottom: previous.bottom,
+            label: previous.label
+          };
+        }
+
+        let startMinutes = previous.minutes;
+        let endMinutes = next.minutes;
+
+        if (endMinutes <= startMinutes) {
+          endMinutes += TOTAL_MINUTES;
+        }
+
+        let elapsed = currentMinutes - startMinutes;
+        if (elapsed < 0) {
+          elapsed += TOTAL_MINUTES;
+        }
+
+        const duration = endMinutes - startMinutes;
+        const mixFactor = duration === 0 ? 0 : clamp01(elapsed / duration);
+
+        const startTop = hexToRgb(previous.top) || fallbackColor;
+        const endTop = hexToRgb(next.top) || startTop;
+        const startBottom = hexToRgb(previous.bottom) || startTop;
+        const endBottom = hexToRgb(next.bottom) || endTop;
+
+        const topColor = mixRgb(startTop, endTop, mixFactor) || startTop;
+        const bottomColor = mixRgb(startBottom, endBottom, mixFactor) || startBottom;
+
+        const label = mixFactor < 0.5 ? previous.label : next.label || previous.label;
+
+        return {
+          top: rgbToHex(topColor),
+          bottom: rgbToHex(bottomColor),
+          label
+        };
       };
 
       const getActiveBackground = () => {
-        const activeRange = resolveActiveTimeRange();
-        if (activeRange) {
-          const { startHour, endHour, ...config } = activeRange;
-          return config;
+        const interpolated = resolveInterpolatedBackground();
+        if (interpolated) {
+          return interpolated;
         }
 
         return getDefaultBackground();
@@ -306,7 +416,7 @@
 
       const fallbackHexNormalized = normalizeHex(FALLBACK_BACKGROUND_HEX) || '#030712';
       const fallbackColor = hexToRgb(fallbackHexNormalized) || { r: 3, g: 7, b: 18 };
-      const BACKGROUND_UPDATE_INTERVAL = 5 * 60 * 1000;
+      const BACKGROUND_UPDATE_INTERVAL = 60 * 1000;
 
       let backgroundTransitionsReady = false;
       const enableBackgroundTransitions = () => {
