@@ -150,53 +150,23 @@
         if (!color) {
           return '';
         }
-        return `rgba(${color.r}, ${color.g}, ${color.b}, ${alpha})`;
+        const { r, g, b } = color;
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
       };
 
-      const applyDynamicPalette = (baseColor) => {
-        if (!baseColor) {
-          return;
+      const rgbValuesToString = (color) => {
+        if (!color) {
+          return '0, 0, 0';
         }
+        const { r, g, b } = color;
+        return `${r}, ${g}, ${b}`;
+      };
 
-        const luminance = getRelativeLuminance(baseColor);
-        const isDarkBackground = luminance < 0.55;
-
-        const glassBackgroundTint = isDarkBackground ? lighten(baseColor, 0.92) : darken(baseColor, 0.82);
-        const glassBorderTint = isDarkBackground ? lighten(baseColor, 0.78) : darken(baseColor, 0.72);
-        const glassTextTint = isDarkBackground ? darken(baseColor, 0.88) : lighten(baseColor, 0.94);
-        const glassTextMutedTint = isDarkBackground ? darken(baseColor, 0.72) : lighten(baseColor, 0.8);
-        const controlSurfaceTint = isDarkBackground ? lighten(baseColor, 0.88) : darken(baseColor, 0.78);
-        const controlSurfaceHoverTint = isDarkBackground ? lighten(baseColor, 0.94) : darken(baseColor, 0.84);
-        const controlTextTint = isDarkBackground ? darken(baseColor, 0.9) : lighten(baseColor, 0.96);
-
-        const palette = isDarkBackground
-          ? {
-              '--dynamic-text-on-background': '#f8fafc',
-              '--dynamic-text-muted': 'rgba(248, 250, 252, 0.72)',
-              '--dynamic-glass-background': rgbaToString(glassBackgroundTint, 0.76),
-              '--dynamic-glass-border': rgbaToString(glassBorderTint, 0.45),
-              '--dynamic-glass-text': rgbToString(glassTextTint),
-              '--dynamic-glass-text-muted': rgbaToString(glassTextMutedTint, 0.78),
-              '--dynamic-control-surface': rgbaToString(controlSurfaceTint, 0.2),
-              '--dynamic-control-surface-hover': rgbaToString(controlSurfaceHoverTint, 0.32),
-              '--dynamic-control-text': rgbToString(controlTextTint)
-            }
-          : {
-              '--dynamic-text-on-background': '#0f172a',
-              '--dynamic-text-muted': 'rgba(15, 23, 42, 0.68)',
-              '--dynamic-glass-background': rgbaToString(glassBackgroundTint, 0.6),
-              '--dynamic-glass-border': rgbaToString(glassBorderTint, 0.38),
-              '--dynamic-glass-text': rgbToString(glassTextTint),
-              '--dynamic-glass-text-muted': rgbaToString(glassTextMutedTint, 0.74),
-              '--dynamic-control-surface': rgbaToString(controlSurfaceTint, 0.18),
-              '--dynamic-control-surface-hover': rgbaToString(controlSurfaceHoverTint, 0.28),
-              '--dynamic-control-text': rgbToString(controlTextTint)
-            };
-=======
-      const rgbaToString = ({ r, g, b }, alpha = 1) => `rgba(${r}, ${g}, ${b}, ${alpha})`;
-      const rgbValuesToString = ({ r, g, b }) => `${r}, ${g}, ${b}`;
-
-      const rgbToHsl = ({ r, g, b }) => {
+      const rgbToHsl = (color) => {
+        if (!color) {
+          return { h: 0, s: 0, l: 0 };
+        }
+        const { r, g, b } = color;
         const rNorm = r / 255;
         const gNorm = g / 255;
         const bNorm = b / 255;
@@ -283,8 +253,14 @@
         return { base, hover, strong, muted, contrast };
       };
 
-      const applyDynamicPalette = (topColor, bottomColor) => {
-        const midpoint = mixRgb(topColor, bottomColor, 0.5);
+      const applyDynamicPalette = (topColor, bottomColor = topColor) => {
+        if (!topColor && !bottomColor) {
+          return;
+        }
+
+        const primary = topColor || bottomColor;
+        const secondary = bottomColor || topColor;
+        const midpoint = mixRgb(primary, secondary, 0.5);
         const luminance = getRelativeLuminance(midpoint);
         const isDarkBackground = luminance < 0.48;
 
@@ -370,7 +346,7 @@
           themeColorMeta.setAttribute('content', baseBackgroundHex);
         }
 
-        applyDynamicPalette(baseColor);
+        applyDynamicPalette(baseColor, baseColor);
       };
 
       applyBackground();
