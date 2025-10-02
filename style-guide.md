@@ -80,8 +80,8 @@ permalink: /style-guide/
       <p class="text-dynamic-muted text-base leading-relaxed">
         The site’s sky backdrop is orchestrated from
         <code class="rounded bg-slate-900/10 px-1.5 py-0.5 text-sm text-slate-900">_data/background.yml</code>.
-        Each visitor receives a palette that shifts with their local time of day, while the fallback colour keeps feeds and
-        print exports consistent.
+        Anchor swatches are defined at precise times, then the client interpolates the background and glassmorphism palette
+        every minute so cards, typography, and UI chrome stay readable as the sky evolves.
       </p>
       <div class="grid gap-3">
         <div class="flex items-center gap-3">
@@ -133,32 +133,31 @@ permalink: /style-guide/
           </div>
         </dl>
       </div>
-      {% if background.time_ranges %}
+      {% assign time_points = background.time_points %}
+      {% if time_points %}
       <div class="card-surface rounded-3xl border p-6 backdrop-blur">
-        <h3 class="text-base font-semibold text-on-card">Time-aware sky colours</h3>
+        <h3 class="text-base font-semibold text-on-card">Time-aware sky anchors</h3>
         <p class="mt-2 text-sm text-on-card-muted">
-          These ranges animate automatically in the browser, ensuring cards and navigation pick light or dark treatments that
-          match the current sky tone.
+          Each anchor specifies the palette at a 24-hour timestamp. The runtime script blends between anchors once per minute,
+          keeping card surfaces and on-background type legible as daylight shifts.
         </p>
         <div class="mt-5 grid gap-4 lg:grid-cols-2">
-          {% for range in background.time_ranges %}
-          {% assign start_hour = range.start_hour | default: 0 %}
-          {% assign end_hour = range.end_hour | default: 0 %}
-          {% assign start_display = '%02d' | format: start_hour %}
-          {% if end_hour == 24 %}
-          {% assign end_display = '00' %}
+          {% for point in time_points %}
+          {% assign top_color = point.color | default: point.top | default: point.gradient.top | default: background.color %}
+          {% assign bottom_color = point.bottom | default: point.gradient.bottom | default: top_color %}
+          {% if bottom_color and bottom_color != top_color %}
+          {% capture swatch_style %}background: linear-gradient(135deg, {{ top_color }}, {{ bottom_color }});{% endcapture %}
           {% else %}
-          {% assign end_display = '%02d' | format: end_hour %}
+          {% capture swatch_style %}background: {{ top_color }};{% endcapture %}
           {% endif %}
-          {% assign solid_color = range.color | default: range.top | default: background.color %}
           <div class="card-surface rounded-2xl border p-4 backdrop-blur">
             <div class="flex flex-wrap items-center justify-between gap-3">
-              <p class="text-sm font-semibold uppercase tracking-[0.25em] text-on-card-muted">{{ range.label }}</p>
-              <p class="font-mono text-xs text-on-card-muted">{{ start_display }}:00 – {{ end_display }}:00</p>
+              <p class="text-sm font-semibold uppercase tracking-[0.25em] text-on-card-muted">{{ point.label }}</p>
+              <p class="font-mono text-xs text-on-card-muted">{{ point.time }}</p>
             </div>
             <div
               class="h-12 w-full rounded-xl border border-dynamic"
-              style="background: {{ solid_color }};"
+              style="{{ swatch_style }}"
             ></div>
           </div>
           {% endfor %}
