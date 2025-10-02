@@ -76,9 +76,10 @@ permalink: /style-guide/
     <div class="space-y-4">
       <h2 class="text-dynamic text-2xl font-semibold">Colour system</h2>
       <p class="text-dynamic-muted text-base leading-relaxed">
-        The site now anchors to a single atmospheric backdrop defined in
+        The site’s sky backdrop is orchestrated from
         <code class="rounded bg-slate-900/10 px-1.5 py-0.5 text-sm text-slate-900">_data/background.yml</code>.
-        Updating that file keeps the production background, this style guide, and dependent scripts fully in sync.
+        Each visitor receives a palette that shifts with their local time of day, while the fallback colour keeps feeds and
+        print exports consistent.
       </p>
       <div class="grid gap-3">
         <div class="flex items-center gap-3">
@@ -105,10 +106,7 @@ permalink: /style-guide/
       </div>
     </div>
     <div class="space-y-6">
-      <div
-        class="sg-background-card"
-        style="--sg-background-color: {{ background.color | default: '#030712' }};"
-      >
+      <div class="sg-background-card" style="--sg-background-color: {{ background.color | default: '#030712' }};">
         <div class="sg-background-card__meta">
           <h3 class="text-lg font-semibold text-slate-900">{{ background.label | default: 'Site background' }}</h3>
           <p class="text-sm text-slate-600">{{ background.description | default: 'Primary background colour applied across the site.' }}</p>
@@ -120,7 +118,7 @@ permalink: /style-guide/
             <dd><code>_data/background.yml</code></dd>
           </div>
           <div class="sg-token-list__item">
-            <dt>Hex value</dt>
+            <dt>Fallback hex</dt>
             <dd><code>{{ background.color | default: '#030712' }}</code></dd>
           </div>
           <div class="sg-token-list__item">
@@ -133,16 +131,57 @@ permalink: /style-guide/
           </div>
         </dl>
       </div>
+      {% if background.time_ranges %}
+      <div class="rounded-3xl border border-slate-200 bg-white/70 p-6 shadow-sm backdrop-blur">
+        <h3 class="text-base font-semibold text-slate-900">Time-aware sky gradients</h3>
+        <p class="mt-2 text-sm text-slate-600">
+          These ranges animate automatically in the browser, ensuring cards and navigation pick light or dark treatments that
+          match the current sky.
+        </p>
+        <div class="mt-5 grid gap-4 lg:grid-cols-2">
+          {% for range in background.time_ranges %}
+          {% assign start_hour = range.start_hour | default: 0 %}
+          {% assign end_hour = range.end_hour | default: 0 %}
+          {% assign start_display = '%02d' | format: start_hour %}
+          {% if end_hour == 24 %}
+          {% assign end_display = '00' %}
+          {% else %}
+          {% assign end_display = '%02d' | format: end_hour %}
+          {% endif %}
+          {% assign top_color = range.gradient.top | default: range.top | default: range.color | default: background.color %}
+          {% assign bottom_color = range.gradient.bottom | default: range.bottom | default: range.color | default: top_color %}
+          <div class="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white/80 p-4 shadow-sm backdrop-blur">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <p class="text-sm font-semibold uppercase tracking-[0.25em] text-slate-500">{{ range.label }}</p>
+              <p class="font-mono text-xs text-slate-500">{{ start_display }}:00 – {{ end_display }}:00</p>
+            </div>
+            <div
+              class="h-12 w-full rounded-xl border border-slate-200"
+              style="background: linear-gradient(135deg, {{ top_color }}, {{ bottom_color }});"
+            ></div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
       <div class="rounded-3xl border border-slate-200 bg-white/70 p-6 shadow-sm backdrop-blur">
         <h3 class="text-base font-semibold text-slate-900">Dynamic CSS variables</h3>
         <dl class="mt-4 grid gap-4 text-sm text-slate-600 sm:grid-cols-2">
           <div>
             <dt class="font-semibold text-slate-900">--sky-background-color</dt>
-            <dd>Static backdrop shared between the site and documentation. Update via <code class="font-mono text-xs text-slate-500">_data/background.yml</code>.</dd>
+            <dd>Current sky midpoint applied to the document root and theme colour meta tag.</dd>
           </div>
           <div>
             <dt class="font-semibold text-slate-900">--sky-background-rgb</dt>
             <dd>Pre-calculated RGB channel values for WebGL and canvas effects.</dd>
+          </div>
+          <div>
+            <dt class="font-semibold text-slate-900">--sky-gradient-top</dt>
+            <dd>Active gradient start colour mirrored from the current sky preset.</dd>
+          </div>
+          <div>
+            <dt class="font-semibold text-slate-900">--sky-gradient-bottom</dt>
+            <dd>Active gradient end colour that complements navigation and card treatments.</dd>
           </div>
           <div>
             <dt class="font-semibold text-slate-900">--dynamic-text-on-background</dt>
@@ -150,7 +189,7 @@ permalink: /style-guide/
           </div>
           <div>
             <dt class="font-semibold text-slate-900">--dynamic-glass-background</dt>
-            <dd>Controls glassmorphism surfaces, ensuring cards stay legible against the midnight base.</dd>
+            <dd>Controls glassmorphism surfaces, ensuring cards stay legible whether the sky is bright or midnight dark.</dd>
           </div>
           <div>
             <dt class="font-semibold text-slate-900">--dynamic-control-surface</dt>

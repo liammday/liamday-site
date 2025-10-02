@@ -1,3 +1,34 @@
 color: "#030712"
 label: "Midnight canvas"
 description: "Primary background colour applied across the site."
+time_ranges:
+  - label: "Night watch"
+    start_hour: 0
+    end_hour: 5
+    gradient:
+      top: "#020617"
+      bottom: "#0b1120"
+  - label: "First light"
+    start_hour: 5
+    end_hour: 8
+    gradient:
+      top: "#0f172a"
+      bottom: "#1d4ed8"
+  - label: "Daybreak blue"
+    start_hour: 8
+    end_hour: 17
+    gradient:
+      top: "#eff6ff"
+      bottom: "#60a5fa"
+  - label: "Golden hour"
+    start_hour: 17
+    end_hour: 20
+    gradient:
+      top: "#172554"
+      bottom: "#f97316"
+  - label: "Evening hush"
+    start_hour: 20
+    end_hour: 24
+    gradient:
+      top: "#030712"
+      bottom: "#0b1120"
