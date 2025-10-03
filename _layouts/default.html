@@ -76,7 +76,7 @@
         if (backgroundData && typeof backgroundData.color === 'string' && backgroundData.color.trim()) {
           return backgroundData.color;
         }
-        return '#030712';
+        return '#050712';
       })();
 
       const hexToRgb = (hex) => {
@@ -414,8 +414,8 @@
         return getDefaultBackground();
       };
 
-      const fallbackHexNormalized = normalizeHex(FALLBACK_BACKGROUND_HEX) || '#030712';
-      const fallbackColor = hexToRgb(fallbackHexNormalized) || { r: 3, g: 7, b: 18 };
+      const fallbackHexNormalized = normalizeHex(FALLBACK_BACKGROUND_HEX) || '#050712';
+      const fallbackColor = hexToRgb(fallbackHexNormalized) || { r: 5, g: 7, b: 18 };
       const BACKGROUND_UPDATE_INTERVAL = 60 * 1000;
 
       let backgroundTransitionsReady = false;
