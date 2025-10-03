@@ -256,48 +256,41 @@ permalink: /style-guide/
       {% if time_points %}
       <div class="card-surface rounded-3xl border p-6 backdrop-blur">
         <h3 class="text-base font-semibold text-on-card">Time-aware sky anchors</h3>
-        <p class="mt-2 text-sm text-on-card-muted">
-          Each anchor specifies the palette at a 24-hour timestamp. The runtime script blends between anchors once per minute
-          and flattens the result to a single sky colour, keeping card surfaces and on-background type legible as daylight
-          shifts. Swatches below show that final hex value rather than the gradient endpoints.
-        </p>
-        <div class="mt-5 grid gap-4 lg:grid-cols-2">
-          {% for point in time_points %}
-          {% assign top_color = point.color | default: point.top | default: point.gradient.top | default: background.color %}
-          {% assign bottom_color = point.bottom | default: point.gradient.bottom | default: top_color %}
-          <div
-            class="card-surface rounded-2xl border p-4 backdrop-blur"
-            data-sg-anchor
-            data-top="{{ top_color | default: background.color | default: '#050712' }}"
-            data-bottom="{{ bottom_color | default: top_color | default: background.color | default: '#050712' }}"
-            data-fallback="{{ background.color | default: '#050712' }}"
-          >
-            <div class="flex flex-wrap items-center justify-between gap-3">
-              <p class="text-sm font-semibold uppercase tracking-[0.25em] text-on-card-muted">{{ point.label }}</p>
-              <p class="font-mono text-xs text-on-card-muted">{{ point.time }}</p>
-            </div>
-            <div class="sg-anchor-swatches" aria-hidden="true">
-              <div class="flex items-center gap-3">
-                <div
-                  class="sg-anchor-swatch"
-                  data-sg-anchor-swatch
-                  style="--swatch-color: {{ top_color | default: '#050712' }};"
-                ></div>
-                <div class="sg-anchor-swatch__meta">
-                  <span class="sg-anchor-swatch__label">Base colour</span>
-                  <code data-sg-anchor-hex>{{ top_color | default: '#050712' }}</code>
+          <p class="mt-2 text-sm text-on-card-muted">
+            Each anchor specifies the palette at a 24-hour timestamp. The runtime script blends between anchors once per minute
+            and flattens the result to a single sky colour, keeping card surfaces and on-background type legible as daylight
+            shifts. Swatches below show the resolved colour applied across the interface.
+          </p>
+          <div class="mt-5 grid gap-4 lg:grid-cols-2">
+            {% for point in time_points %}
+            {% assign anchor_color = point.color | default: background.color | default: '#050712' %}
+            <div
+              class="card-surface rounded-2xl border p-4 backdrop-blur"
+              data-sg-anchor
+              data-color="{{ anchor_color }}"
+              data-fallback="{{ background.color | default: '#050712' }}"
+            >
+              <div class="flex flex-wrap items-center justify-between gap-3">
+                <p class="text-sm font-semibold uppercase tracking-[0.25em] text-on-card-muted">{{ point.label }}</p>
+                <p class="font-mono text-xs text-on-card-muted">{{ point.time }}</p>
+              </div>
+              <div class="sg-anchor-swatches" aria-hidden="true">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="sg-anchor-swatch"
+                    data-sg-anchor-swatch
+                    style="--swatch-color: {{ anchor_color | default: '#050712' }};"
+                  ></div>
+                  <div class="sg-anchor-swatch__meta">
+                    <span class="sg-anchor-swatch__label">Anchor colour</span>
+                    <code data-sg-anchor-hex>{{ anchor_color | default: '#050712' }}</code>
+                  </div>
                 </div>
               </div>
             </div>
-            {% if bottom_color and bottom_color != top_color %}
-            <p class="mt-3 text-xs text-on-card-muted">
-              Derived from anchor mix of <code>{{ top_color }}</code> → <code>{{ bottom_color }}</code>.
-            </p>
-            {% endif %}
+            {% endfor %}
           </div>
-          {% endfor %}
         </div>
-      </div>
       {% endif %}
       <div class="card-surface rounded-3xl border p-6 backdrop-blur">
         <h3 class="text-base font-semibold text-on-card">Dynamic CSS variables</h3>
@@ -568,23 +561,6 @@ permalink: /style-guide/
     const MINUTES_IN_DAY = 24 * 60;
     const FALLBACK_HEX = '#050712';
 
-    const clampChannel = (value) => {
-      const numeric = Number(value);
-      if (Number.isNaN(numeric)) {
-        return 0;
-      }
-      return Math.max(0, Math.min(255, Math.round(numeric)));
-    };
-
-    const componentToHex = (value) => clampChannel(value).toString(16).padStart(2, '0');
-
-    const rgbToHex = (color) => {
-      if (!color) {
-        return null;
-      }
-      return `#${componentToHex(color.r)}${componentToHex(color.g)}${componentToHex(color.b)}`;
-    };
-
     const normalizeHex = (value) => {
       if (typeof value !== 'string') {
         return null;
@@ -612,76 +588,20 @@ permalink: /style-guide/
       return `#${hex.toLowerCase()}`;
     };
 
-    const hexToRgb = (value) => {
-      const normalized = normalizeHex(value);
-      if (!normalized) {
-        return null;
-      }
-
-      const int = Number.parseInt(normalized.slice(1), 16);
-      if (Number.isNaN(int)) {
-        return null;
-      }
-
-      return {
-        r: (int >> 16) & 255,
-        g: (int >> 8) & 255,
-        b: int & 255
-      };
-    };
-
-    const clamp01 = (value) => {
-      const numeric = Number(value);
-      if (Number.isNaN(numeric)) {
-        return 0;
-      }
-      return Math.min(Math.max(numeric, 0), 1);
-    };
-
-    const mixRgb = (start, end, factor = 0.5) => {
-      if (!start && !end) {
-        return null;
-      }
-      if (!start) {
-        return end;
-      }
-      if (!end) {
-        return start;
-      }
-
-      const mixFactor = clamp01(factor);
-      return {
-        r: Math.round(start.r + (end.r - start.r) * mixFactor),
-        g: Math.round(start.g + (end.g - start.g) * mixFactor),
-        b: Math.round(start.b + (end.b - start.b) * mixFactor)
-      };
-    };
-
-    const FALLBACK_RGB = hexToRgb(FALLBACK_HEX);
-
-    const computeBaseHex = (top, bottom, fallback = FALLBACK_HEX) => {
-      const fallbackColor = hexToRgb(fallback) || FALLBACK_RGB;
-      const topColor = hexToRgb(top) || fallbackColor;
-      const bottomColor = hexToRgb(bottom) || topColor;
-      const baseColor = mixRgb(topColor, bottomColor, 0.5) || topColor || bottomColor || fallbackColor;
-      return rgbToHex(baseColor) || normalizeHex(fallback) || FALLBACK_HEX;
-    };
-
     const updateAnchorSwatches = () => {
       anchorCards.forEach((card) => {
-        const topHex = card.getAttribute('data-top');
-        const bottomHex = card.getAttribute('data-bottom');
-        const fallbackHex = card.getAttribute('data-fallback') || FALLBACK_HEX;
-        const baseHex = computeBaseHex(topHex, bottomHex, fallbackHex) || FALLBACK_HEX;
+        const colorHex = normalizeHex(card.getAttribute('data-color'));
+        const fallbackHex = normalizeHex(card.getAttribute('data-fallback')) || FALLBACK_HEX;
+        const resolvedHex = colorHex || fallbackHex || FALLBACK_HEX;
         const swatch = card.querySelector('[data-sg-anchor-swatch]');
         const hexLabel = card.querySelector('[data-sg-anchor-hex]');
 
-        if (swatch && baseHex) {
-          swatch.style.setProperty('--swatch-color', baseHex);
+        if (swatch && resolvedHex) {
+          swatch.style.setProperty('--swatch-color', resolvedHex);
         }
 
-        if (hexLabel && baseHex) {
-          hexLabel.textContent = baseHex;
+        if (hexLabel && resolvedHex) {
+          hexLabel.textContent = resolvedHex;
         }
       });
     };
