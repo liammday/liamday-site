@@ -5,7 +5,7 @@
   </head>
   <body class="flex min-h-screen flex-col font-sans">
     <a
-      class="sr-only focus:not-sr-only focus:absolute focus:left-6 focus:top-6 focus:rounded-full focus:bg-brand focus:px-4 focus:py-2 focus:text-white focus:shadow-lg"
+      class="sr-only focus:not-sr-only focus:absolute focus:left-6 focus:top-6 focus:rounded-full focus:bg-[var(--two-tone-foreground)] focus:px-4 focus:py-2 focus:text-[var(--two-tone-background)]"
       href="#main"
       >Skip to content</a
     >
@@ -41,34 +41,26 @@
       {{ content }}
     </main>
 
-    <footer class="border-t border-dynamic py-12">
+    <footer class="site-footer py-12">
       <div class="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 text-sm text-dynamic-muted sm:text-base lg:flex-row lg:items-start lg:justify-between">
         <div class="space-y-3">
           <p class="text-lg font-semibold text-dynamic">Let’s collaborate.</p>
-          <a class="inline-flex items-center gap-2 text-brand-dark hover:text-brand" href="mailto:{{ site.social.email }}">
+          <a class="inline-flex items-center gap-2" href="mailto:{{ site.social.email }}">
             <span>{{ site.social.email }}</span>
           </a>
         </div>
         <div class="flex flex-1 flex-col gap-4 sm:flex-row sm:items-end sm:justify-end">
           <ul class="flex flex-wrap gap-4 text-sm font-medium text-dynamic-muted" aria-label="Social links">
-            {% if site.social.linkedin %}<li><a class="hover:text-brand" href="{{ site.social.linkedin }}">LinkedIn</a></li>{% endif %}
-            {% if site.social.dribbble %}<li><a class="hover:text-brand" href="{{ site.social.dribbble }}">Dribbble</a></li>{% endif %}
-            {% if site.social.github %}<li><a class="hover:text-brand" href="{{ site.social.github }}">GitHub</a></li>{% endif %}
-            {% if site.social.medium %}<li><a class="hover:text-brand" href="{{ site.social.medium }}">Medium</a></li>{% endif %}
+            {% if site.social.linkedin %}<li><a href="{{ site.social.linkedin }}">LinkedIn</a></li>{% endif %}
+            {% if site.social.dribbble %}<li><a href="{{ site.social.dribbble }}">Dribbble</a></li>{% endif %}
+            {% if site.social.github %}<li><a href="{{ site.social.github }}">GitHub</a></li>{% endif %}
+            {% if site.social.medium %}<li><a href="{{ site.social.medium }}">Medium</a></li>{% endif %}
           </ul>
           <p class="text-xs text-dynamic-muted sm:text-right">© {{ "now" | date: "%Y" }} {{ site.title }} · Built with Jekyll.</p>
         </div>
       </div>
     </footer>
 
-    <script
-      src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"
-      integrity="sha384-hYHKH/s7frgVxH98p4J8C79yD6qxQFDoa+iMlO07mg51gUgJOMJ2K72I1H9EZGQw"
-      crossorigin="anonymous"
-    ></script>
-    <script src="https://cdn.jsdelivr.net/npm/twgl.js@5.5.4/dist/twgl-full.min.js"></script>
-    <script src="{{ '/assets/js/liquid-glass-gsap.js' | relative_url }}"></script>
-    <script src="{{ '/assets/js/liquid-glass-nav.js' | relative_url }}"></script>
     <script>
       const backgroundData = {{ site.data.background | jsonify | replace: '</', '<\/' }};
       const SKY_RUNTIME = (window.__skyRuntime = window.__skyRuntime || {});
@@ -178,24 +170,58 @@
       const lighten = (color, factor = 0.5) => mixWith(color, WHITE, factor);
       const darken = (color, factor = 0.5) => mixWith(color, BLACK, factor);
 
-      const getReadableTextOn = (background) => {
+      const getMostContrastingColor = (background) => {
         if (!background) {
           return WHITE;
         }
 
-        const luminance = getRelativeLuminance(background);
-        const preferDark = luminance >= 0.6;
-        const preferLight = luminance <= 0.3;
+        const baseCandidates = [WHITE, BLACK, BASE_LIGHT, BASE_DARK];
+        const backgroundHsl = rgbToHsl(background);
+        const complementaryHue = (backgroundHsl.h + 0.5) % 1;
+        const complement = hslToRgb({ h: complementaryHue, s: Math.max(0.4, backgroundHsl.s * 1.1), l: 0.5 });
 
-        if (preferDark) {
-          return mixWith(background, BASE_DARK, 0.9);
-        }
+        baseCandidates.push(
+          lighten(background, 0.95),
+          lighten(background, 0.75),
+          darken(background, 0.95),
+          darken(background, 0.75),
+          complement,
+          lighten(complement, 0.45),
+          darken(complement, 0.45)
+        );
 
-        if (preferLight) {
-          return mixWith(background, BASE_LIGHT, 0.9);
-        }
+        let best = baseCandidates[0] || WHITE;
+        let bestRatio = getContrastRatio(best, background);
+        const seen = new Set();
 
-        return luminance > 0.5 ? mixWith(background, BASE_DARK, 0.8) : mixWith(background, BASE_LIGHT, 0.8);
+        const pushCandidate = (candidate) => {
+          if (!candidate) {
+            return;
+          }
+          const key = `${candidate.r}-${candidate.g}-${candidate.b}`;
+          if (seen.has(key)) {
+            return;
+          }
+          seen.add(key);
+          const ratio = getContrastRatio(candidate, background);
+          if (ratio > bestRatio) {
+            best = candidate;
+            bestRatio = ratio;
+          }
+        };
+
+        baseCandidates.forEach(pushCandidate);
+
+        [0.35, 0.5, 0.65, 0.8].forEach((factor) => {
+          pushCandidate(lighten(background, factor));
+          pushCandidate(darken(background, factor));
+        });
+
+        return best;
+      };
+
+      const getReadableTextOn = (background) => {
+        return getMostContrastingColor(background);
       };
 
       const rgbaToString = (color, alpha = 1) => {
@@ -522,140 +548,36 @@
         return { r, g, b };
       };
 
-      const createAccentPalette = (background) => {
-        if (!background) {
-          return { base: BASE_LIGHT, hover: BASE_LIGHT, strong: BASE_DARK, muted: BASE_LIGHT, contrast: '#0f172a' };
+      const applyDynamicPalette = (baseColor) => {
+        if (!baseColor) {
+          return;
         }
 
-        const { h, s } = rgbToHsl(background);
-        const backgroundLuminance = getRelativeLuminance(background);
-        const complementaryHue = (h + 0.5) % 1;
-        const saturationBoost = s < 0.25 ? 0.65 : clamp01(s * 1.05 + 0.1);
-        const lightnessTarget = backgroundLuminance < 0.45 ? 0.6 : 0.34;
-        const targetContrast = backgroundLuminance < 0.35 || backgroundLuminance > 0.7 ? 5.2 : 4.6;
+        const foreground = getMostContrastingColor(baseColor);
+        const muted = mixRgb(foreground, baseColor, 0.35);
+        const baseHex = rgbToHex(baseColor);
+        const rootElement = document.documentElement;
 
-        const improveContrast = (candidate, ratioTarget = targetContrast) => {
-          if (!candidate) {
-            return candidate;
-          }
+        if (!rootElement) {
+          return;
+        }
 
-          let adjusted = candidate;
-          let ratio = getContrastRatio(adjusted, background);
-          let iteration = 0;
-
-          while (ratio < ratioTarget && iteration < 6) {
-            const luminanceCandidate = getRelativeLuminance(adjusted);
-            const preferLighter = luminanceCandidate <= backgroundLuminance;
-            const factor = clamp01(0.35 + iteration * 0.12);
-            adjusted = preferLighter ? lighten(adjusted, factor) : darken(adjusted, factor);
-            ratio = getContrastRatio(adjusted, background);
-            iteration += 1;
-          }
-
-          return adjusted;
+        const palette = {
+          '--dynamic-text-on-background': rgbToString(foreground),
+          '--dynamic-text-muted': rgbaToString(muted, 0.78),
+          '--two-tone-background': baseHex,
+          '--two-tone-background-rgb': rgbValuesToString(baseColor),
+          '--two-tone-foreground': rgbToString(foreground),
+          '--two-tone-foreground-rgb': rgbValuesToString(foreground),
+          '--two-tone-foreground-muted': rgbaToString(muted, 0.78)
         };
 
-        let base = hslToRgb({ h: complementaryHue, s: saturationBoost, l: lightnessTarget });
-        base = improveContrast(base);
-
-        const hoverSeed = backgroundLuminance < 0.45 ? lighten(base, 0.18) : darken(base, 0.18);
-        const strongSeed = backgroundLuminance < 0.45 ? darken(base, 0.18) : darken(base, 0.28);
-        const mutedSeed = backgroundLuminance < 0.45 ? lighten(base, 0.6) : darken(base, 0.6);
-
-        const hover = improveContrast(hoverSeed, targetContrast - 0.3);
-        const strong = improveContrast(strongSeed, targetContrast);
-        const muted = improveContrast(mutedSeed, 2.8);
-
-        const contrast = getContrastRatio(base, BASE_DARK) >= getContrastRatio(base, BASE_LIGHT)
-          ? '#0f172a'
-          : '#f8fafc';
-
-        return { base, hover, strong, muted, contrast };
-      };
-
-        const applyDynamicPalette = (baseColor) => {
-          if (!baseColor) {
-            return;
-          }
-
-          const midpoint = baseColor;
-          const luminance = getRelativeLuminance(midpoint);
-          const isDarkBackground = luminance < 0.48;
-
-          const glassBackgroundTint = isDarkBackground ? darken(midpoint, 0.78) : lighten(midpoint, 0.86);
-          const glassBorderTint = isDarkBackground ? darken(midpoint, 0.68) : lighten(midpoint, 0.74);
-          const glassTextTint = getReadableTextOn(glassBackgroundTint);
-          const glassTextMutedTint = mixRgb(glassTextTint, glassBackgroundTint, 0.4);
-          const controlSurfaceTint = isDarkBackground ? darken(midpoint, 0.64) : lighten(midpoint, 0.78);
-          const controlSurfaceHoverTint = isDarkBackground ? darken(midpoint, 0.58) : lighten(midpoint, 0.86);
-          const controlTextTint = isDarkBackground ? lighten(midpoint, 0.98) : darken(midpoint, 0.94);
-          const textPrimaryTint = getReadableTextOn(midpoint);
-          const textMutedTint = mixRgb(textPrimaryTint, midpoint, 0.35);
-
-          const cardBackgroundTint = isDarkBackground ? lighten(midpoint, 0.9) : lighten(midpoint, 0.75);
-          const cardBorderTint = isDarkBackground ? lighten(midpoint, 0.82) : darken(midpoint, 0.58);
-          const cardShadowTint = darken(midpoint, isDarkBackground ? 0.88 : 0.54);
-          const cardTextTint = getReadableTextOn(cardBackgroundTint);
-          const cardTextMutedTint = mixRgb(cardTextTint, cardBackgroundTint, 0.35);
-
-          const glassBackgroundAlpha = isDarkBackground ? 0.68 : 0.58;
-          const controlSurfaceAlpha = isDarkBackground ? 0.42 : 0.26;
-          const controlSurfaceHoverAlpha = isDarkBackground ? 0.48 : 0.34;
-
-          const navPanelTint = isDarkBackground ? darken(midpoint, 0.68) : lighten(midpoint, 0.86);
-          const navPanelAlpha = isDarkBackground ? 0.88 : 0.72;
-          const navBorderTint = isDarkBackground ? darken(midpoint, 0.58) : lighten(midpoint, 0.7);
-          const navDividerTint = isDarkBackground ? lighten(midpoint, 0.78) : darken(midpoint, 0.62);
-          const navOverlayTint = isDarkBackground ? darken(midpoint, 0.94) : darken(midpoint, 0.7);
-          const navOverlayAlpha = isDarkBackground ? 0.68 : 0.5;
-          const shadowTint = darken(midpoint, isDarkBackground ? 0.9 : 0.75);
-
-          const palette = {
-            '--dynamic-text-on-background': rgbToString(textPrimaryTint),
-            '--dynamic-text-muted': rgbaToString(textMutedTint, isDarkBackground ? 0.82 : 0.78),
-            '--dynamic-glass-background': rgbaToString(glassBackgroundTint, glassBackgroundAlpha),
-            '--dynamic-glass-border': rgbaToString(glassBorderTint, isDarkBackground ? 0.5 : 0.42),
-            '--dynamic-glass-text': rgbToString(glassTextTint),
-            '--dynamic-glass-text-muted': rgbaToString(glassTextMutedTint, isDarkBackground ? 0.8 : 0.76),
-            '--dynamic-card-background': rgbToString(cardBackgroundTint),
-            '--dynamic-card-border': rgbaToString(cardBorderTint, isDarkBackground ? 0.3 : 0.36),
-            '--dynamic-card-text': rgbToString(cardTextTint),
-            '--dynamic-card-text-muted': rgbaToString(cardTextMutedTint, 0.82),
-            '--dynamic-card-shadow-rgb': rgbValuesToString(cardShadowTint),
-            '--dynamic-control-surface': rgbaToString(controlSurfaceTint, controlSurfaceAlpha),
-            '--dynamic-control-surface-hover': rgbaToString(controlSurfaceHoverTint, controlSurfaceHoverAlpha),
-            '--dynamic-control-text': rgbToString(controlTextTint),
-            '--dynamic-nav-panel-background': rgbaToString(navPanelTint, navPanelAlpha),
-            '--dynamic-nav-panel-border': rgbaToString(navBorderTint, isDarkBackground ? 0.55 : 0.4),
-            '--dynamic-nav-divider-rgb': rgbValuesToString(navDividerTint),
-            '--dynamic-nav-overlay': rgbaToString(navOverlayTint, navOverlayAlpha),
-            '--dynamic-shadow-rgb': rgbValuesToString(shadowTint)
-          };
-
-          const rootElement = document.documentElement;
-          Object.entries(palette).forEach(([variable, value]) => {
-            if (value) {
-              rootElement.style.setProperty(variable, value);
-            }
-          });
-
-          const { base, hover, strong, muted, contrast } = createAccentPalette(midpoint);
-          const accentVariables = {
-            '--dynamic-accent': rgbToString(base),
-            '--dynamic-accent-rgb': rgbValuesToString(base),
-            '--dynamic-accent-hover': rgbToString(hover),
-            '--dynamic-accent-hover-rgb': rgbValuesToString(hover),
-            '--dynamic-accent-strong': rgbToString(strong),
-            '--dynamic-accent-strong-rgb': rgbValuesToString(strong),
-            '--dynamic-accent-muted': rgbToString(muted),
-            '--dynamic-accent-muted-rgb': rgbValuesToString(muted),
-            '--dynamic-accent-contrast': contrast
-          };
-
-          Object.entries(accentVariables).forEach(([variable, value]) => {
+        Object.entries(palette).forEach(([variable, value]) => {
+          if (value) {
             rootElement.style.setProperty(variable, value);
-          });
-        };
+          }
+        });
+      };
 
       const applyBackground = () => {
         const activeBackground = getActiveBackground();
