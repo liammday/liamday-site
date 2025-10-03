@@ -2,15 +2,11 @@
 ---
 
 :root {
-  --sky-background-color: #050712;
-  --sky-background-rgb: 5, 7, 18;
-  --dynamic-text-on-background: #f8fafc;
-  --dynamic-text-muted: rgba(248, 250, 252, 0.72);
-  --two-tone-background: var(--sky-background-color, #050712);
-  --two-tone-background-rgb: var(--sky-background-rgb, 5, 7, 18);
-  --two-tone-foreground: var(--dynamic-text-on-background, #f8fafc);
-  --two-tone-foreground-rgb: 248, 250, 252;
-  --two-tone-foreground-muted: var(--dynamic-text-muted, rgba(248, 250, 252, 0.72));
+  --two-tone-background: #06142a;
+  --two-tone-background-rgb: 6, 20, 42;
+  --two-tone-foreground: #ff7f50;
+  --two-tone-foreground-rgb: 255, 127, 80;
+  --two-tone-foreground-muted: rgba(var(--two-tone-foreground-rgb), 0.72);
   --header-max-width: 72rem;
   --header-padding-x: 1.5rem;
 }
@@ -92,20 +88,29 @@ strong {
   display: flex;
   justify-content: center;
   padding: 1.25rem var(--header-padding-x);
-  background: linear-gradient(
-    to bottom,
-    var(--two-tone-background) calc(100% - 0.25rem),
-    var(--two-tone-foreground) calc(100% - 0.25rem)
-  );
+  background: var(--two-tone-background);
+}
+
+.site-header::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 0.25rem;
+  background: var(--two-tone-foreground);
 }
 
 .site-footer {
-  background: linear-gradient(
-    to top,
-    var(--two-tone-background) calc(100% - 0.25rem),
-    var(--two-tone-foreground) calc(100% - 0.25rem)
-  );
+  position: relative;
+  background: var(--two-tone-background);
   color: var(--two-tone-foreground-muted);
+}
+
+.site-footer::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 0.25rem;
+  background: var(--two-tone-foreground);
 }
 
 .site-header__bar {
@@ -147,7 +152,7 @@ strong {
   width: 1.6rem;
   height: 0.15rem;
   background: currentColor;
-  border-radius: 999px;
+  border-radius: 0;
   position: relative;
 }
 
@@ -216,7 +221,7 @@ strong {
     flex-direction: column;
     gap: 1rem;
     padding: 1.5rem;
-    border-radius: 1rem;
+    border-radius: 0;
     background: var(--two-tone-foreground);
     color: var(--two-tone-background);
     opacity: 0;
@@ -278,7 +283,7 @@ strong {
 
 .two-tone-box {
   position: relative;
-  border-radius: 1.75rem;
+  border-radius: 0;
   padding: clamp(1.75rem, calc(1.4rem + 1.5vw), 2.5rem);
   display: flex;
   flex-direction: column;
@@ -311,7 +316,7 @@ strong {
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1.5rem;
-  border-radius: 999px;
+  border-radius: 0;
   background: var(--two-tone-background);
   color: var(--two-tone-foreground);
   font-size: 0.7rem;
@@ -394,7 +399,7 @@ strong {
 
 .two-tone-panel {
   position: relative;
-  border-radius: 1.5rem;
+  border-radius: 0;
   padding: clamp(1.75rem, calc(1.4rem + 1vw), 2.35rem);
   display: flex;
   flex-direction: column;
@@ -491,7 +496,7 @@ a.two-tone-panel:focus-visible .two-tone-panel__cta {
   top: 0.35rem;
   width: 1.05rem;
   height: 1.05rem;
-  border-radius: 999px;
+  border-radius: 0;
   background: var(--two-tone-foreground);
 }
 
@@ -551,7 +556,7 @@ a.two-tone-panel:focus-visible .two-tone-panel__cta {
   letter-spacing: 0.35em;
   text-transform: uppercase;
   text-decoration: none;
-  border-radius: 999px;
+  border-radius: 0;
   transition: opacity 0.2s ease;
 }
 
@@ -572,7 +577,7 @@ a.two-tone-panel:focus-visible .two-tone-panel__cta {
 }
 
 .project-meta__item {
-  border-radius: 1.25rem;
+  border-radius: 0;
   padding: 1.25rem 1.5rem;
   display: flex;
   flex-direction: column;
