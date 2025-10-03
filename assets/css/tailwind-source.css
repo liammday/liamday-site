@@ -4,22 +4,15 @@
 
 @layer base {
   body {
-    @apply bg-slate-50 text-slate-800;
+    @apply bg-white text-slate-900 antialiased;
   }
 
   a {
-    color: var(--dynamic-accent-strong);
-    transition: color 150ms ease-in-out;
+    @apply text-blue-600 underline-offset-4 transition-colors duration-150 ease-in-out;
   }
 
   a:hover,
-  a:focus {
-    color: var(--dynamic-accent);
-  }
-}
-
-@layer utilities {
-  .glass-panel {
-    @apply backdrop-blur supports-[backdrop-filter]:bg-white/80;
+  a:focus-visible {
+    @apply text-blue-700 underline;
   }
 }

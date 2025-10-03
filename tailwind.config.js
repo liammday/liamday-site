@@ -9,20 +9,7 @@ module.exports = {
     './*.{html,md}',
   ],
   theme: {
-    extend: {
-      colors: {
-        brand: {
-          DEFAULT: '#0ea5e9',
-          dark: '#0369a1',
-        },
-      },
-      fontFamily: {
-        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-      },
-      boxShadow: {
-        'soft-xl': '0 25px 50px -12px rgba(15, 23, 42, 0.18)',
-      },
-    },
+    extend: {},
   },
   plugins: [require('@tailwindcss/typography')],
 };
