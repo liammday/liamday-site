@@ -21,14 +21,61 @@ permalink: /style-guide/
     width: 100%;
     height: 8rem;
     border-radius: 1.25rem;
-    background: var(--sg-background-color, #030712);
+    background: var(--sg-background-color, var(--sky-background-color, #030712));
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+    transition: background-color 0.6s ease, box-shadow 0.6s ease;
   }
 
   .sg-background-card__meta {
     display: flex;
     flex-direction: column;
     gap: 0.35rem;
+  }
+
+  .sg-time-control {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .sg-time-control__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .sg-time-control__slider {
+    width: 100%;
+    accent-color: var(--dynamic-accent, #0ea5e9);
+    transition: accent-color 0.6s ease;
+  }
+
+  .sg-time-control__readout {
+    font-feature-settings: "tnum";
+    font-variant-numeric: tabular-nums;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--dynamic-text-on-background, #0f172a);
+    transition: color 0.6s ease;
+  }
+
+  .sg-time-control__button {
+    font-size: 0.75rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    border-radius: 9999px;
+    padding: 0.35rem 0.85rem;
+    border: 1px solid rgba(var(--dynamic-nav-divider-rgb, 148, 163, 184), 0.35);
+    color: var(--dynamic-text-muted, rgba(71, 85, 105, 0.9));
+    background: rgba(var(--dynamic-card-shadow-rgb, 15, 23, 42), 0.04);
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  }
+
+  .sg-time-control__button:hover,
+  .sg-time-control__button:focus-visible {
+    color: var(--dynamic-text-on-background, #0f172a);
+    border-color: rgba(var(--dynamic-nav-divider-rgb, 148, 163, 184), 0.55);
+    background: rgba(var(--dynamic-card-shadow-rgb, 15, 23, 42), 0.08);
   }
 
   .sg-token-list {
@@ -59,6 +106,40 @@ permalink: /style-guide/
     background: rgba(var(--dynamic-card-shadow-rgb, 15, 23, 42), 0.08);
     border-radius: 0.4rem;
     padding: 0.15rem 0.5rem;
+    color: var(--dynamic-card-text, #0f172a);
+  }
+
+  .sg-anchor-swatches {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+
+  .sg-anchor-swatch {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 1rem;
+    background: var(--swatch-color, #0f172a);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(var(--dynamic-nav-divider-rgb, 148, 163, 184), 0.25);
+    transition: background-color 0.6s ease, border-color 0.6s ease, box-shadow 0.6s ease;
+  }
+
+  .sg-anchor-swatch__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    font-size: 0.8rem;
+    color: var(--dynamic-card-text-muted, rgba(71, 85, 105, 0.9));
+  }
+
+  .sg-anchor-swatch__label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
     color: var(--dynamic-card-text, #0f172a);
   }
 </style>
@@ -108,9 +189,15 @@ permalink: /style-guide/
       </div>
     </div>
     <div class="space-y-6">
-      <div class="sg-background-card" style="--sg-background-color: {{ background.color | default: '#030712' }};">
+      <div
+        class="sg-background-card"
+        data-sg-background-card
+        style="--sg-background-color: {{ background.color | default: '#030712' }};"
+      >
         <div class="sg-background-card__meta">
-          <h3 class="text-lg font-semibold text-on-card">{{ background.label | default: 'Site background' }}</h3>
+          <h3 class="text-lg font-semibold text-on-card" data-sg-background-label>
+            {{ background.label | default: 'Site background' }}
+          </h3>
           <p class="text-sm text-on-card-muted">{{ background.description | default: 'Primary background colour applied across the site.' }}</p>
         </div>
         <div class="sg-background-card__swatch" aria-hidden="true"></div>
@@ -121,7 +208,7 @@ permalink: /style-guide/
           </div>
           <div class="sg-token-list__item">
             <dt>Fallback hex</dt>
-            <dd><code>{{ background.color | default: '#030712' }}</code></dd>
+            <dd><code data-sg-current-hex>{{ background.color | default: '#030712' }}</code></dd>
           </div>
           <div class="sg-token-list__item">
             <dt>CSS variable</dt>
@@ -129,36 +216,84 @@ permalink: /style-guide/
           </div>
           <div class="sg-token-list__item">
             <dt>Computed RGB</dt>
-            <dd><code>var(--sky-background-rgb)</code></dd>
+            <dd><code data-sg-current-rgb>var(--sky-background-rgb)</code></dd>
           </div>
         </dl>
+      </div>
+      <div class="card-surface rounded-3xl border p-6 backdrop-blur" data-sg-time-simulator>
+        <div class="sg-time-control">
+          <div class="sg-time-control__header">
+            <div>
+              <h3 class="text-base font-semibold text-on-card">Time of day simulator</h3>
+              <p class="mt-1 text-sm text-on-card-muted">
+                Preview how the adaptive palette reacts across the day. Drag the slider to scrub through the anchor points
+                defined in <code class="font-mono text-xs text-on-card-muted">_data/background.yml</code>.
+              </p>
+            </div>
+            <button type="button" class="sg-time-control__button" data-sg-time-reset>Reset</button>
+          </div>
+          <label class="flex items-center justify-between gap-4" for="sg-time-slider">
+            <span class="text-xs font-semibold uppercase tracking-[0.2em] text-on-card">Simulated time</span>
+            <span class="sg-time-control__readout" data-sg-time-display aria-live="polite">--:--</span>
+          </label>
+          <input
+            id="sg-time-slider"
+            class="sg-time-control__slider"
+            type="range"
+            min="0"
+            max="1439"
+            step="1"
+            value="0"
+            data-sg-time-slider
+          />
+          <p class="text-xs text-on-card-muted">
+            Updates here are temporary and only affect this style guide while the page is open. All dynamic backgrounds and
+            typography respond with the same transitions used in production.
+          </p>
+        </div>
       </div>
       {% assign time_points = background.time_points %}
       {% if time_points %}
       <div class="card-surface rounded-3xl border p-6 backdrop-blur">
         <h3 class="text-base font-semibold text-on-card">Time-aware sky anchors</h3>
         <p class="mt-2 text-sm text-on-card-muted">
-          Each anchor specifies the palette at a 24-hour timestamp. The runtime script blends between anchors once per minute,
-          keeping card surfaces and on-background type legible as daylight shifts.
+          Each anchor specifies the palette at a 24-hour timestamp. The runtime script blends between anchors once per minute
+          and flattens the result to a single sky colour, keeping card surfaces and on-background type legible as daylight
+          shifts. Swatches below show that final hex value rather than the gradient endpoints.
         </p>
         <div class="mt-5 grid gap-4 lg:grid-cols-2">
           {% for point in time_points %}
           {% assign top_color = point.color | default: point.top | default: point.gradient.top | default: background.color %}
           {% assign bottom_color = point.bottom | default: point.gradient.bottom | default: top_color %}
-          {% if bottom_color and bottom_color != top_color %}
-          {% capture swatch_style %}background: linear-gradient(135deg, {{ top_color }}, {{ bottom_color }});{% endcapture %}
-          {% else %}
-          {% capture swatch_style %}background: {{ top_color }};{% endcapture %}
-          {% endif %}
-          <div class="card-surface rounded-2xl border p-4 backdrop-blur">
+          <div
+            class="card-surface rounded-2xl border p-4 backdrop-blur"
+            data-sg-anchor
+            data-top="{{ top_color | default: background.color | default: '#050712' }}"
+            data-bottom="{{ bottom_color | default: top_color | default: background.color | default: '#050712' }}"
+            data-fallback="{{ background.color | default: '#050712' }}"
+          >
             <div class="flex flex-wrap items-center justify-between gap-3">
               <p class="text-sm font-semibold uppercase tracking-[0.25em] text-on-card-muted">{{ point.label }}</p>
               <p class="font-mono text-xs text-on-card-muted">{{ point.time }}</p>
             </div>
-            <div
-              class="h-12 w-full rounded-xl border border-dynamic"
-              style="{{ swatch_style }}"
-            ></div>
+            <div class="sg-anchor-swatches" aria-hidden="true">
+              <div class="flex items-center gap-3">
+                <div
+                  class="sg-anchor-swatch"
+                  data-sg-anchor-swatch
+                  style="--swatch-color: {{ top_color | default: '#050712' }};"
+                ></div>
+                <div class="sg-anchor-swatch__meta">
+                  <span class="sg-anchor-swatch__label">Base colour</span>
+                  <code data-sg-anchor-hex>{{ top_color | default: '#050712' }}</code>
+                </div>
+              </div>
+            </div>
+            {% if bottom_color and bottom_color != top_color %}
+            <p class="mt-3 text-xs text-on-card-muted">
+              Derived from anchor mix of <code>{{ top_color }}</code> → <code>{{ bottom_color }}</code>.
+            </p>
+            {% endif %}
           </div>
           {% endfor %}
         </div>
@@ -419,4 +554,273 @@ permalink: /style-guide/
     </div>
   </section>
 </div>
+
+<script>
+  (() => {
+    const slider = document.querySelector('[data-sg-time-slider]');
+    const display = document.querySelector('[data-sg-time-display]');
+    const resetButton = document.querySelector('[data-sg-time-reset]');
+    const backgroundCard = document.querySelector('[data-sg-background-card]');
+    const hexTarget = document.querySelector('[data-sg-current-hex]');
+    const rgbTarget = document.querySelector('[data-sg-current-rgb]');
+    const labelTarget = document.querySelector('[data-sg-background-label]');
+    const anchorCards = Array.from(document.querySelectorAll('[data-sg-anchor]'));
+    const MINUTES_IN_DAY = 24 * 60;
+    const FALLBACK_HEX = '#050712';
+
+    const clampChannel = (value) => {
+      const numeric = Number(value);
+      if (Number.isNaN(numeric)) {
+        return 0;
+      }
+      return Math.max(0, Math.min(255, Math.round(numeric)));
+    };
+
+    const componentToHex = (value) => clampChannel(value).toString(16).padStart(2, '0');
+
+    const rgbToHex = (color) => {
+      if (!color) {
+        return null;
+      }
+      return `#${componentToHex(color.r)}${componentToHex(color.g)}${componentToHex(color.b)}`;
+    };
+
+    const normalizeHex = (value) => {
+      if (typeof value !== 'string') {
+        return null;
+      }
+
+      const trimmed = value.trim();
+      if (!trimmed) {
+        return null;
+      }
+
+      let hex = trimmed.replace(/^#/, '');
+      if (hex.length === 3) {
+        hex = hex
+          .split('')
+          .map((char) => char + char)
+          .join('');
+      } else if (hex.length !== 6) {
+        return null;
+      }
+
+      if (!/^[0-9a-fA-F]{6}$/.test(hex)) {
+        return null;
+      }
+
+      return `#${hex.toLowerCase()}`;
+    };
+
+    const hexToRgb = (value) => {
+      const normalized = normalizeHex(value);
+      if (!normalized) {
+        return null;
+      }
+
+      const int = Number.parseInt(normalized.slice(1), 16);
+      if (Number.isNaN(int)) {
+        return null;
+      }
+
+      return {
+        r: (int >> 16) & 255,
+        g: (int >> 8) & 255,
+        b: int & 255
+      };
+    };
+
+    const clamp01 = (value) => {
+      const numeric = Number(value);
+      if (Number.isNaN(numeric)) {
+        return 0;
+      }
+      return Math.min(Math.max(numeric, 0), 1);
+    };
+
+    const mixRgb = (start, end, factor = 0.5) => {
+      if (!start && !end) {
+        return null;
+      }
+      if (!start) {
+        return end;
+      }
+      if (!end) {
+        return start;
+      }
+
+      const mixFactor = clamp01(factor);
+      return {
+        r: Math.round(start.r + (end.r - start.r) * mixFactor),
+        g: Math.round(start.g + (end.g - start.g) * mixFactor),
+        b: Math.round(start.b + (end.b - start.b) * mixFactor)
+      };
+    };
+
+    const FALLBACK_RGB = hexToRgb(FALLBACK_HEX);
+
+    const computeBaseHex = (top, bottom, fallback = FALLBACK_HEX) => {
+      const fallbackColor = hexToRgb(fallback) || FALLBACK_RGB;
+      const topColor = hexToRgb(top) || fallbackColor;
+      const bottomColor = hexToRgb(bottom) || topColor;
+      const baseColor = mixRgb(topColor, bottomColor, 0.5) || topColor || bottomColor || fallbackColor;
+      return rgbToHex(baseColor) || normalizeHex(fallback) || FALLBACK_HEX;
+    };
+
+    const updateAnchorSwatches = () => {
+      anchorCards.forEach((card) => {
+        const topHex = card.getAttribute('data-top');
+        const bottomHex = card.getAttribute('data-bottom');
+        const fallbackHex = card.getAttribute('data-fallback') || FALLBACK_HEX;
+        const baseHex = computeBaseHex(topHex, bottomHex, fallbackHex) || FALLBACK_HEX;
+        const swatch = card.querySelector('[data-sg-anchor-swatch]');
+        const hexLabel = card.querySelector('[data-sg-anchor-hex]');
+
+        if (swatch && baseHex) {
+          swatch.style.setProperty('--swatch-color', baseHex);
+        }
+
+        if (hexLabel && baseHex) {
+          hexLabel.textContent = baseHex;
+        }
+      });
+    };
+
+    if (anchorCards.length) {
+      updateAnchorSwatches();
+    }
+
+    if (!slider || !display) {
+      return;
+    }
+
+    const formatMinutes = (minutes) => {
+      const safeMinutes = Number.isFinite(minutes) ? minutes : 0;
+      const normalized = ((Math.round(safeMinutes) % MINUTES_IN_DAY) + MINUTES_IN_DAY) % MINUTES_IN_DAY;
+      const hours = Math.floor(normalized / 60);
+      const mins = normalized % 60;
+      return `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}`;
+    };
+
+    const updateDisplay = (minutes) => {
+      display.textContent = formatMinutes(minutes);
+    };
+
+    const updateLiveTokens = () => {
+      const runtime = window.__skyRuntime;
+      const detail = runtime?.lastAppliedBackground;
+      const computed = getComputedStyle(document.documentElement);
+      const hex = computed.getPropertyValue('--sky-background-color').trim();
+      const rgb = computed.getPropertyValue('--sky-background-rgb').trim();
+
+      if (backgroundCard && hex) {
+        backgroundCard.style.setProperty('--sg-background-color', hex);
+      }
+
+      if (hexTarget && hex) {
+        hexTarget.textContent = hex;
+      }
+
+      if (rgbTarget && rgb) {
+        rgbTarget.textContent = rgb;
+      }
+
+      if (labelTarget && detail?.label) {
+        labelTarget.textContent = detail.label;
+      }
+    };
+
+    const applyOverride = (minutes) => {
+      const runtime = window.__skyRuntime;
+      if (!runtime) {
+        return;
+      }
+
+      if (typeof runtime.setTimeOverride === 'function') {
+        runtime.setTimeOverride(minutes);
+        return;
+      }
+
+      runtime.timeOverrideMinutes = minutes;
+      if (typeof runtime.applyBackground === 'function') {
+        runtime.applyBackground();
+      }
+    };
+
+    const clearOverride = () => {
+      const runtime = window.__skyRuntime;
+      if (!runtime) {
+        return;
+      }
+
+      if (typeof runtime.clearTimeOverride === 'function') {
+        runtime.clearTimeOverride();
+        return;
+      }
+
+      delete runtime.timeOverrideMinutes;
+      if (typeof runtime.applyBackground === 'function') {
+        runtime.applyBackground();
+      }
+    };
+
+    const initializeControls = () => {
+      const runtime = window.__skyRuntime;
+      const lastDetail = runtime?.lastAppliedBackground;
+      const overrideMinutes = Number.isFinite(runtime?.timeOverrideMinutes)
+        ? runtime.timeOverrideMinutes
+        : null;
+
+      const initialMinutes = Number.isFinite(overrideMinutes)
+        ? overrideMinutes
+        : Number.isFinite(lastDetail?.minutes)
+        ? lastDetail.minutes
+        : (() => {
+            const now = new Date();
+            return now.getHours() * 60 + now.getMinutes();
+          })();
+
+      slider.value = String(Math.round(initialMinutes));
+      updateDisplay(initialMinutes);
+      updateLiveTokens();
+
+      slider.addEventListener('input', (event) => {
+        const minutes = Number(event.target.value);
+        updateDisplay(minutes);
+        applyOverride(minutes);
+      });
+
+      slider.addEventListener('change', (event) => {
+        const minutes = Number(event.target.value);
+        updateDisplay(minutes);
+        applyOverride(minutes);
+      });
+
+      if (resetButton) {
+        resetButton.addEventListener('click', () => {
+          clearOverride();
+        });
+      }
+
+      window.addEventListener('sky:background-applied', (event) => {
+        const minutes = Number.isFinite(event?.detail?.minutes) ? event.detail.minutes : null;
+        if (Number.isFinite(minutes) && !Number.isFinite(window.__skyRuntime?.timeOverrideMinutes)) {
+          slider.value = String(Math.round(minutes));
+          updateDisplay(minutes);
+        }
+        updateLiveTokens();
+      });
+    };
+
+    const waitForRuntime = () => {
+      if (window.__skyRuntime && typeof window.__skyRuntime.applyBackground === 'function') {
+        initializeControls();
+      } else {
+        window.requestAnimationFrame(waitForRuntime);
+      }
+    };
+
+    waitForRuntime();
+  })();
+</script>
 
