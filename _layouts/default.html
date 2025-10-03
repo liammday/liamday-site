@@ -3,28 +3,24 @@
   <head>
     {% include head.html %}
   </head>
-  <body class="flex min-h-screen flex-col bg-white text-slate-900 antialiased">
+  <body class="flex min-h-screen flex-col bg-slate-950 text-slate-100 antialiased">
     <a
-      class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:rounded-md focus:bg-slate-900 focus:px-4 focus:py-2 focus:text-white"
+      class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:rounded-md focus:bg-slate-100 focus:px-4 focus:py-2 focus:text-slate-950"
       href="#main"
       >Skip to content</a
     >
-    <header class="border-b border-slate-200 bg-white">
-      <div class="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-between gap-4 px-6 py-4">
-        <a class="text-base font-semibold tracking-tight" href="{{ '/' | relative_url }}">{{ site.title }}</a>
-        {% if site.nav_links %}
-        <nav aria-label="Primary navigation">
-          <ul class="flex flex-wrap items-center gap-3 text-sm text-slate-600">
-            {% for link in site.nav_links %}
-            <li>
-              <a class="rounded px-2 py-1 transition hover:bg-slate-100 hover:text-slate-900" href="{{ link.url | relative_url }}"
-                >{{ link.title }}</a
-              >
-            </li>
-            {% endfor %}
-          </ul>
-        </nav>
-        {% endif %}
+    <header class="relative z-50 border-b border-white/10 bg-slate-950/60 backdrop-blur">
+      <div class="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-between gap-4 px-6 py-5">
+        <a class="text-base font-semibold tracking-tight text-white" href="{{ '/' | relative_url }}">{{ site.title }}</a>
+        <div class="flex flex-wrap items-center gap-4 text-sm text-slate-300">
+          <a class="transition hover:text-white" href="mailto:{{ site.social.email }}">Email</a>
+          {% if site.social.linkedin %}
+          <a class="transition hover:text-white" href="{{ site.social.linkedin }}">LinkedIn</a>
+          {% endif %}
+          {% if site.social.github %}
+          <a class="transition hover:text-white" href="{{ site.social.github }}">GitHub</a>
+          {% endif %}
+        </div>
       </div>
     </header>
 
@@ -32,26 +28,27 @@
       {{ content }}
     </main>
 
-    <footer class="border-t border-slate-200 bg-white">
-      <div class="mx-auto flex w-full max-w-5xl flex-col gap-4 px-6 py-8 text-sm text-slate-600">
-        <div class="flex flex-wrap items-center gap-3 text-slate-500">
+    <footer class="border-t border-white/10 bg-slate-950/80">
+      <div class="mx-auto flex w-full max-w-5xl flex-col gap-4 px-6 py-10 text-sm text-slate-400">
+        <div class="flex flex-wrap items-center gap-3">
           <p>© {{ 'now' | date: '%Y' }} {{ site.title }}</p>
           <span aria-hidden="true">·</span>
           <p>Built with Jekyll</p>
         </div>
         <div class="flex flex-wrap gap-4">
-          <a class="text-slate-600 transition hover:text-slate-900" href="mailto:{{ site.social.email }}">{{ site.social.email }}</a>
+          <a class="transition hover:text-white" href="mailto:{{ site.social.email }}">{{ site.social.email }}</a>
           {% if site.social.linkedin %}
-          <a class="text-slate-600 transition hover:text-slate-900" href="{{ site.social.linkedin }}">LinkedIn</a>
+          <a class="transition hover:text-white" href="{{ site.social.linkedin }}">LinkedIn</a>
           {% endif %}
           {% if site.social.github %}
-          <a class="text-slate-600 transition hover:text-slate-900" href="{{ site.social.github }}">GitHub</a>
+          <a class="transition hover:text-white" href="{{ site.social.github }}">GitHub</a>
           {% endif %}
           {% if site.social.medium %}
-          <a class="text-slate-600 transition hover:text-slate-900" href="{{ site.social.medium }}">Medium</a>
+          <a class="transition hover:text-white" href="{{ site.social.medium }}">Medium</a>
           {% endif %}
         </div>
       </div>
     </footer>
+    <script src="{{ '/assets/js/page-nav.js' | relative_url }}" defer></script>
   </body>
 </html>
