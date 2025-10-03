@@ -138,23 +138,17 @@
         return null;
       }
 
-      const gradient = entry.gradient && typeof entry.gradient === 'object' ? entry.gradient : {};
-      const top =
-        (typeof gradient.top === 'string' && gradient.top.trim()) ||
-        (typeof entry.top === 'string' && entry.top.trim()) ||
-        (typeof entry.color === 'string' && entry.color.trim()) ||
-        null;
-      const bottom =
-        (typeof gradient.bottom === 'string' && gradient.bottom.trim()) ||
-        (typeof entry.bottom === 'string' && entry.bottom.trim()) ||
-        (typeof entry.color === 'string' && entry.color.trim()) ||
-        top;
+      const color = typeof entry.color === 'string' && entry.color.trim() ? entry.color : null;
       const label =
         (typeof entry.label === 'string' && entry.label.trim()) ||
         (typeof fallbackLabel === 'string' && fallbackLabel.trim()) ||
         '';
 
-      return { top, bottom, label };
+      if (!color) {
+        return null;
+      }
+
+      return { color, label };
     };
 
     const parseTimeToMinutes = (value) => {
@@ -212,17 +206,15 @@
           return;
         }
 
-        const topHex = normalizeHex(config.top);
-        const bottomHex = normalizeHex(config.bottom || config.top);
+        const colorHex = normalizeHex(config.color);
 
-        if (!topHex && !bottomHex) {
+        if (!colorHex) {
           return;
         }
 
         anchors.set(normalizedMinutes, {
           minutes: normalizedMinutes,
-          top: topHex || bottomHex,
-          bottom: bottomHex || topHex,
+          color: colorHex,
           label: config.label
         });
       };
@@ -253,15 +245,14 @@
       return Array.from(anchors.values()).sort((a, b) => a.minutes - b.minutes);
     };
 
-    const getDefaultBackground = () => {
-      const fallback = buildBackgroundConfig(backgroundData?.default || backgroundData, backgroundData?.label);
-      if (fallback && fallback.top) {
-        fallback.bottom = fallback.bottom || fallback.top;
-        return fallback;
-      }
+      const getDefaultBackground = () => {
+        const fallback = buildBackgroundConfig(backgroundData?.default || backgroundData, backgroundData?.label);
+        if (fallback && fallback.color) {
+          return fallback;
+        }
 
-      return { top: FALLBACK_BACKGROUND_HEX, bottom: FALLBACK_BACKGROUND_HEX, label: backgroundData?.label || '' };
-    };
+        return { color: FALLBACK_BACKGROUND_HEX, label: backgroundData?.label || '' };
+      };
 
     const resolveInterpolatedBackground = () => {
       const anchors = mapTimeAnchors();
@@ -269,14 +260,13 @@
         return null;
       }
 
-      if (anchors.length === 1) {
-        const single = anchors[0];
-        return {
-          top: single.top,
-          bottom: single.bottom,
-          label: single.label
-        };
-      }
+        if (anchors.length === 1) {
+          const single = anchors[0];
+          return {
+            color: single.color,
+            label: single.label
+          };
+        }
 
       const TOTAL_MINUTES = 24 * 60;
       const now = new Date();
@@ -294,13 +284,12 @@
         }
       }
 
-      if (previous.minutes === next.minutes) {
-        return {
-          top: previous.top,
-          bottom: previous.bottom,
-          label: previous.label
-        };
-      }
+        if (previous.minutes === next.minutes) {
+          return {
+            color: previous.color,
+            label: previous.label
+          };
+        }
 
       let startMinutes = previous.minutes;
       let endMinutes = next.minutes;
@@ -314,25 +303,21 @@
         elapsed += TOTAL_MINUTES;
       }
 
-      const duration = endMinutes - startMinutes;
-      const mixFactor = duration === 0 ? 0 : clamp01(elapsed / duration);
+        const duration = endMinutes - startMinutes;
+        const mixFactor = duration === 0 ? 0 : clamp01(elapsed / duration);
 
-      const startTop = hexToRgb(previous.top) || hexToRgb(FALLBACK_BACKGROUND_HEX);
-      const endTop = hexToRgb(next.top) || startTop;
-      const startBottom = hexToRgb(previous.bottom) || startTop;
-      const endBottom = hexToRgb(next.bottom) || endTop;
+        const startColor = hexToRgb(previous.color) || fallbackColor;
+        const endColor = hexToRgb(next.color) || startColor;
 
-      const topColor = mixRgb(startTop, endTop, mixFactor) || startTop;
-      const bottomColor = mixRgb(startBottom, endBottom, mixFactor) || startBottom;
+        const baseColor = mixRgb(startColor, endColor, mixFactor) || startColor;
 
-      const label = mixFactor < 0.5 ? previous.label : next.label || previous.label;
+        const label = mixFactor < 0.5 ? previous.label : next.label || previous.label;
 
-      return {
-        top: rgbToHex(topColor),
-        bottom: rgbToHex(bottomColor),
-        label
+        return {
+          color: rgbToHex(baseColor),
+          label
+        };
       };
-    };
 
     const getActiveBackground = () => {
       const interpolated = resolveInterpolatedBackground();
@@ -343,73 +328,71 @@
       return getDefaultBackground();
     };
 
-    const applyDynamicPalette = (topColor, bottomColor = topColor) => {
-      if (!topColor && !bottomColor) {
-        return;
-      }
-
-      const primary = topColor || bottomColor;
-      const secondary = bottomColor || topColor;
-      const midpoint = mixRgb(primary, secondary, 0.5);
-      const luminance = getRelativeLuminance(midpoint);
-      const isDarkBackground = luminance < 0.48;
-
-      const glassBackgroundTint = isDarkBackground ? darken(midpoint, 0.72) : lighten(midpoint, 0.82);
-      const glassBorderTint = isDarkBackground ? darken(midpoint, 0.62) : lighten(midpoint, 0.7);
-      const glassTextTint = isDarkBackground ? lighten(midpoint, 0.96) : darken(midpoint, 0.92);
-      const glassTextMutedTint = isDarkBackground ? lighten(midpoint, 0.88) : darken(midpoint, 0.8);
-      const controlSurfaceTint = isDarkBackground ? darken(midpoint, 0.64) : lighten(midpoint, 0.78);
-      const controlSurfaceHoverTint = isDarkBackground ? darken(midpoint, 0.58) : lighten(midpoint, 0.86);
-      const controlTextTint = isDarkBackground ? lighten(midpoint, 0.98) : darken(midpoint, 0.94);
-      const textPrimaryTint = isDarkBackground ? lighten(midpoint, 0.98) : darken(midpoint, 0.92);
-      const textMutedTint = isDarkBackground ? lighten(midpoint, 0.9) : darken(midpoint, 0.82);
-
-      const cardBackgroundTint = isDarkBackground ? lighten(midpoint, 0.92) : darken(midpoint, 0.68);
-      const cardBorderTint = isDarkBackground ? lighten(midpoint, 0.82) : darken(midpoint, 0.58);
-      const cardShadowTint = darken(midpoint, isDarkBackground ? 0.88 : 0.54);
-      const cardTextTint = getReadableTextOn(cardBackgroundTint);
-      const cardTextMutedTint = mixRgb(cardTextTint, cardBackgroundTint, 0.45);
-
-      const glassBackgroundAlpha = isDarkBackground ? 0.78 : 0.62;
-      const controlSurfaceAlpha = isDarkBackground ? 0.42 : 0.26;
-      const controlSurfaceHoverAlpha = isDarkBackground ? 0.48 : 0.34;
-
-      const navPanelTint = isDarkBackground ? darken(midpoint, 0.68) : lighten(midpoint, 0.86);
-      const navPanelAlpha = isDarkBackground ? 0.88 : 0.72;
-      const navBorderTint = isDarkBackground ? darken(midpoint, 0.58) : lighten(midpoint, 0.7);
-      const navDividerTint = isDarkBackground ? lighten(midpoint, 0.78) : darken(midpoint, 0.62);
-      const navOverlayTint = isDarkBackground ? darken(midpoint, 0.94) : darken(midpoint, 0.7);
-      const navOverlayAlpha = isDarkBackground ? 0.68 : 0.5;
-      const shadowTint = darken(midpoint, isDarkBackground ? 0.9 : 0.75);
-
-      const palette = {
-        '--dynamic-text-on-background': `rgb(${textPrimaryTint.r}, ${textPrimaryTint.g}, ${textPrimaryTint.b})`,
-        '--dynamic-text-muted': rgbaToString(textMutedTint, isDarkBackground ? 0.82 : 0.78),
-        '--dynamic-glass-background': rgbaToString(glassBackgroundTint, glassBackgroundAlpha),
-        '--dynamic-glass-border': rgbaToString(glassBorderTint, isDarkBackground ? 0.5 : 0.42),
-        '--dynamic-glass-text': `rgb(${glassTextTint.r}, ${glassTextTint.g}, ${glassTextTint.b})`,
-        '--dynamic-glass-text-muted': rgbaToString(glassTextMutedTint, isDarkBackground ? 0.8 : 0.76),
-        '--dynamic-card-background': `rgb(${cardBackgroundTint.r}, ${cardBackgroundTint.g}, ${cardBackgroundTint.b})`,
-        '--dynamic-card-border': rgbaToString(cardBorderTint, isDarkBackground ? 0.3 : 0.36),
-        '--dynamic-card-text': `rgb(${cardTextTint.r}, ${cardTextTint.g}, ${cardTextTint.b})`,
-        '--dynamic-card-text-muted': rgbaToString(cardTextMutedTint, 0.82),
-        '--dynamic-card-shadow-rgb': rgbValuesToString(cardShadowTint),
-        '--dynamic-control-surface': rgbaToString(controlSurfaceTint, controlSurfaceAlpha),
-        '--dynamic-control-surface-hover': rgbaToString(controlSurfaceHoverTint, controlSurfaceHoverAlpha),
-        '--dynamic-control-text': `rgb(${controlTextTint.r}, ${controlTextTint.g}, ${controlTextTint.b})`,
-        '--dynamic-nav-panel-background': rgbaToString(navPanelTint, navPanelAlpha),
-        '--dynamic-nav-panel-border': rgbaToString(navBorderTint, isDarkBackground ? 0.55 : 0.4),
-        '--dynamic-nav-divider-rgb': rgbValuesToString(navDividerTint),
-        '--dynamic-nav-overlay': rgbaToString(navOverlayTint, navOverlayAlpha),
-        '--dynamic-shadow-rgb': rgbValuesToString(shadowTint)
-      };
-
-      const rootElement = document.documentElement;
-      Object.entries(palette).forEach(([variable, value]) => {
-        if (value) {
-          rootElement.style.setProperty(variable, value);
+      const applyDynamicPalette = (baseColor) => {
+        if (!baseColor) {
+          return;
         }
-      });
+
+        const midpoint = baseColor;
+        const luminance = getRelativeLuminance(midpoint);
+        const isDarkBackground = luminance < 0.48;
+
+        const glassBackgroundTint = isDarkBackground ? darken(midpoint, 0.72) : lighten(midpoint, 0.82);
+        const glassBorderTint = isDarkBackground ? darken(midpoint, 0.62) : lighten(midpoint, 0.7);
+        const glassTextTint = isDarkBackground ? lighten(midpoint, 0.96) : darken(midpoint, 0.92);
+        const glassTextMutedTint = isDarkBackground ? lighten(midpoint, 0.88) : darken(midpoint, 0.8);
+        const controlSurfaceTint = isDarkBackground ? darken(midpoint, 0.64) : lighten(midpoint, 0.78);
+        const controlSurfaceHoverTint = isDarkBackground ? darken(midpoint, 0.58) : lighten(midpoint, 0.86);
+        const controlTextTint = isDarkBackground ? lighten(midpoint, 0.98) : darken(midpoint, 0.94);
+        const textPrimaryTint = isDarkBackground ? lighten(midpoint, 0.98) : darken(midpoint, 0.92);
+        const textMutedTint = isDarkBackground ? lighten(midpoint, 0.9) : darken(midpoint, 0.82);
+
+        const cardBackgroundTint = isDarkBackground ? lighten(midpoint, 0.92) : darken(midpoint, 0.68);
+        const cardBorderTint = isDarkBackground ? lighten(midpoint, 0.82) : darken(midpoint, 0.58);
+        const cardShadowTint = darken(midpoint, isDarkBackground ? 0.88 : 0.54);
+        const cardTextTint = getReadableTextOn(cardBackgroundTint);
+        const cardTextMutedTint = mixRgb(cardTextTint, cardBackgroundTint, 0.45);
+
+        const glassBackgroundAlpha = isDarkBackground ? 0.78 : 0.62;
+        const controlSurfaceAlpha = isDarkBackground ? 0.42 : 0.26;
+        const controlSurfaceHoverAlpha = isDarkBackground ? 0.48 : 0.34;
+
+        const navPanelTint = isDarkBackground ? darken(midpoint, 0.68) : lighten(midpoint, 0.86);
+        const navPanelAlpha = isDarkBackground ? 0.88 : 0.72;
+        const navBorderTint = isDarkBackground ? darken(midpoint, 0.58) : lighten(midpoint, 0.7);
+        const navDividerTint = isDarkBackground ? lighten(midpoint, 0.78) : darken(midpoint, 0.62);
+        const navOverlayTint = isDarkBackground ? darken(midpoint, 0.94) : darken(midpoint, 0.7);
+        const navOverlayAlpha = isDarkBackground ? 0.68 : 0.5;
+        const shadowTint = darken(midpoint, isDarkBackground ? 0.9 : 0.75);
+
+        const palette = {
+          '--dynamic-text-on-background': `rgb(${textPrimaryTint.r}, ${textPrimaryTint.g}, ${textPrimaryTint.b})`,
+          '--dynamic-text-muted': rgbaToString(textMutedTint, isDarkBackground ? 0.82 : 0.78),
+          '--dynamic-glass-background': rgbaToString(glassBackgroundTint, glassBackgroundAlpha),
+          '--dynamic-glass-border': rgbaToString(glassBorderTint, isDarkBackground ? 0.5 : 0.42),
+          '--dynamic-glass-text': `rgb(${glassTextTint.r}, ${glassTextTint.g}, ${glassTextTint.b})`,
+          '--dynamic-glass-text-muted': rgbaToString(glassTextMutedTint, isDarkBackground ? 0.8 : 0.76),
+          '--dynamic-card-background': `rgb(${cardBackgroundTint.r}, ${cardBackgroundTint.g}, ${cardBackgroundTint.b})`,
+          '--dynamic-card-border': rgbaToString(cardBorderTint, isDarkBackground ? 0.3 : 0.36),
+          '--dynamic-card-text': `rgb(${cardTextTint.r}, ${cardTextTint.g}, ${cardTextTint.b})`,
+          '--dynamic-card-text-muted': rgbaToString(cardTextMutedTint, 0.82),
+          '--dynamic-card-shadow-rgb': rgbValuesToString(cardShadowTint),
+          '--dynamic-control-surface': rgbaToString(controlSurfaceTint, controlSurfaceAlpha),
+          '--dynamic-control-surface-hover': rgbaToString(controlSurfaceHoverTint, controlSurfaceHoverAlpha),
+          '--dynamic-control-text': `rgb(${controlTextTint.r}, ${controlTextTint.g}, ${controlTextTint.b})`,
+          '--dynamic-nav-panel-background': rgbaToString(navPanelTint, navPanelAlpha),
+          '--dynamic-nav-panel-border': rgbaToString(navBorderTint, isDarkBackground ? 0.55 : 0.4),
+          '--dynamic-nav-divider-rgb': rgbValuesToString(navDividerTint),
+          '--dynamic-nav-overlay': rgbaToString(navOverlayTint, navOverlayAlpha),
+          '--dynamic-shadow-rgb': rgbValuesToString(shadowTint)
+        };
+
+        const rootElement = document.documentElement;
+        Object.entries(palette).forEach(([variable, value]) => {
+          if (value) {
+            rootElement.style.setProperty(variable, value);
+          }
+        });
 
       const createAccentPalette = (color, isDark) => {
         const { h, s, l } = (() => {
@@ -504,23 +487,20 @@
     const fallbackHexNormalized = normalizeHex(FALLBACK_BACKGROUND_HEX) || '#050712';
     const fallbackColor = hexToRgb(fallbackHexNormalized) || { r: 5, g: 7, b: 18 };
 
-    const applyImmediateBackground = () => {
-      const activeBackground = getActiveBackground();
-      const topHex = normalizeHex(activeBackground?.top) || fallbackHexNormalized;
-      const bottomHex = normalizeHex(activeBackground?.bottom) || topHex;
+      const applyImmediateBackground = () => {
+        const activeBackground = getActiveBackground();
+        const colorHex = normalizeHex(activeBackground?.color) || fallbackHexNormalized;
 
-      const topColor = hexToRgb(topHex) || fallbackColor;
-      const bottomColor = hexToRgb(bottomHex) || topColor;
-      const baseColor = mixRgb(topColor, bottomColor, 0.5) || topColor;
-      const baseHex = rgbToHex(baseColor) || fallbackHexNormalized;
+        const baseColor = hexToRgb(colorHex) || fallbackColor;
+        const baseHex = rgbToHex(baseColor) || colorHex || fallbackHexNormalized;
 
       const rootElement = document.documentElement;
       if (!rootElement) {
         return;
       }
 
-      rootElement.style.setProperty('--sky-background-color', baseHex);
-      rootElement.style.setProperty('--sky-background-rgb', rgbValuesToString(baseColor));
+        rootElement.style.setProperty('--sky-background-color', baseHex);
+        rootElement.style.setProperty('--sky-background-rgb', rgbValuesToString(baseColor));
       rootElement.style.backgroundColor = baseHex;
       rootElement.style.backgroundImage = 'none';
 
@@ -530,12 +510,12 @@
         rootElement.removeAttribute('data-sky-label');
       }
 
-      applyDynamicPalette(topColor, bottomColor);
+        applyDynamicPalette(baseColor);
 
-      const themeColorMeta = document.querySelector('meta[name="theme-color"]');
-      if (themeColorMeta) {
-        themeColorMeta.setAttribute('content', baseHex);
-      }
+        const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+        if (themeColorMeta) {
+          themeColorMeta.setAttribute('content', baseHex);
+        }
     };
 
     applyImmediateBackground();

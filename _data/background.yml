@@ -4,31 +4,19 @@ description: "Primary background colour applied across the site."
 time_points:
   - label: "Night watch"
     time: "00:00"
-    gradient:
-      top: "#040712"
-      bottom: "#0f172a"
+    color: "#0a0f1e"
   - label: "First light"
     time: "05:00"
-    gradient:
-      top: "#1e1b4b"
-      bottom: "#4338ca"
+    color: "#312a8b"
   - label: "Daybreak blaze"
     time: "08:00"
-    gradient:
-      top: "#f59e0b"
-      bottom: "#f97316"
+    color: "#f78911"
   - label: "Solar flare"
     time: "12:30"
-    gradient:
-      top: "#f97316"
-      bottom: "#f43f5e"
+    color: "#f7593a"
   - label: "Aurora ember"
     time: "17:30"
-    gradient:
-      top: "#ef4444"
-      bottom: "#c026d3"
+    color: "#d8358c"
   - label: "Evening hush"
     time: "20:30"
-    gradient:
-      top: "#312e81"
-      bottom: "#1e1b4b"
+    color: "#282566"
