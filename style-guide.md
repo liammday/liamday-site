@@ -5,545 +5,663 @@ permalink: /style-guide/
 ---
 
 <style>
-  .sg-background-card {
-    display: grid;
-    gap: 1.25rem;
-    border-radius: 1.5rem;
-    border: 1px solid var(--dynamic-card-border, rgba(203, 213, 225, 0.4));
-    background: var(--dynamic-card-background, rgba(248, 250, 252, 0.95));
-    color: var(--dynamic-card-text, #0f172a);
-    padding: 1.75rem;
-    box-shadow: 0 20px 40px rgba(var(--dynamic-card-shadow-rgb, 15, 23, 42), 0.12);
-    transition: background-color 0.6s ease, border-color 0.6s ease, color 0.6s ease, box-shadow 0.6s ease;
-  }
-
-  .sg-background-card__swatch {
-    width: 100%;
-    height: 8rem;
-    border-radius: 1.25rem;
-    background: var(--sg-background-color, var(--sky-background-color, #030712));
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
-    transition: background-color 0.6s ease, box-shadow 0.6s ease;
-  }
-
-  .sg-background-card__meta {
+  .style-guide-page {
+    width: min(100%, 76rem);
+    margin: 0 auto;
+    padding: clamp(2.5rem, 6vw, 5rem) clamp(1.5rem, 4vw, 3rem) clamp(4rem, 8vw, 6rem);
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;
+    gap: clamp(2.5rem, 6vw, 4rem);
+    color: var(--screen-ink);
   }
 
-  .sg-time-control {
+  .screen-panel {
+    position: relative;
+    background: var(--screen-paper);
+    color: var(--screen-ink);
+    border-radius: clamp(1.75rem, 4vw, 2.5rem);
+    padding: clamp(1.75rem, 3vw, 2.75rem);
+    border: 3px solid rgba(var(--two-tone-foreground-rgb), 0.22);
+    box-shadow: 12px 12px 0 rgba(var(--two-tone-foreground-rgb), 0.15);
+    overflow: hidden;
+  }
+
+  .screen-panel::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 3px solid rgba(var(--two-tone-background-rgb), 0.55);
+    transform: translate(10px, 10px);
+    mix-blend-mode: lighten;
+    opacity: 0.18;
+    pointer-events: none;
+  }
+
+  .screen-panel > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .screen-panel--ink {
+    background: var(--screen-ink);
+    color: var(--screen-paper);
+    border-color: rgba(var(--two-tone-background-rgb), 0.25);
+    box-shadow: 12px 12px 0 rgba(var(--two-tone-background-rgb), 0.25);
+  }
+
+  .screen-panel--ink::after {
+    border-color: rgba(var(--two-tone-foreground-rgb), 0.35);
+  }
+
+  .style-guide__hero {
     display: grid;
+    gap: 1rem;
+    background-image: linear-gradient(135deg, rgba(var(--two-tone-foreground-rgb), 0.08) 0%, transparent 55%),
+      linear-gradient(-135deg, rgba(var(--two-tone-foreground-rgb), 0.06) 0%, transparent 50%);
+  }
+
+  .style-guide__tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.28em;
+  }
+
+  .style-guide__tag::before {
+    content: "●";
+    font-size: 0.65rem;
+  }
+
+  .style-guide__title {
+    font-size: clamp(2.5rem, 4vw, 4.5rem);
+    line-height: 1.05;
+  }
+
+  .style-guide__lead {
+    max-width: 48ch;
+    font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+    line-height: 1.7;
+    color: var(--screen-ink-muted);
+  }
+
+  .style-guide__section {
+    display: grid;
+    gap: clamp(1.75rem, 4vw, 2.5rem);
+  }
+
+  .style-guide__section-header {
+    display: grid;
+    gap: 0.75rem;
+    max-width: 54ch;
+  }
+
+  .style-guide__section-title {
+    font-size: clamp(1.9rem, 3vw, 2.75rem);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+  }
+
+  .style-guide__section-copy {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--screen-ink-muted);
+  }
+
+  .style-guide-page :not(pre) > code {
+    font-family: "Fira Code", "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.9rem;
+    background: rgba(var(--two-tone-foreground-rgb), 0.12);
+    color: inherit;
+    padding: 0.1rem 0.45rem;
+    border-radius: 0.6rem;
+  }
+
+  .style-guide__swatch-grid {
+    display: grid;
+    gap: clamp(1.5rem, 3vw, 2rem);
+  }
+
+  @media (min-width: 900px) {
+    .style-guide__swatch-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .style-guide__swatch-card {
+    display: grid;
+    gap: 1.25rem;
+    border-radius: clamp(1.5rem, 3vw, 2rem);
+    padding: clamp(1.5rem, 3vw, 2rem);
+    background: rgba(var(--two-tone-background-rgb), 0.35);
+    border: 2px solid rgba(var(--two-tone-foreground-rgb), 0.2);
+    box-shadow: 10px 10px 0 rgba(var(--two-tone-foreground-rgb), 0.14);
+  }
+
+  .style-guide__swatch-card--ink {
+    background: rgba(var(--two-tone-foreground-rgb), 0.15);
+  }
+
+  .style-guide__swatch-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .style-guide__swatch-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.24em;
+  }
+
+  .style-guide__swatch-name {
+    font-size: 1.15rem;
+    font-weight: 600;
+  }
+
+  .style-guide__swatch-sample {
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    border-radius: clamp(1.1rem, 3vw, 1.75rem);
+    border: 2px solid rgba(var(--two-tone-foreground-rgb), 0.35);
+    box-shadow: inset 0 0 0 3px rgba(0, 0, 0, 0.08);
+    background: var(--sample-color, var(--screen-paper));
+  }
+
+  .style-guide__token-list {
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .style-guide__token-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: var(--screen-ink-muted);
     gap: 1rem;
   }
 
-  .sg-time-control__header {
+  .style-guide__token-item dt {
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .style-guide__token-item code {
+    font-family: "Fira Code", "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.85rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 0.65rem;
+    background: rgba(var(--two-tone-foreground-rgb), 0.12);
+    color: inherit;
+    white-space: nowrap;
+  }
+
+  .style-guide__time-board {
+    display: grid;
+    gap: clamp(1.5rem, 3vw, 2rem);
+  }
+
+  .style-guide__time-panel {
+    display: grid;
+    gap: 1.25rem;
+    border-radius: clamp(1.5rem, 3vw, 2rem);
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+    background: rgba(var(--two-tone-background-rgb), 0.45);
+    border: 2px solid rgba(var(--two-tone-foreground-rgb), 0.25);
+    box-shadow: 10px 10px 0 rgba(var(--two-tone-foreground-rgb), 0.15);
+  }
+
+  .style-guide__time-panel h3 {
+    font-size: 1.35rem;
+    font-family: "Playfair Display", "Times New Roman", Times, serif;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+  }
+
+  .style-guide__slider-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-  }
-
-  .sg-time-control__slider {
-    width: 100%;
-    accent-color: var(--dynamic-accent, #0ea5e9);
-    transition: accent-color 0.6s ease;
-  }
-
-  .sg-time-control__readout {
-    font-feature-settings: "tnum";
-    font-variant-numeric: tabular-nums;
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: var(--dynamic-text-on-background, #0f172a);
-    transition: color 0.6s ease;
-  }
-
-  .sg-time-control__button {
-    font-size: 0.75rem;
-    letter-spacing: 0.16em;
+    font-size: 0.85rem;
     text-transform: uppercase;
-    border-radius: 9999px;
-    padding: 0.35rem 0.85rem;
-    border: 1px solid rgba(var(--dynamic-nav-divider-rgb, 148, 163, 184), 0.35);
-    color: var(--dynamic-text-muted, rgba(71, 85, 105, 0.9));
-    background: rgba(var(--dynamic-card-shadow-rgb, 15, 23, 42), 0.04);
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    letter-spacing: 0.18em;
   }
 
-  .sg-time-control__button:hover,
-  .sg-time-control__button:focus-visible {
-    color: var(--dynamic-text-on-background, #0f172a);
-    border-color: rgba(var(--dynamic-nav-divider-rgb, 148, 163, 184), 0.55);
-    background: rgba(var(--dynamic-card-shadow-rgb, 15, 23, 42), 0.08);
+  .style-guide__time-display {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
   }
 
-  .sg-token-list {
+  .style-guide__slider {
+    width: 100%;
+    accent-color: var(--two-tone-foreground);
+  }
+
+  .style-guide__time-reset {
+    align-self: flex-start;
+    padding: 0.45rem 0.85rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    border-radius: 999px;
+    border: 2px solid rgba(var(--two-tone-foreground-rgb), 0.35);
+    background: transparent;
+    color: currentColor;
+    cursor: pointer;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  .style-guide__time-reset:hover,
+  .style-guide__time-reset:focus-visible {
+    background: rgba(var(--two-tone-foreground-rgb), 0.18);
+    color: var(--screen-paper);
+    outline: none;
+  }
+
+  .style-guide__anchor-grid {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  @media (min-width: 50rem) {
+    .style-guide__anchor-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .style-guide__anchor-card {
+    display: grid;
+    gap: 0.9rem;
+    padding: clamp(1.2rem, 2.2vw, 1.6rem);
+    border-radius: clamp(1.25rem, 2.5vw, 1.75rem);
+    background: rgba(var(--two-tone-background-rgb), 0.55);
+    border: 2px solid rgba(var(--two-tone-foreground-rgb), 0.25);
+  }
+
+  .style-guide__anchor-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+  }
+
+  .style-guide__anchor-sample {
+    height: 3.25rem;
+    border-radius: clamp(0.85rem, 2vw, 1.1rem);
+    border: 2px solid rgba(var(--two-tone-foreground-rgb), 0.35);
+    background: var(--anchor-color, var(--screen-paper));
+  }
+
+  .style-guide__anchor-meta {
+    font-family: "Fira Code", "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.85rem;
+    color: var(--screen-ink-muted);
+  }
+
+  .style-guide__type-samples {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .style-guide__type-pairing {
+    padding: clamp(1.75rem, 3vw, 2.5rem);
+    border-radius: clamp(1.5rem, 3vw, 2rem);
+    background: rgba(var(--two-tone-background-rgb), 0.45);
+    border: 2px solid rgba(var(--two-tone-foreground-rgb), 0.25);
+    box-shadow: 10px 10px 0 rgba(var(--two-tone-foreground-rgb), 0.15);
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .style-guide__type-heading {
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .style-guide__type-heading span {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--screen-ink-muted);
+  }
+
+  .style-guide__type-heading h3 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 700;
+  }
+
+  .style-guide__type-body {
     display: grid;
     gap: 0.75rem;
-    margin: 0;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--screen-ink-muted);
   }
 
-  .sg-token-list__item {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    font-size: 0.85rem;
-    color: var(--dynamic-card-text-muted, rgba(71, 85, 105, 0.9));
+  .style-guide__interface-grid {
+    display: grid;
+    gap: clamp(1.5rem, 3vw, 2rem);
   }
 
-  .sg-token-list__item dt {
-    font-size: 0.7rem;
-    font-weight: 600;
+  @media (min-width: 900px) {
+    .style-guide__interface-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .style-guide__card-demo {
+    display: grid;
+    gap: 1rem;
+    background: rgba(var(--two-tone-background-rgb), 0.55);
+    border-radius: clamp(1.5rem, 3vw, 2rem);
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+    border: 2px solid rgba(var(--two-tone-foreground-rgb), 0.25);
+    box-shadow: 10px 10px 0 rgba(var(--two-tone-foreground-rgb), 0.15);
+  }
+
+  .style-guide__card-demo h3 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    text-transform: uppercase;
     letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--dynamic-card-text, #0f172a);
   }
 
-  .sg-token-list__item code {
-    font-size: 0.85rem;
-    font-weight: 600;
-    background: rgba(var(--dynamic-card-shadow-rgb, 15, 23, 42), 0.08);
-    border-radius: 0.4rem;
-    padding: 0.15rem 0.5rem;
-    color: var(--dynamic-card-text, #0f172a);
+  .style-guide__card-demo p {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--screen-ink-muted);
   }
 
-  .sg-anchor-swatches {
-    display: flex;
-    flex-wrap: wrap;
+  .style-guide__cta {
+    display: inline-flex;
     align-items: center;
-    gap: 0.75rem;
-    margin-top: 1rem;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 999px;
+    background: var(--screen-ink);
+    color: var(--screen-paper);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    border: 2px solid rgba(var(--two-tone-background-rgb), 0.3);
+    box-shadow: 6px 6px 0 rgba(var(--two-tone-background-rgb), 0.35);
   }
 
-  .sg-anchor-swatch {
-    width: 3rem;
-    height: 3rem;
-    border-radius: 1rem;
-    background: var(--swatch-color, #0f172a);
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
-    border: 1px solid rgba(var(--dynamic-nav-divider-rgb, 148, 163, 184), 0.25);
-    transition: background-color 0.6s ease, border-color 0.6s ease, box-shadow 0.6s ease;
+  .style-guide__cta:hover,
+  .style-guide__cta:focus-visible {
+    background: rgba(var(--two-tone-foreground-rgb), 0.85);
+    outline: none;
   }
 
-  .sg-anchor-swatch__meta {
+  .style-guide__menu-preview {
+    display: grid;
+    gap: 1rem;
+    padding: clamp(1.5rem, 3vw, 2rem);
+    border-radius: clamp(1.5rem, 3vw, 2rem);
+    background: linear-gradient(160deg, rgba(var(--two-tone-foreground-rgb), 0.1) 0%, transparent 65%),
+      rgba(var(--two-tone-background-rgb), 0.55);
+    border: 2px solid rgba(var(--two-tone-foreground-rgb), 0.25);
+    box-shadow: 10px 10px 0 rgba(var(--two-tone-foreground-rgb), 0.15);
+  }
+
+  .style-guide__menu-preview-list {
     display: flex;
     flex-direction: column;
-    gap: 0.2rem;
-    font-size: 0.8rem;
-    color: var(--dynamic-card-text-muted, rgba(71, 85, 105, 0.9));
+    gap: 0.75rem;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.24em;
   }
 
-  .sg-anchor-swatch__label {
-    font-size: 0.65rem;
-    font-weight: 600;
-    letter-spacing: 0.14em;
+  .style-guide__code {
+    display: grid;
+    gap: 1rem;
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+    border-radius: clamp(1.5rem, 3vw, 2rem);
+    background: rgba(var(--two-tone-background-rgb), 0.65);
+    border: 2px solid rgba(var(--two-tone-foreground-rgb), 0.28);
+    box-shadow: 10px 10px 0 rgba(var(--two-tone-foreground-rgb), 0.18);
+  }
+
+  .style-guide__code pre {
+    border-radius: 1.25rem;
+    padding: 1.5rem;
+    background: rgba(var(--two-tone-background-rgb), 0.85);
+    color: var(--screen-ink);
+    border: 2px solid rgba(var(--two-tone-foreground-rgb), 0.25);
+  }
+
+  .style-guide__code code {
+    font-family: "Fira Code", "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+
+  .style-guide__footer-note {
+    font-size: 0.85rem;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: var(--dynamic-card-text, #0f172a);
+    color: var(--screen-ink-muted);
   }
 </style>
 
-<div class="mx-auto max-w-6xl px-6 py-20 space-y-16">
-  <header class="space-y-4">
-    <p class="text-sm font-semibold uppercase tracking-[0.3em] text-brand">Design system</p>
-    <h1 class="text-dynamic text-3xl font-semibold sm:text-4xl">Interface style guide</h1>
-    <p class="text-dynamic-muted text-lg leading-relaxed">
-      A living reference for typography, colours, interaction patterns, and reusable components that power Liam’s portfolio site.
-      Use this page to audit changes quickly and to ensure new sections inherit the existing look and feel.
+<div class="style-guide-page">
+  <header class="style-guide__hero screen-panel">
+    <p class="style-guide__tag">Design system</p>
+    <h1 class="style-guide__title">Screen printed interface playbook</h1>
+    <p class="style-guide__lead">
+      The site inherits a living palette from <code>_data/background.yml</code>, blending sky anchors into a rich ink and paper
+      pairing. This guide captures how those dynamic background and foreground variables map to typography, interaction, and
+      reusable blocks.
     </p>
   </header>
 
   {% assign background = site.data.background %}
-  <section class="grid gap-8 lg:grid-cols-[minmax(0,0.5fr)_minmax(0,1fr)] lg:items-start">
-    <div class="space-y-4">
-      <h2 class="text-dynamic text-2xl font-semibold">Colour system</h2>
-      <p class="text-dynamic-muted text-base leading-relaxed">
-        The site’s sky backdrop is orchestrated from
-        <code class="rounded bg-slate-900/10 px-1.5 py-0.5 text-sm text-slate-900">_data/background.yml</code>.
-        Anchor swatches are defined at precise times, then the client interpolates the background and glassmorphism palette
-        every minute so cards, typography, and UI chrome stay readable as the sky evolves.
+  <section class="style-guide__section" aria-labelledby="ink-and-paper">
+    <div class="style-guide__section-header">
+      <h2 id="ink-and-paper" class="style-guide__section-title">Ink &amp; paper system</h2>
+      <p class="style-guide__section-copy">
+        Every page is printed on <strong>var(--two-tone-background)</strong>, with type rendered in
+        <strong>var(--two-tone-foreground)</strong>. These variables adjust automatically as the runtime samples the sky, keeping
+        contrast well above AA. The swatches below resolve to the current palette.
       </p>
-      <div class="grid gap-3">
-        <div class="flex items-center gap-3">
-          <span class="h-10 w-10 rounded-full bg-brand/20"></span>
-          <div>
-            <p class="text-sm font-semibold uppercase tracking-[0.25em] text-slate-500">Brand Accent</p>
-            <p class="text-base font-medium text-slate-900">brand.DEFAULT · <span class="font-mono text-sm">#0ea5e9</span></p>
-          </div>
-        </div>
-        <div class="flex items-center gap-3">
-          <span class="h-10 w-10 rounded-full bg-slate-900"></span>
-          <div>
-            <p class="text-sm font-semibold uppercase tracking-[0.25em] text-slate-500">Primary Text</p>
-            <p class="text-base font-medium text-slate-900">var(--dynamic-text-on-background)</p>
-          </div>
-        </div>
-        <div class="flex items-center gap-3">
-          <span class="h-10 w-10 rounded-full bg-slate-300"></span>
-          <div>
-            <p class="text-sm font-semibold uppercase tracking-[0.25em] text-slate-500">Muted Text</p>
-            <p class="text-base font-medium text-slate-900">var(--dynamic-text-muted)</p>
-          </div>
-        </div>
-      </div>
     </div>
-    <div class="space-y-6">
-      <div
-        class="sg-background-card"
-        data-sg-background-card
-        style="--sg-background-color: {{ background.color | default: '#030712' }};"
-      >
-        <div class="sg-background-card__meta">
-          <h3 class="text-lg font-semibold text-on-card" data-sg-background-label>
-            {{ background.label | default: 'Site background' }}
-          </h3>
-          <p class="text-sm text-on-card-muted">{{ background.description | default: 'Primary background colour applied across the site.' }}</p>
+    <div class="style-guide__swatch-grid">
+      <article class="style-guide__swatch-card" data-sg-paper-card style="--sample-color: {{ background.color | default: '#050712' }};">
+        <div class="style-guide__swatch-meta">
+          <span class="style-guide__swatch-label">Paper</span>
+          <span class="style-guide__swatch-name">Dynamic background</span>
         </div>
-        <div class="sg-background-card__swatch" aria-hidden="true"></div>
-        <dl class="sg-token-list">
-          <div class="sg-token-list__item">
-            <dt>Source of truth</dt>
-            <dd><code>_data/background.yml</code></dd>
-          </div>
-          <div class="sg-token-list__item">
-            <dt>Fallback hex</dt>
-            <dd><code data-sg-current-hex>{{ background.color | default: '#030712' }}</code></dd>
-          </div>
-          <div class="sg-token-list__item">
+        <div class="style-guide__swatch-sample" data-sg-paper-swatch aria-hidden="true"></div>
+        <dl class="style-guide__token-list">
+          <div class="style-guide__token-item">
             <dt>CSS variable</dt>
-            <dd><code>--sky-background-color</code></dd>
+            <dd><code>--two-tone-background</code></dd>
           </div>
-          <div class="sg-token-list__item">
-            <dt>Computed RGB</dt>
-            <dd><code data-sg-current-rgb>var(--sky-background-rgb)</code></dd>
+          <div class="style-guide__token-item">
+            <dt>RGB channels</dt>
+            <dd><code data-sg-paper-rgb>var(--two-tone-background-rgb)</code></dd>
+          </div>
+          <div class="style-guide__token-item">
+            <dt>Resolved hex</dt>
+            <dd><code data-sg-paper-hex>{{ background.color | default: '#050712' }}</code></dd>
           </div>
         </dl>
-      </div>
-      <div class="card-surface rounded-3xl border p-6 backdrop-blur" data-sg-time-simulator>
-        <div class="sg-time-control">
-          <div class="sg-time-control__header">
-            <div>
-              <h3 class="text-base font-semibold text-on-card">Time of day simulator</h3>
-              <p class="mt-1 text-sm text-on-card-muted">
-                Preview how the adaptive palette reacts across the day. Drag the slider to scrub through the anchor points
-                defined in <code class="font-mono text-xs text-on-card-muted">_data/background.yml</code>.
-              </p>
-            </div>
-            <button type="button" class="sg-time-control__button" data-sg-time-reset>Reset</button>
+      </article>
+      <article class="style-guide__swatch-card style-guide__swatch-card--ink" data-sg-ink-card>
+        <div class="style-guide__swatch-meta">
+          <span class="style-guide__swatch-label">Ink</span>
+          <span class="style-guide__swatch-name">Foreground accent</span>
+        </div>
+        <div class="style-guide__swatch-sample" data-sg-ink-swatch aria-hidden="true"></div>
+        <dl class="style-guide__token-list">
+          <div class="style-guide__token-item">
+            <dt>CSS variable</dt>
+            <dd><code>--two-tone-foreground</code></dd>
           </div>
-          <label class="flex items-center justify-between gap-4" for="sg-time-slider">
-            <span class="text-xs font-semibold uppercase tracking-[0.2em] text-on-card">Simulated time</span>
-            <span class="sg-time-control__readout" data-sg-time-display aria-live="polite">--:--</span>
-          </label>
-          <input
-            id="sg-time-slider"
-            class="sg-time-control__slider"
-            type="range"
-            min="0"
-            max="1439"
-            step="1"
-            value="0"
-            data-sg-time-slider
-          />
-          <p class="text-xs text-on-card-muted">
-            Updates here are temporary and only affect this style guide while the page is open. All dynamic backgrounds and
-            typography respond with the same transitions used in production.
+          <div class="style-guide__token-item">
+            <dt>Muted tone</dt>
+            <dd><code>--two-tone-foreground-muted</code></dd>
+          </div>
+          <div class="style-guide__token-item">
+            <dt>Resolved hex</dt>
+            <dd><code data-sg-ink-hex>--</code></dd>
+          </div>
+        </dl>
+      </article>
+    </div>
+  </section>
+
+  <section class="style-guide__section" aria-labelledby="time-tracking">
+    <div class="style-guide__section-header">
+      <h2 id="time-tracking" class="style-guide__section-title">Time based palette</h2>
+      <p class="style-guide__section-copy">
+        The runtime interpolates anchor colours, calculating <strong>--two-tone-background</strong> and
+        <strong>--two-tone-foreground</strong> every minute. Use the scrubber to preview the paper and ink pairings at any point in
+        the day.
+      </p>
+    </div>
+    <div class="style-guide__time-board">
+      <div class="style-guide__time-panel">
+        <div>
+          <h3>Time of day simulator</h3>
+          <p class="style-guide__section-copy">
+            Drag the slider to override the runtime’s clock. The tokens above will update instantly. Reset to return to the live
+            background feed.
           </p>
         </div>
+        <div class="style-guide__slider-row" role="group" aria-labelledby="time-label">
+          <span id="time-label">Simulated time</span>
+          <span class="style-guide__time-display" data-sg-time-display>--:--</span>
+        </div>
+        <input
+          id="sg-time-slider"
+          class="style-guide__slider"
+          type="range"
+          min="0"
+          max="1439"
+          step="1"
+          value="0"
+          data-sg-time-slider
+          aria-describedby="time-label"
+        />
+        <button type="button" class="style-guide__time-reset" data-sg-time-reset>Reset to live sky</button>
       </div>
       {% assign time_points = background.time_points %}
       {% if time_points %}
-      <div class="card-surface rounded-3xl border p-6 backdrop-blur">
-        <h3 class="text-base font-semibold text-on-card">Time-aware sky anchors</h3>
-          <p class="mt-2 text-sm text-on-card-muted">
-            Each anchor specifies the palette at a 24-hour timestamp. The runtime script blends between anchors once per minute
-            and flattens the result to a single sky colour, keeping card surfaces and on-background type legible as daylight
-            shifts. Swatches below show the resolved colour applied across the interface.
-          </p>
-          <div class="mt-5 grid gap-4 lg:grid-cols-2">
-            {% for point in time_points %}
-            {% assign anchor_color = point.color | default: background.color | default: '#050712' %}
-            <div
-              class="card-surface rounded-2xl border p-4 backdrop-blur"
-              data-sg-anchor
-              data-color="{{ anchor_color }}"
-              data-fallback="{{ background.color | default: '#050712' }}"
-            >
-              <div class="flex flex-wrap items-center justify-between gap-3">
-                <p class="text-sm font-semibold uppercase tracking-[0.25em] text-on-card-muted">{{ point.label }}</p>
-                <p class="font-mono text-xs text-on-card-muted">{{ point.time }}</p>
-              </div>
-              <div class="sg-anchor-swatches" aria-hidden="true">
-                <div class="flex items-center gap-3">
-                  <div
-                    class="sg-anchor-swatch"
-                    data-sg-anchor-swatch
-                    style="--swatch-color: {{ anchor_color | default: '#050712' }};"
-                  ></div>
-                  <div class="sg-anchor-swatch__meta">
-                    <span class="sg-anchor-swatch__label">Anchor colour</span>
-                    <code data-sg-anchor-hex>{{ anchor_color | default: '#050712' }}</code>
-                  </div>
-                </div>
-              </div>
-            </div>
-            {% endfor %}
-          </div>
-        </div>
+      <div class="style-guide__anchor-grid">
+        {% for point in time_points %}
+        {% assign anchor_color = point.color | default: background.color | default: '#050712' %}
+        <article class="style-guide__anchor-card" data-sg-anchor-card data-color="{{ anchor_color }}">
+          <header class="style-guide__anchor-heading">
+            <span>{{ point.label }}</span>
+            <span class="style-guide__anchor-meta">{{ point.time }}</span>
+          </header>
+          <div class="style-guide__anchor-sample" data-sg-anchor-swatch aria-hidden="true"></div>
+          <p class="style-guide__anchor-meta" data-sg-anchor-hex>{{ anchor_color }}</p>
+        </article>
+        {% endfor %}
+      </div>
       {% endif %}
-      <div class="card-surface rounded-3xl border p-6 backdrop-blur">
-        <h3 class="text-base font-semibold text-on-card">Dynamic CSS variables</h3>
-        <dl class="mt-4 grid gap-4 text-sm text-on-card-muted sm:grid-cols-2">
-          <div>
-            <dt class="font-semibold text-on-card">--sky-background-color</dt>
-            <dd>Current sky midpoint applied to the document root and theme colour meta tag.</dd>
-          </div>
-          <div>
-            <dt class="font-semibold text-on-card">--sky-background-rgb</dt>
-            <dd>Pre-calculated RGB channel values for WebGL and canvas effects.</dd>
-          </div>
-          <div>
-            <dt class="font-semibold text-on-card">--dynamic-text-on-background</dt>
-            <dd>Primary type colour that adapts based on the background’s luminance.</dd>
-          </div>
-          <div>
-            <dt class="font-semibold text-on-card">--dynamic-glass-background</dt>
-            <dd>Controls glassmorphism surfaces, ensuring cards stay legible whether the sky is bright or midnight dark.</dd>
-          </div>
-          <div>
-            <dt class="font-semibold text-on-card">--dynamic-control-surface</dt>
-            <dd>Base background for buttons, chips, and interactive controls layered on glass panels.</dd>
-          </div>
-        </dl>
-      </div>
-      <div class="card-surface rounded-3xl border p-6 backdrop-blur">
-        <h3 class="text-base font-semibold text-on-card">Adaptive accent palette</h3>
-        <p class="mt-2 text-sm text-on-card-muted">
-          Accent tokens are generated by <code class="font-mono text-xs text-slate-500">applyDynamicPalette</code> so that buttons, links, and highlights shift harmoniously with the sky background.
-        </p>
-        <div class="mt-4 grid gap-4 sm:grid-cols-2">
-          <div class="flex items-center gap-3">
-            <span class="h-10 w-10 rounded-full border border-dynamic" style="background: var(--dynamic-accent);"></span>
-            <div>
-              <p class="text-sm font-semibold text-on-card">Accent base</p>
-              <p class="text-xs text-on-card-muted"><code>--dynamic-accent</code></p>
-            </div>
-          </div>
-          <div class="flex items-center gap-3">
-            <span class="h-10 w-10 rounded-full border border-dynamic" style="background: var(--dynamic-accent-hover);"></span>
-            <div>
-              <p class="text-sm font-semibold text-on-card">Hover state</p>
-              <p class="text-xs text-on-card-muted"><code>--dynamic-accent-hover</code></p>
-            </div>
-          </div>
-          <div class="flex items-center gap-3">
-            <span class="h-10 w-10 rounded-full border border-dynamic" style="background: var(--dynamic-accent-strong);"></span>
-            <div>
-              <p class="text-sm font-semibold text-on-card">Emphasis fill</p>
-              <p class="text-xs text-on-card-muted"><code>--dynamic-accent-strong</code></p>
-            </div>
-          </div>
-          <div class="flex items-center gap-3">
-            <span class="h-10 w-10 rounded-full border border-dynamic" style="background: var(--dynamic-accent-muted);"></span>
-            <div>
-              <p class="text-sm font-semibold text-on-card">Muted wash</p>
-              <p class="text-xs text-on-card-muted"><code>--dynamic-accent-muted</code></p>
-            </div>
-          </div>
-          <div class="flex items-center gap-3">
-            <span
-              class="flex h-10 w-10 items-center justify-center rounded-full border border-dynamic"
-              style="background: var(--dynamic-accent); color: var(--dynamic-accent-contrast);"
-            >
-              Aa
-            </span>
-            <div>
-              <p class="text-sm font-semibold text-on-card">Contrast text</p>
-              <p class="text-xs text-on-card-muted"><code>--dynamic-accent-contrast</code></p>
-            </div>
-          </div>
+    </div>
+  </section>
+
+  <section class="style-guide__section" aria-labelledby="typefaces">
+    <div class="style-guide__section-header">
+      <h2 id="typefaces" class="style-guide__section-title">Typography pairings</h2>
+      <p class="style-guide__section-copy">
+        Headings embrace a bold serif cut using Playfair Display, while body copy keeps Inter for clarity. Pair them with generous
+        tracking and uppercase for the screen printed headline feel.
+      </p>
+    </div>
+    <div class="style-guide__type-samples">
+      <div class="style-guide__type-pairing">
+        <div class="style-guide__type-heading">
+          <span>Display</span>
+          <h3>Serif headlines project authority.</h3>
         </div>
-      </div>
-      <div class="card-surface rounded-3xl border p-6 backdrop-blur">
-        <h3 class="text-base font-semibold text-on-card">Navigation glass tokens</h3>
-        <p class="mt-2 text-sm text-on-card-muted">
-          Overlay, divider, and shadow colours used by the floating navigation are also palette-aware, keeping the menu legible regardless of background choice.
-        </p>
-        <div class="mt-4 grid gap-4 sm:grid-cols-2">
-          <div class="flex items-center gap-3">
-            <span
-              class="h-10 w-10 rounded-full border"
-              style="background: var(--dynamic-nav-panel-background); border-color: var(--dynamic-nav-panel-border);"
-            ></span>
-            <div>
-              <p class="text-sm font-semibold text-on-card">Nav panel</p>
-              <p class="text-xs text-on-card-muted"><code>--dynamic-nav-panel-background</code></p>
-            </div>
-          </div>
-          <div class="flex items-center gap-3">
-            <span class="h-10 w-10 rounded-full border border-dynamic" style="background: var(--dynamic-nav-overlay);"></span>
-            <div>
-              <p class="text-sm font-semibold text-on-card">Backdrop overlay</p>
-              <p class="text-xs text-on-card-muted"><code>--dynamic-nav-overlay</code></p>
-            </div>
-          </div>
-          <div class="flex items-center gap-3">
-            <span class="h-10 w-10 rounded-full border border-dynamic" style="background: rgba(var(--dynamic-nav-divider-rgb), 1);"></span>
-            <div>
-              <p class="text-sm font-semibold text-on-card">Divider tint</p>
-              <p class="text-xs text-on-card-muted"><code>--dynamic-nav-divider-rgb</code></p>
-            </div>
-          </div>
-          <div class="flex items-center gap-3">
-            <span
-              class="h-10 w-10 rounded-full border border-dynamic shadow-lg"
-              style="background: rgba(var(--dynamic-shadow-rgb), 0.18); box-shadow: 0 12px 22px rgba(var(--dynamic-shadow-rgb), 0.25);"
-            ></span>
-            <div>
-              <p class="text-sm font-semibold text-on-card">Shadow colour</p>
-              <p class="text-xs text-on-card-muted"><code>--dynamic-shadow-rgb</code></p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="grid gap-10 lg:grid-cols-[minmax(0,0.5fr)_minmax(0,1fr)] lg:items-start">
-    <div class="space-y-4">
-      <h2 class="text-dynamic text-2xl font-semibold">Typography</h2>
-      <p class="text-dynamic-muted text-base leading-relaxed">
-        Inter is used throughout with a responsive scale driven by Tailwind utilities. Headlines stay bold, while supporting copy uses the
-        <code class="rounded bg-slate-900/10 px-1.5 py-0.5 text-sm text-slate-900">text-dynamic</code> and <code class="rounded bg-slate-900/10 px-1.5 py-0.5 text-sm text-slate-900">text-dynamic-muted</code>
-        helpers so colour adapts with the sky.
-      </p>
-    </div>
-    <div class="card-surface space-y-6 rounded-3xl border p-6 backdrop-blur">
-      <div class="space-y-2">
-        <p class="text-on-card-muted text-xs font-semibold uppercase tracking-[0.3em]">Headings</p>
-        <h1 class="text-dynamic text-4xl font-semibold sm:text-5xl">H1 – Impact headline</h1>
-        <h2 class="text-dynamic text-3xl font-semibold sm:text-4xl">H2 – Section title</h2>
-        <h3 class="text-dynamic text-2xl font-semibold">H3 – Card or panel title</h3>
-      </div>
-      <div class="space-y-3">
-        <p class="text-on-card-muted text-xs font-semibold uppercase tracking-[0.3em]">Body copy</p>
-        <p class="text-dynamic-muted text-lg leading-relaxed">
-          Use <code class="font-mono text-sm text-slate-500">text-lg</code> for introductions and lead paragraphs, stepping down to
-          <code class="font-mono text-sm text-slate-500">text-base</code> for supporting content.
-        </p>
-        <p class="text-dynamic-muted text-base leading-relaxed">
-          Lists inherit Tailwind’s <code class="font-mono text-sm text-slate-500">prose</code> styles and automatically pick up the accent coloured markers defined in
-          <code class="font-mono text-sm text-slate-500">assets/css/style.scss</code>.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <section class="grid gap-10 lg:grid-cols-[minmax(0,0.5fr)_minmax(0,1fr)] lg:items-start">
-    <div class="space-y-4">
-      <h2 class="text-dynamic text-2xl font-semibold">Buttons &amp; controls</h2>
-      <p class="text-dynamic-muted text-base leading-relaxed">
-        Buttons either sit directly on the dynamic background or on glass panels. Keep padding generous and maintain rounded-full silhouettes for primary calls to action.
-      </p>
-    </div>
-    <div class="card-surface space-y-4 rounded-3xl border p-6 backdrop-blur">
-      <div class="flex flex-wrap items-center gap-4">
-        <a
-          class="inline-flex items-center justify-center rounded-full bg-brand px-6 py-3 text-base font-semibold text-white shadow-soft-xl transition hover:bg-brand-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
-          href="#"
-        >Primary action</a>
-        <a
-          class="inline-flex items-center justify-center rounded-full border border-transparent bg-[var(--dynamic-card-background)] px-6 py-3 text-base font-semibold text-[var(--dynamic-card-text)] shadow-sm transition hover:bg-[var(--dynamic-control-surface-hover)] hover:text-[var(--dynamic-card-text)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
-          href="#"
-        >Secondary</a>
-        <button
-          type="button"
-          class="inline-flex items-center gap-2 rounded-full border border-transparent bg-[var(--dynamic-control-surface)] px-4 py-2 text-sm font-semibold text-[var(--dynamic-control-text)] shadow-sm transition hover:bg-[var(--dynamic-control-surface-hover)]"
-        >
-          <span class="inline-flex h-2.5 w-2.5 rounded-full bg-brand"></span>
-          Glass toggle
-        </button>
-      </div>
-      <p class="text-on-card-muted text-sm">
-        Controls inherit stateful colours from the CSS custom properties updated by <code class="font-mono text-xs text-slate-500">applyDynamicPalette</code> in <code class="font-mono text-xs text-slate-500">_layouts/default.html</code>.
-      </p>
-    </div>
-  </section>
-
-  <section class="grid gap-10 lg:grid-cols-[minmax(0,0.5fr)_minmax(0,1fr)] lg:items-start">
-    <div class="space-y-4">
-      <h2 class="text-dynamic text-2xl font-semibold">Cards &amp; glass surfaces</h2>
-      <p class="text-dynamic-muted text-base leading-relaxed">
-        Two primary surface treatments are available: pair <code class="font-mono text-sm text-slate-500">glass-dynamic</code> panels with luminous backgrounds and rely on <code class="font-mono text-sm text-slate-500">card-surface</code> for dense content blocks. Mix them to create visual hierarchy.
-      </p>
-    </div>
-    <div class="grid gap-6 md:grid-cols-2">
-      <div class="glass-panel glass-dynamic ring-dynamic relative overflow-hidden rounded-3xl border p-6 shadow-soft-xl ring-1" data-liquid-glass-panel>
-        <div class="liquid-glass-layer" aria-hidden="true"></div>
-        <div class="liquid-glass-layer liquid-glass-layer--cyan" aria-hidden="true"></div>
-        <div class="space-y-3">
-          <p class="text-on-glass-muted text-xs font-semibold uppercase tracking-[0.3em]">Glass panel</p>
-          <h3 class="text-on-glass text-xl font-semibold">Hero highlight</h3>
-          <p class="text-on-glass-muted text-sm leading-relaxed">
-            Use this treatment for callouts that should mirror the luminous background while staying legible.
+        <div class="style-guide__type-body">
+          <p>
+            Use <code>font-serif</code> with <strong>font-semibold</strong> for hero titles and section headers. Set tracking to a
+            subtle negative value for dense titles, or uppercase with wide tracking for labels.
           </p>
-          <div class="flex flex-wrap gap-2">
-            <span class="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/20 px-3 py-1 text-xs font-semibold text-on-glass">
-              <span class="h-1.5 w-1.5 rounded-full bg-brand"></span>
-              Dynamic tint
-            </span>
-            <span class="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/10 px-3 py-1 text-xs font-semibold text-on-glass">
-              Adaptive text
-            </span>
-          </div>
+          <p>
+            Supporting copy remains <code>font-sans</code>, leaning on <strong>text-dynamic-muted</strong> so the ink colour lightens
+            automatically at brighter backgrounds.
+          </p>
         </div>
-      </div>
-      <div class="card-surface rounded-3xl border p-6">
-        <p class="text-on-card-muted text-xs font-semibold uppercase tracking-[0.3em]">Solid card</p>
-        <h3 class="text-on-card text-xl font-semibold">Supporting detail</h3>
-        <p class="mt-3 text-base text-on-card-muted">
-          Solid cards are ideal for structured lists, metrics, and dense content that benefits from a calm backdrop.
-        </p>
-        <ul class="mt-4 space-y-2 text-sm text-on-card-muted">
-          <li class="flex items-center gap-2">
-            <span class="h-1.5 w-1.5 rounded-full bg-brand"></span>
-            Uses standard border + shadow stack
-          </li>
-          <li class="flex items-center gap-2">
-            <span class="h-1.5 w-1.5 rounded-full bg-brand"></span>
-            Calibrated for clarity against the deep midnight backdrop
-          </li>
-        </ul>
       </div>
     </div>
   </section>
 
-  <section class="grid gap-10 lg:grid-cols-[minmax(0,0.5fr)_minmax(0,1fr)] lg:items-start">
-    <div class="space-y-4">
-      <h2 class="text-dynamic text-2xl font-semibold">Reference snippets</h2>
-      <p class="text-dynamic-muted text-base leading-relaxed">
-        Quick copy/paste helpers when building new sections. Adjust copy only; structural classes keep spacing, alignment, and colour rules intact.
+  <section class="style-guide__section" aria-labelledby="interface-blocks">
+    <div class="style-guide__section-header">
+      <h2 id="interface-blocks" class="style-guide__section-title">Interface blocks</h2>
+      <p class="style-guide__section-copy">
+        Cards, menu overlays, and calls to action reuse the ink and paper pairing. Outlined edges and offset shadows preserve the
+        tactile screen print finish.
       </p>
     </div>
-    <div class="card-surface space-y-4 rounded-3xl border p-6 backdrop-blur">
-      <pre class="overflow-x-auto rounded-2xl bg-slate-900 p-4 text-sm text-slate-100"><code>&lt;section class=&quot;py-16&quot;&gt;
-  &lt;div class=&quot;mx-auto max-w-6xl px-6&quot;&gt;
-    &lt;div class=&quot;grid gap-10 lg:grid-cols-[minmax(0,0.45fr)_minmax(0,1fr)]&quot;&gt;
-      &lt;div&gt;
-        &lt;h2 class=&quot;text-dynamic text-2xl font-semibold&quot;&gt;Title&lt;/h2&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;text-dynamic-muted text-lg leading-relaxed&quot;&gt;
-        &lt;p&gt;Supporting copy...&lt;/p&gt;
+    <div class="style-guide__interface-grid">
+      <article class="style-guide__card-demo">
+        <h3>Project card</h3>
+        <p>
+          Combine <code>rounded-3xl</code>, <code>border-2</code>, and <code>shadow-[12px_12px_0_rgba(...)]</code> utilities with
+          <strong>text-dynamic</strong> for headings and <strong>text-dynamic-muted</strong> for descriptive copy.
+        </p>
+        <a class="style-guide__cta" href="#">View case study</a>
+      </article>
+      <article class="style-guide__menu-preview">
+        <h3 class="style-guide__section-title" style="font-size: 1.25rem;">Menu overlay</h3>
+        <p class="style-guide__section-copy">
+          Mobile navigation expands to a full-screen sheet tinted with <strong>var(--two-tone-background)</strong> and a radial ink
+          mist. Items render in Playfair Display with uppercase tracking, animating in with the overlay.
+        </p>
+        <div class="style-guide__menu-preview-list" role="presentation">
+          <span>About</span>
+          <span>Projects</span>
+          <span>Journal</span>
+          <span>Contact</span>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="style-guide__section" aria-labelledby="code-snippets">
+    <div class="style-guide__section-header">
+      <h2 id="code-snippets" class="style-guide__section-title">Code toolkit</h2>
+      <p class="style-guide__section-copy">
+        Quickly reapply the screen printed system by composing the classes below. Code blocks stay scrollable on mobile, so long
+        snippets never break the layout.
+      </p>
+    </div>
+    <div class="style-guide__code">
+      <pre><code>&lt;section class="py-20"&gt;
+  &lt;div class="mx-auto max-w-6xl px-6"&gt;
+    &lt;div class="grid gap-12 lg:grid-cols-[minmax(0,0.4fr)_minmax(0,1fr)]"&gt;
+      &lt;header&gt;
+        &lt;p class="text-xs uppercase tracking-[0.3em] text-dynamic-muted"&gt;Tagline&lt;/p&gt;
+        &lt;h2 class="text-dynamic text-4xl font-semibold font-serif"&gt;Screen printed heading&lt;/h2&gt;
+      &lt;/header&gt;
+      &lt;div class="space-y-4 text-dynamic-muted"&gt;
+        &lt;p&gt;Use --two-tone-background for surfaces and --two-tone-foreground for type.&lt;/p&gt;
+        &lt;a class="inline-flex items-center gap-2 uppercase tracking-[0.2em] text-dynamic" href="#"&gt;Call to action →&lt;/a&gt;
       &lt;/div&gt;
     &lt;/div&gt;
   &lt;/div&gt;
 &lt;/section&gt;</code></pre>
-      <pre class="overflow-x-auto rounded-2xl bg-slate-900 p-4 text-sm text-slate-100"><code>&lt;article class=&quot;card-surface group rounded-3xl border p-6 transition hover:-translate-y-1&quot;&gt;
-  &lt;h3 class=&quot;text-xl font-semibold text-on-card group-hover:text-brand&quot;&gt;Card title&lt;/h3&gt;
-  &lt;p class=&quot;mt-3 text-base text-on-card-muted&quot;&gt;Body copy for a supporting card.&lt;/p&gt;
-  &lt;span class=&quot;mt-4 inline-flex items-center text-sm font-semibold text-brand&quot;&gt;Call to action →&lt;/span&gt;
-&lt;/article&gt;</code></pre>
+      <p class="style-guide__footer-note">All typography, colours, and spacing react to the dynamic sky runtime.</p>
     </div>
   </section>
 </div>
@@ -553,11 +671,14 @@ permalink: /style-guide/
     const slider = document.querySelector('[data-sg-time-slider]');
     const display = document.querySelector('[data-sg-time-display]');
     const resetButton = document.querySelector('[data-sg-time-reset]');
-    const backgroundCard = document.querySelector('[data-sg-background-card]');
-    const hexTarget = document.querySelector('[data-sg-current-hex]');
-    const rgbTarget = document.querySelector('[data-sg-current-rgb]');
-    const labelTarget = document.querySelector('[data-sg-background-label]');
-    const anchorCards = Array.from(document.querySelectorAll('[data-sg-anchor]'));
+    const paperCard = document.querySelector('[data-sg-paper-card]');
+    const paperSwatch = document.querySelector('[data-sg-paper-swatch]');
+    const paperHex = document.querySelector('[data-sg-paper-hex]');
+    const paperRgb = document.querySelector('[data-sg-paper-rgb]');
+    const inkCard = document.querySelector('[data-sg-ink-card]');
+    const inkSwatch = document.querySelector('[data-sg-ink-swatch]');
+    const inkHex = document.querySelector('[data-sg-ink-hex]');
+    const anchorCards = Array.from(document.querySelectorAll('[data-sg-anchor-card]'));
     const MINUTES_IN_DAY = 24 * 60;
     const FALLBACK_HEX = '#050712';
 
@@ -565,12 +686,10 @@ permalink: /style-guide/
       if (typeof value !== 'string') {
         return null;
       }
-
       const trimmed = value.trim();
       if (!trimmed) {
         return null;
       }
-
       let hex = trimmed.replace(/^#/, '');
       if (hex.length === 3) {
         hex = hex
@@ -580,39 +699,81 @@ permalink: /style-guide/
       } else if (hex.length !== 6) {
         return null;
       }
-
       if (!/^[0-9a-fA-F]{6}$/.test(hex)) {
         return null;
       }
-
       return `#${hex.toLowerCase()}`;
+    };
+
+    const setSwatch = (element, hexValue) => {
+      if (!element || !hexValue) return;
+      element.style.setProperty('--sample-color', hexValue);
+    };
+
+    const setInkSwatch = (element, hexValue) => {
+      if (!element || !hexValue) return;
+      element.style.setProperty('--sample-color', hexValue);
+      element.style.background = hexValue;
     };
 
     const updateAnchorSwatches = () => {
       anchorCards.forEach((card) => {
-        const colorHex = normalizeHex(card.getAttribute('data-color'));
-        const fallbackHex = normalizeHex(card.getAttribute('data-fallback')) || FALLBACK_HEX;
-        const resolvedHex = colorHex || fallbackHex || FALLBACK_HEX;
+        const colorHex = normalizeHex(card.getAttribute('data-color')) || FALLBACK_HEX;
         const swatch = card.querySelector('[data-sg-anchor-swatch]');
-        const hexLabel = card.querySelector('[data-sg-anchor-hex]');
-
-        if (swatch && resolvedHex) {
-          swatch.style.setProperty('--swatch-color', resolvedHex);
+        const label = card.querySelector('[data-sg-anchor-hex]');
+        if (swatch) {
+          swatch.style.setProperty('--anchor-color', colorHex);
         }
-
-        if (hexLabel && resolvedHex) {
-          hexLabel.textContent = resolvedHex;
+        if (label) {
+          label.textContent = colorHex;
         }
       });
     };
 
-    if (anchorCards.length) {
-      updateAnchorSwatches();
-    }
+    const rgbToHex = (rgbString) => {
+      if (typeof rgbString !== 'string') {
+        return null;
+      }
+      const match = rgbString
+        .trim()
+        .match(/^rgb\s*\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)$/i);
+      if (!match) {
+        return null;
+      }
+      const [, r, g, b] = match.map(Number);
+      const clampChannel = (value) => Math.min(255, Math.max(0, Number(value) || 0));
+      const channels = [clampChannel(r), clampChannel(g), clampChannel(b)];
+      return `#${channels.map((channel) => channel.toString(16).padStart(2, '0')).join('')}`;
+    };
 
-    if (!slider || !display) {
-      return;
-    }
+    const updateLiveTokens = () => {
+      const computed = getComputedStyle(document.documentElement);
+      const paperHexValue = normalizeHex(computed.getPropertyValue('--two-tone-background')) || FALLBACK_HEX;
+      const paperRgbValue = computed.getPropertyValue('--two-tone-background-rgb').trim();
+      const inkHexValue =
+        normalizeHex(computed.getPropertyValue('--two-tone-foreground')) ||
+        rgbToHex(computed.getPropertyValue('--two-tone-foreground')) ||
+        '#fef4ec';
+
+      if (paperCard) {
+        setSwatch(paperCard, paperHexValue);
+      }
+      if (paperSwatch) {
+        paperSwatch.style.setProperty('--sample-color', paperHexValue);
+      }
+      if (paperHex) {
+        paperHex.textContent = paperHexValue;
+      }
+      if (paperRgb && paperRgbValue) {
+        paperRgb.textContent = paperRgbValue;
+      }
+      if (inkSwatch) {
+        setInkSwatch(inkSwatch, inkHexValue);
+      }
+      if (inkHex) {
+        inkHex.textContent = inkHexValue;
+      }
+    };
 
     const formatMinutes = (minutes) => {
       const safeMinutes = Number.isFinite(minutes) ? minutes : 0;
@@ -623,30 +784,8 @@ permalink: /style-guide/
     };
 
     const updateDisplay = (minutes) => {
-      display.textContent = formatMinutes(minutes);
-    };
-
-    const updateLiveTokens = () => {
-      const runtime = window.__skyRuntime;
-      const detail = runtime?.lastAppliedBackground;
-      const computed = getComputedStyle(document.documentElement);
-      const hex = computed.getPropertyValue('--sky-background-color').trim();
-      const rgb = computed.getPropertyValue('--sky-background-rgb').trim();
-
-      if (backgroundCard && hex) {
-        backgroundCard.style.setProperty('--sg-background-color', hex);
-      }
-
-      if (hexTarget && hex) {
-        hexTarget.textContent = hex;
-      }
-
-      if (rgbTarget && rgb) {
-        rgbTarget.textContent = rgb;
-      }
-
-      if (labelTarget && detail?.label) {
-        labelTarget.textContent = detail.label;
+      if (display) {
+        display.textContent = formatMinutes(minutes);
       }
     };
 
@@ -655,15 +794,13 @@ permalink: /style-guide/
       if (!runtime) {
         return;
       }
-
       if (typeof runtime.setTimeOverride === 'function') {
         runtime.setTimeOverride(minutes);
-        return;
-      }
-
-      runtime.timeOverrideMinutes = minutes;
-      if (typeof runtime.applyBackground === 'function') {
-        runtime.applyBackground();
+      } else {
+        runtime.timeOverrideMinutes = minutes;
+        if (typeof runtime.applyBackground === 'function') {
+          runtime.applyBackground();
+        }
       }
     };
 
@@ -672,15 +809,13 @@ permalink: /style-guide/
       if (!runtime) {
         return;
       }
-
       if (typeof runtime.clearTimeOverride === 'function') {
         runtime.clearTimeOverride();
-        return;
-      }
-
-      delete runtime.timeOverrideMinutes;
-      if (typeof runtime.applyBackground === 'function') {
-        runtime.applyBackground();
+      } else {
+        delete runtime.timeOverrideMinutes;
+        if (typeof runtime.applyBackground === 'function') {
+          runtime.applyBackground();
+        }
       }
     };
 
@@ -700,21 +835,19 @@ permalink: /style-guide/
             return now.getHours() * 60 + now.getMinutes();
           })();
 
-      slider.value = String(Math.round(initialMinutes));
-      updateDisplay(initialMinutes);
-      updateLiveTokens();
-
-      slider.addEventListener('input', (event) => {
-        const minutes = Number(event.target.value);
-        updateDisplay(minutes);
-        applyOverride(minutes);
-      });
-
-      slider.addEventListener('change', (event) => {
-        const minutes = Number(event.target.value);
-        updateDisplay(minutes);
-        applyOverride(minutes);
-      });
+      if (slider) {
+        slider.value = String(Math.round(initialMinutes));
+        slider.addEventListener('input', (event) => {
+          const minutes = Number(event.target.value);
+          updateDisplay(minutes);
+          applyOverride(minutes);
+        });
+        slider.addEventListener('change', (event) => {
+          const minutes = Number(event.target.value);
+          updateDisplay(minutes);
+          applyOverride(minutes);
+        });
+      }
 
       if (resetButton) {
         resetButton.addEventListener('click', () => {
@@ -722,9 +855,12 @@ permalink: /style-guide/
         });
       }
 
+      updateDisplay(initialMinutes);
+      updateLiveTokens();
+
       window.addEventListener('sky:background-applied', (event) => {
         const minutes = Number.isFinite(event?.detail?.minutes) ? event.detail.minutes : null;
-        if (Number.isFinite(minutes) && !Number.isFinite(window.__skyRuntime?.timeOverrideMinutes)) {
+        if (Number.isFinite(minutes) && slider && !Number.isFinite(window.__skyRuntime?.timeOverrideMinutes)) {
           slider.value = String(Math.round(minutes));
           updateDisplay(minutes);
         }
@@ -735,12 +871,13 @@ permalink: /style-guide/
     const waitForRuntime = () => {
       if (window.__skyRuntime && typeof window.__skyRuntime.applyBackground === 'function') {
         initializeControls();
+        updateAnchorSwatches();
       } else {
         window.requestAnimationFrame(waitForRuntime);
       }
     };
 
+    updateAnchorSwatches();
     waitForRuntime();
   })();
 </script>
-
