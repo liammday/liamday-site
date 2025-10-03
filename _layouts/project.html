@@ -1,35 +1,37 @@
 ---
 layout: default
 ---
-<article class="pb-16">
-  <div class="mx-auto max-w-5xl px-6 py-16">
-    <a class="section-tag inline-flex items-center gap-3" href="{{ '/' | relative_url }}#projects">← Back to projects</a>
-    <h1 class="mt-6 section-title">{{ page.title }}</h1>
+<article class="bg-white py-16">
+  <div class="mx-auto max-w-5xl px-6">
+    <a class="text-sm text-slate-600 underline-offset-4 transition hover:text-slate-900 hover:underline" href="{{ '/' | relative_url }}#projects"
+      >← Back to projects</a
+    >
+    <h1 class="mt-6 text-3xl font-bold text-slate-900 md:text-4xl">{{ page.title }}</h1>
     {% if page.summary %}
-    <p class="section-lede mt-4 max-w-3xl">{{ page.summary }}</p>
+    <p class="mt-4 text-lg text-slate-600">{{ page.summary }}</p>
     {% endif %}
-    <div class="project-meta mt-10">
+    <dl class="mt-8 grid gap-6 rounded-xl border border-slate-200 bg-slate-50 p-6 text-sm text-slate-600 sm:grid-cols-3">
       {% if page.role %}
-      <div class="project-meta__item">
-        <span class="project-meta__label">Role</span>
-        <span class="project-meta__value">{{ page.role }}</span>
+      <div>
+        <dt class="font-semibold text-slate-500">Role</dt>
+        <dd class="mt-1 text-slate-900">{{ page.role }}</dd>
       </div>
       {% endif %}
       {% if page.year %}
-      <div class="project-meta__item">
-        <span class="project-meta__label">Year</span>
-        <span class="project-meta__value">{{ page.year }}</span>
+      <div>
+        <dt class="font-semibold text-slate-500">Year</dt>
+        <dd class="mt-1 text-slate-900">{{ page.year }}</dd>
       </div>
       {% endif %}
       {% if page.client %}
-      <div class="project-meta__item">
-        <span class="project-meta__label">Client</span>
-        <span class="project-meta__value">{{ page.client }}</span>
+      <div>
+        <dt class="font-semibold text-slate-500">Client</dt>
+        <dd class="mt-1 text-slate-900">{{ page.client }}</dd>
       </div>
       {% endif %}
+    </dl>
+    <div class="prose prose-slate mt-12 max-w-none">
+      {{ content }}
     </div>
-  </div>
-  <div class="prose prose-lg prose-slate mx-auto mt-16 max-w-3xl px-6">
-    {{ content }}
   </div>
 </article>
