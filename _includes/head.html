@@ -207,6 +207,73 @@
       return best;
     };
 
+    const ensureComplementContrast = (tone, background, hue) => {
+      if (!tone || !background) {
+        return tone || null;
+      }
+
+      const desiredContrast = 6.5;
+      const backgroundLuminance = getRelativeLuminance(background);
+      let workingTone = tone;
+      let workingHsl = rgbToHsl(workingTone);
+      workingHsl.h = hue;
+
+      let iterations = 0;
+      const direction = backgroundLuminance > 0.5 ? -1 : 1;
+
+      while (getContrastRatio(workingTone, background) < desiredContrast && iterations < 10) {
+        workingHsl.l = clamp01(workingHsl.l + direction * 0.07);
+        workingTone = hslToRgb(workingHsl);
+        iterations += 1;
+      }
+
+      if (getContrastRatio(workingTone, background) >= desiredContrast) {
+        return workingTone;
+      }
+
+      workingHsl = rgbToHsl(workingTone);
+      iterations = 0;
+
+      while (getContrastRatio(workingTone, background) < desiredContrast && iterations < 6) {
+        workingHsl.s = clamp01(workingHsl.s + 0.08);
+        workingTone = hslToRgb(workingHsl);
+        iterations += 1;
+      }
+
+      return workingTone;
+    };
+
+    const getComplementaryTone = (background) => {
+      if (!background) {
+        return WHITE;
+      }
+
+      const backgroundHsl = rgbToHsl(background);
+      const complementaryHue = (backgroundHsl.h + 0.5) % 1;
+      const complementHsl = {
+        h: complementaryHue,
+        s: clamp01(Math.max(0.5, backgroundHsl.s * 1.1)),
+        l: 0.52
+      };
+
+      let tone = hslToRgb(complementHsl);
+      tone = ensureComplementContrast(tone, background, complementaryHue) || tone;
+
+      if (getContrastRatio(tone, background) < 6.5) {
+        const fallback = getMostContrastingColor(background);
+        tone = mixRgb(tone, fallback, 0.35) || fallback;
+      }
+
+      return tone;
+    };
+
+    const rgbToString = (color) => {
+      if (!color) {
+        return '';
+      }
+      return `rgb(${color.r}, ${color.g}, ${color.b})`;
+    };
+
     const getReadableTextOn = (background) => {
       return getMostContrastingColor(background);
     };
@@ -444,8 +511,10 @@
         return;
       }
 
-      const foreground = getMostContrastingColor(baseColor);
-      const muted = mixRgb(foreground, baseColor, 0.35);
+      const foreground = getComplementaryTone(baseColor);
+      const muted = mixRgb(foreground, baseColor, 0.45);
+      const surfaceBackground = mixRgb(baseColor, foreground, 0.18);
+      const surfaceBorder = mixRgb(baseColor, foreground, 0.35);
       const baseHex = rgbToHex(baseColor);
       const rootElement = document.documentElement;
 
@@ -454,13 +523,16 @@
       }
 
       const palette = {
-        '--dynamic-text-on-background': `rgb(${foreground.r}, ${foreground.g}, ${foreground.b})`,
-        '--dynamic-text-muted': rgbaToString(muted, 0.78),
+        '--dynamic-text-on-background': rgbToString(foreground),
+        '--dynamic-text-muted': rgbToString(muted),
         '--two-tone-background': baseHex,
         '--two-tone-background-rgb': rgbValuesToString(baseColor),
-        '--two-tone-foreground': `rgb(${foreground.r}, ${foreground.g}, ${foreground.b})`,
+        '--two-tone-foreground': rgbToString(foreground),
         '--two-tone-foreground-rgb': rgbValuesToString(foreground),
-        '--two-tone-foreground-muted': rgbaToString(muted, 0.78)
+        '--two-tone-foreground-muted': rgbToString(muted),
+        '--surface-background': rgbToString(surfaceBackground),
+        '--surface-background-rgb': rgbValuesToString(surfaceBackground),
+        '--surface-border': rgbaToString(surfaceBorder, 0.22)
       };
 
       Object.entries(palette).forEach(([variable, value]) => {
