@@ -1,37 +1,93 @@
 ---
 layout: default
 ---
-<article class="bg-white py-16">
-  <div class="mx-auto max-w-5xl px-6">
-    <a class="text-sm text-slate-600 underline-offset-4 transition hover:text-slate-900 hover:underline" href="{{ '/' | relative_url }}#projects"
-      >← Back to projects</a
-    >
-    <h1 class="mt-6 text-3xl font-bold text-slate-900 md:text-4xl">{{ page.title }}</h1>
-    {% if page.summary %}
-    <p class="mt-4 text-lg text-slate-600">{{ page.summary }}</p>
-    {% endif %}
-    <dl class="mt-8 grid gap-6 rounded-xl border border-slate-200 bg-slate-50 p-6 text-sm text-slate-600 sm:grid-cols-3">
-      {% if page.role %}
-      <div>
-        <dt class="font-semibold text-slate-500">Role</dt>
-        <dd class="mt-1 text-slate-900">{{ page.role }}</dd>
-      </div>
+<article class="bg-slate-950 text-slate-100">
+  <section class="border-b border-white/10 bg-gradient-to-br from-slate-950 via-slate-950 to-slate-900">
+    <div class="mx-auto max-w-4xl px-6 py-20">
+      <a class="text-sm text-slate-300 underline-offset-4 transition hover:text-white hover:underline" href="{{ '/' | relative_url }}"
+        >← Back to portfolio</a
+      >
+      {% if page.type %}
+      <p class="mt-8 text-xs font-semibold uppercase tracking-[0.35em] text-slate-400">{{ page.type }}</p>
       {% endif %}
-      {% if page.year %}
-      <div>
-        <dt class="font-semibold text-slate-500">Year</dt>
-        <dd class="mt-1 text-slate-900">{{ page.year }}</dd>
-      </div>
+      <h1 class="mt-6 text-4xl font-semibold text-white">{{ page.title }}</h1>
+      {% if page.summary %}
+      <p class="mt-4 text-lg leading-relaxed text-slate-300">{{ page.summary }}</p>
       {% endif %}
-      {% if page.client %}
-      <div>
-        <dt class="font-semibold text-slate-500">Client</dt>
-        <dd class="mt-1 text-slate-900">{{ page.client }}</dd>
+      <dl class="mt-12 grid gap-6 rounded-2xl border border-white/10 bg-white/5 p-6 text-sm text-slate-300 sm:grid-cols-2 lg:grid-cols-3">
+        {% if page.role %}
+        <div>
+          <dt class="text-slate-400">Role</dt>
+          <dd class="mt-1 text-white">{{ page.role }}</dd>
+        </div>
+        {% endif %}
+        {% if page.year %}
+        <div>
+          <dt class="text-slate-400">Year</dt>
+          <dd class="mt-1 text-white">{{ page.year }}</dd>
+        </div>
+        {% endif %}
+        {% if page.period %}
+        <div>
+          <dt class="text-slate-400">Period</dt>
+          <dd class="mt-1 text-white">{{ page.period }}</dd>
+        </div>
+        {% endif %}
+        {% if page.client %}
+        <div>
+          <dt class="text-slate-400">Client</dt>
+          <dd class="mt-1 text-white">{{ page.client }}</dd>
+        </div>
+        {% endif %}
+        {% if page.location %}
+        <div>
+          <dt class="text-slate-400">Location</dt>
+          <dd class="mt-1 text-white">{{ page.location }}</dd>
+        </div>
+        {% endif %}
+        {% if page.outcome %}
+        <div>
+          <dt class="text-slate-400">Outcome</dt>
+          <dd class="mt-1 text-white">{{ page.outcome }}</dd>
+        </div>
+        {% endif %}
+      </dl>
+    </div>
+  </section>
+
+  {% if page.nav %}
+  <nav class="sticky top-0 z-40 border-b border-white/10 bg-slate-950/90 backdrop-blur" aria-label="Page sections" data-sticky-nav>
+    <div class="mx-auto max-w-4xl px-6">
+      <div class="flex gap-3 overflow-x-auto py-4 text-sm" data-nav-scroll>
+        {% for item in page.nav %}
+        <a class="whitespace-nowrap rounded-full border border-transparent px-4 py-2 font-medium text-slate-400 transition hover:text-white hover:border-white/40 aria-[current=page]:border-white aria-[current=page]:bg-white/10 aria-[current=page]:text-white"
+          href="#{{ item.id }}"
+          data-nav-link
+          >{{ item.label }}</a
+        >
+        {% endfor %}
       </div>
-      {% endif %}
-    </dl>
-    <div class="prose prose-slate mt-12 max-w-none">
+    </div>
+  </nav>
+  {% endif %}
+
+  <div class="mx-auto max-w-4xl px-6 py-16">
+    <div class="detail-content prose prose-invert prose-slate">
       {{ content }}
     </div>
   </div>
+  {% if page.links %}
+  <div class="mx-auto max-w-4xl px-6 pb-20">
+    <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+      <h2 class="text-lg font-semibold text-white">Further reading</h2>
+      <ul class="mt-4 space-y-2 text-sm text-slate-300">
+        {% for link in page.links %}
+        <li>
+          <a class="underline-offset-4 hover:text-white hover:underline" href="{{ link.url }}">{{ link.title }}</a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  {% endif %}
 </article>

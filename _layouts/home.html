@@ -2,147 +2,226 @@
 layout: default
 ---
 {% assign cv = site.data.cv %}
-<section id="profile" class="border-b border-slate-200 bg-slate-50">
-  <div class="mx-auto grid max-w-5xl gap-12 px-6 py-16 lg:grid-cols-2 lg:items-start">
-    <div class="space-y-6">
-      <p class="text-sm font-semibold uppercase tracking-[0.3em] text-slate-500">
-        Ex-British Army Officer · MBA (Technology Management) Candidate
-      </p>
-      <h1 class="text-3xl font-bold text-slate-900 md:text-4xl">
-        Technical product specialist delivering resilient digital experiences.
+{% assign experiences = site.experiences | sort: 'order' %}
+{% assign ordered_projects = site.projects | sort: 'order' %}
+
+<section class="relative overflow-hidden border-b border-white/10 bg-gradient-to-br from-slate-950 via-slate-950 to-slate-900">
+  <div class="absolute inset-0 -z-10">
+    <div class="absolute left-1/2 top-0 h-80 w-80 -translate-x-1/2 rounded-full bg-indigo-500/30 blur-3xl"></div>
+    <div class="absolute bottom-0 left-0 h-72 w-72 -translate-x-1/3 translate-y-1/3 rounded-full bg-amber-500/20 blur-3xl"></div>
+  </div>
+  <div class="mx-auto flex max-w-5xl flex-col items-start gap-12 px-6 py-24 lg:flex-row lg:items-center">
+    <div class="flex-1 space-y-6">
+      <span class="inline-flex items-center rounded-full bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.4em] text-slate-200">
+        Product &amp; Operations Leader
+      </span>
+      <h1 class="text-4xl font-semibold text-white sm:text-5xl">
+        Hello, I’m Liam Day
       </h1>
-      <p class="text-lg leading-relaxed text-slate-600">
-        Liam combines a decade of operational leadership with hands-on mobile app development expertise to drive product quality,
-        accelerate delivery, and elevate customer experience.
+      <p class="max-w-2xl text-lg leading-relaxed text-slate-300">
+        Technical product specialist and former British Army officer blending operational leadership with mobile app development expertise to deliver resilient, human-centred digital experiences.
       </p>
+      <div class="flex flex-wrap gap-4">
+        <a class="inline-flex items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-900 shadow-lg shadow-white/10 transition hover:bg-slate-100"
+          href="#projects"
+          >View my work</a
+        >
+        <a class="inline-flex items-center justify-center rounded-full border border-white/40 px-6 py-3 text-sm font-semibold text-white transition hover:border-white hover:bg-white/10"
+          href="mailto:{{ site.contact.email }}"
+          >Start a conversation</a
+        >
+      </div>
     </div>
-    <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h2 class="text-xs font-semibold uppercase tracking-[0.35em] text-slate-500">Key contact details</h2>
-      <p class="mt-2 text-sm text-slate-500">Always open to new conversations</p>
-      <dl class="mt-6 space-y-4 text-sm text-slate-600">
-        <div class="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-          <dt class="font-medium text-slate-500">Location</dt>
-          <dd class="text-slate-900">{{ site.contact.location }}</dd>
+    <div class="w-full max-w-xs self-stretch rounded-3xl border border-white/10 bg-slate-900/60 p-8 shadow-2xl shadow-indigo-500/20">
+      <div class="mx-auto h-32 w-32 rounded-full bg-gradient-to-tr from-indigo-400 via-slate-200 to-amber-300"></div>
+      <h2 class="mt-8 text-center text-sm font-semibold uppercase tracking-[0.35em] text-slate-300">Contact</h2>
+      <dl class="mt-6 space-y-4 text-sm text-slate-300">
+        <div class="flex flex-col gap-1">
+          <dt class="text-slate-400">Location</dt>
+          <dd>{{ site.contact.location }}</dd>
         </div>
-        <div class="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-          <dt class="font-medium text-slate-500">Email</dt>
-          <dd class="text-slate-900">
-            <a class="text-slate-700 underline-offset-4 hover:text-slate-900 hover:underline" href="mailto:{{ site.contact.email }}"
+        <div class="flex flex-col gap-1">
+          <dt class="text-slate-400">Email</dt>
+          <dd>
+            <a class="text-slate-200 underline-offset-4 hover:text-white hover:underline" href="mailto:{{ site.contact.email }}"
               >{{ site.contact.email }}</a
             >
           </dd>
         </div>
-        <div class="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-          <dt class="font-medium text-slate-500">LinkedIn</dt>
-          <dd class="text-slate-900">
-            <a class="text-slate-700 underline-offset-4 hover:text-slate-900 hover:underline" href="{{ site.contact.linkedin }}"
+        <div class="flex flex-col gap-1">
+          <dt class="text-slate-400">LinkedIn</dt>
+          <dd>
+            <a class="text-slate-200 underline-offset-4 hover:text-white hover:underline" href="{{ site.contact.linkedin }}"
               >linkedin.com/in/liammday</a
             >
           </dd>
         </div>
-        <div class="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-          <dt class="font-medium text-slate-500">Website</dt>
-          <dd class="text-slate-900">
-            <a class="text-slate-700 underline-offset-4 hover:text-slate-900 hover:underline" href="{{ site.contact.website }}"
-              >www.liamday.co.uk</a
-            >
-          </dd>
-        </div>
-        <div class="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-          <dt class="font-medium text-slate-500">Right to Work</dt>
-          <dd class="text-slate-900">{{ site.contact.right_to_work }}</dd>
+        <div class="flex flex-col gap-1">
+          <dt class="text-slate-400">Right to work</dt>
+          <dd>{{ site.contact.right_to_work }}</dd>
         </div>
       </dl>
     </div>
   </div>
 </section>
 
-<section class="border-b border-slate-200 bg-white py-16">
-  <div class="mx-auto grid max-w-5xl gap-12 px-6 lg:grid-cols-[minmax(0,12rem)_1fr]">
-    <div>
-      <h2 class="text-2xl font-semibold text-slate-900">Profile</h2>
+<nav
+  class="sticky top-0 z-40 border-b border-white/10 bg-slate-950/90 backdrop-blur"
+  aria-label="On this page"
+  data-sticky-nav
+>
+  <div class="mx-auto max-w-5xl px-6">
+    <div class="flex gap-3 overflow-x-auto py-4 text-sm" data-nav-scroll>
+      <a class="whitespace-nowrap rounded-full border border-transparent px-4 py-2 font-medium text-slate-400 transition hover:text-white hover:border-white/40 aria-[current=page]:border-white aria-[current=page]:bg-white/10 aria-[current=page]:text-white"
+        href="#about"
+        data-nav-link
+        >About</a
+      >
+      <a class="whitespace-nowrap rounded-full border border-transparent px-4 py-2 font-medium text-slate-400 transition hover:text-white hover:border-white/40 aria-[current=page]:border-white aria-[current=page]:bg-white/10 aria-[current=page]:text-white"
+        href="#capabilities"
+        data-nav-link
+        >Capabilities</a
+      >
+      <a class="whitespace-nowrap rounded-full border border-transparent px-4 py-2 font-medium text-slate-400 transition hover:text-white hover:border-white/40 aria-[current=page]:border-white aria-[current=page]:bg-white/10 aria-[current=page]:text-white"
+        href="#leadership"
+        data-nav-link
+        >Leadership</a
+      >
+      <a class="whitespace-nowrap rounded-full border border-transparent px-4 py-2 font-medium text-slate-400 transition hover:text-white hover:border-white/40 aria-[current=page]:border-white aria-[current=page]:bg-white/10 aria-[current=page]:text-white"
+        href="#projects"
+        data-nav-link
+        >Case studies</a
+      >
+      <a class="whitespace-nowrap rounded-full border border-transparent px-4 py-2 font-medium text-slate-400 transition hover:text-white hover:border-white/40 aria-[current=page]:border-white aria-[current=page]:bg-white/10 aria-[current=page]:text-white"
+        href="#contact"
+        data-nav-link
+        >Contact</a
+      >
     </div>
-    <div class="space-y-4 text-lg leading-relaxed text-slate-600">
-      <p>{{ cv.profile }}</p>
+  </div>
+</nav>
+
+<section id="about" class="scroll-mt-32 border-b border-white/10 bg-slate-950">
+  <div class="mx-auto max-w-5xl px-6 py-16">
+    <div class="grid gap-12 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
+      <div class="space-y-6">
+        <h2 class="text-3xl font-semibold text-white">About Liam</h2>
+        <p class="text-lg leading-relaxed text-slate-300">{{ cv.profile }}</p>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+            <p class="text-sm uppercase tracking-[0.3em] text-slate-400">Experience</p>
+            <p class="mt-3 text-3xl font-semibold text-white">10+ yrs</p>
+            <p class="mt-2 text-sm text-slate-400">Operational leadership across defence and software.</p>
+          </div>
+          <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+            <p class="text-sm uppercase tracking-[0.3em] text-slate-400">Focus</p>
+            <p class="mt-3 text-3xl font-semibold text-white">Product ops</p>
+            <p class="mt-2 text-sm text-slate-400">Driving quality loops and resilient delivery.</p>
+          </div>
+        </div>
+      </div>
+      <div class="space-y-6 rounded-3xl border border-white/10 bg-white/5 p-8">
+        <h3 class="text-sm font-semibold uppercase tracking-[0.3em] text-slate-300">Quick links</h3>
+        <dl class="space-y-4 text-sm text-slate-300">
+          <div class="flex flex-col gap-1">
+            <dt class="text-slate-400">Current role</dt>
+            <dd>Technical Product Specialist · Outdooractive</dd>
+          </div>
+          <div class="flex flex-col gap-1">
+            <dt class="text-slate-400">MBA studies</dt>
+            <dd>Technology Management · Open University</dd>
+          </div>
+          <div class="flex flex-col gap-1">
+            <dt class="text-slate-400">Portfolio</dt>
+            <dd>
+              <a class="text-slate-200 underline-offset-4 hover:text-white hover:underline" href="#projects">Explore case studies</a>
+            </dd>
+          </div>
+        </dl>
+      </div>
     </div>
   </div>
 </section>
 
-<section id="competencies" class="border-b border-slate-200 bg-white py-16">
-  <div class="mx-auto max-w-5xl px-6">
+<section id="capabilities" class="scroll-mt-32 border-b border-white/10 bg-slate-950">
+  <div class="mx-auto max-w-5xl px-6 py-16">
     <div class="max-w-3xl space-y-4">
-      <h2 class="text-2xl font-semibold text-slate-900">Key competencies</h2>
-      <p class="text-lg text-slate-600">
-        Core strengths that shape Liam’s approach to product strategy, delivery, and stakeholder leadership.
+      <h2 class="text-3xl font-semibold text-white">Core capabilities</h2>
+      <p class="text-lg text-slate-300">
+        A blend of operational discipline and modern product practice to move complex teams forward with clarity.
       </p>
     </div>
-    <div class="mt-10 grid gap-6 md:grid-cols-2">
+    <div class="mt-12 grid gap-6 md:grid-cols-2">
       {% for competency in cv.competencies %}
-      <article class="flex h-full flex-col rounded-xl border border-slate-200 bg-slate-50 p-6">
-        <h3 class="text-lg font-semibold text-slate-900">{{ competency.title }}</h3>
-        <p class="mt-3 text-sm leading-relaxed text-slate-600">{{ competency.description }}</p>
+      <article class="h-full rounded-2xl border border-white/10 bg-white/5 p-6 transition hover:border-white/40">
+        <h3 class="text-lg font-semibold text-white">{{ competency.title }}</h3>
+        <p class="mt-3 text-sm leading-relaxed text-slate-300">{{ competency.description }}</p>
       </article>
       {% endfor %}
     </div>
   </div>
 </section>
 
-<section id="experience" class="border-b border-slate-200 bg-white py-16">
-  <div class="mx-auto max-w-5xl px-6">
+<section id="leadership" class="scroll-mt-32 border-b border-white/10 bg-slate-950">
+  <div class="mx-auto max-w-5xl px-6 py-16">
     <div class="max-w-3xl space-y-4">
-      <h2 class="text-2xl font-semibold text-slate-900">Employment</h2>
-      <p class="text-lg text-slate-600">
-        Leadership roles spanning mobile software, large-scale training programmes, and secure communications operations.
+      <h2 class="text-3xl font-semibold text-white">Leadership spotlights</h2>
+      <p class="text-lg text-slate-300">
+        A selection of roles that combine strategic planning, people leadership, and technical oversight.
       </p>
     </div>
-    <div class="mt-12 space-y-12">
-      {% for role in cv.employment %}
-      <article class="space-y-4">
-        <div class="flex flex-wrap items-center gap-3 text-sm text-slate-500">
-          <span>{{ role.period }}</span>
-          <span aria-hidden="true">•</span>
-          <span>{{ role.location }}</span>
+    <div class="mt-12 grid gap-6 lg:grid-cols-3">
+      {% if experiences == empty %}
+      <div class="rounded-2xl border border-dashed border-white/20 bg-white/5 p-6 text-sm text-slate-300">
+        Leadership stories are being prepared. Check back soon for detailed case studies.
+      </div>
+      {% else %}
+      {% for experience in experiences %}
+      <a class="group flex h-full flex-col justify-between rounded-2xl border border-white/10 bg-white/5 p-6 transition hover:border-white/40 hover:bg-white/10"
+        href="{{ experience.url | relative_url }}">
+        <div class="space-y-4">
+          <p class="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">{{ experience.period }}</p>
+          <h3 class="text-lg font-semibold text-white">{{ experience.title }}</h3>
+          <p class="text-sm leading-relaxed text-slate-300">{{ experience.summary }}</p>
         </div>
-        <div class="space-y-3">
-          <h3 class="text-xl font-semibold text-slate-900">{{ role.title }}</h3>
-          <p class="text-sm font-medium uppercase tracking-[0.2em] text-slate-500">{{ role.company }}</p>
-          <ul class="space-y-2 text-sm leading-relaxed text-slate-600">
-            {% for highlight in role.highlights %}
-            <li class="flex gap-2">
-              <span aria-hidden="true" class="mt-1 h-1 w-1 rounded-full bg-slate-400"></span>
-              <span>{{ highlight }}</span>
-            </li>
-            {% endfor %}
-          </ul>
-        </div>
-      </article>
+        <span class="mt-8 inline-flex items-center gap-2 text-sm font-medium text-slate-200">Explore role
+          <svg aria-hidden="true" class="h-4 w-4 transition group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <path d="M5 12h14m-6-6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </span>
+      </a>
       {% endfor %}
+      {% endif %}
     </div>
   </div>
 </section>
 
-<section id="projects" class="border-b border-slate-200 bg-white py-16">
-  <div class="mx-auto max-w-5xl px-6">
+<section id="projects" class="scroll-mt-32 border-b border-white/10 bg-slate-950">
+  <div class="mx-auto max-w-5xl px-6 py-16">
     <div class="max-w-3xl space-y-4">
-      <h2 class="text-2xl font-semibold text-slate-900">Projects</h2>
-      <p class="text-lg text-slate-600">
-        Selected case studies from apps and digital platforms Liam has shaped across defence and outdoor sectors.
+      <h2 class="text-3xl font-semibold text-white">Case studies</h2>
+      <p class="text-lg text-slate-300">
+        Selected projects that demonstrate how Liam guides product delivery, operational change, and cross-functional collaboration.
       </p>
     </div>
-    <div class="mt-12 grid gap-6 sm:grid-cols-2">
-      {% assign ordered_projects = site.projects | sort: 'order' %}
+    <div class="mt-12 grid gap-6 md:grid-cols-2">
       {% for project in ordered_projects %}
-      <a class="flex h-full flex-col justify-between rounded-xl border border-slate-200 bg-slate-50 p-6 transition hover:border-slate-300 hover:bg-white"
+      <a class="group flex h-full flex-col justify-between rounded-2xl border border-white/10 bg-white/5 p-6 transition hover:border-white/40 hover:bg-white/10"
         href="{{ project.url | relative_url }}">
-        <div class="space-y-3">
-          <h3 class="text-lg font-semibold text-slate-900">{{ project.title }}</h3>
-          <p class="text-sm leading-relaxed text-slate-600">{{ project.summary }}</p>
+        <div class="space-y-4">
+          <p class="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">{{ project.year }}</p>
+          <h3 class="text-lg font-semibold text-white">{{ project.title }}</h3>
+          <p class="text-sm leading-relaxed text-slate-300">{{ project.summary }}</p>
         </div>
-        <span class="mt-6 inline-flex items-center gap-2 text-sm font-medium text-slate-700">View project →</span>
+        <span class="mt-8 inline-flex items-center gap-2 text-sm font-medium text-slate-200">View case study
+          <svg aria-hidden="true" class="h-4 w-4 transition group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <path d="M5 12h14m-6-6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </span>
       </a>
       {% endfor %}
       {% if ordered_projects == empty %}
-      <div class="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-6 text-sm text-slate-600">
+      <div class="rounded-2xl border border-dashed border-white/20 bg-white/5 p-6 text-sm text-slate-300">
         Project highlights coming soon. In the meantime, explore Liam’s updates on LinkedIn.
       </div>
       {% endif %}
@@ -150,44 +229,21 @@ layout: default
   </div>
 </section>
 
-<section id="education" class="border-b border-slate-200 bg-white py-16">
-  <div class="mx-auto max-w-5xl px-6">
-    <div class="grid gap-12 lg:grid-cols-[minmax(0,12rem)_1fr]">
-      <div>
-        <h2 class="text-2xl font-semibold text-slate-900">Education &amp; Certifications</h2>
-      </div>
-      <div class="grid gap-8 md:grid-cols-2">
-        <div class="space-y-4 rounded-xl border border-slate-200 bg-slate-50 p-6">
-          <h3 class="text-lg font-semibold text-slate-900">Education</h3>
-          <ul class="space-y-3 text-sm text-slate-600">
-            {% for item in cv.education %}
-            <li>
-              <p class="font-semibold text-slate-900">{{ item.qualification }}</p>
-              <p>{{ item.institution }} · {{ item.period }}</p>
-            </li>
-            {% endfor %}
-          </ul>
-        </div>
-        <div class="space-y-4 rounded-xl border border-slate-200 bg-slate-50 p-6">
-          <h3 class="text-lg font-semibold text-slate-900">Certifications</h3>
-          <ul class="space-y-2 text-sm text-slate-600">
-            {% for certification in cv.certifications %}
-            <li>{{ certification }}</li>
-            {% endfor %}
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="connect" class="bg-white py-16">
-  <div class="mx-auto max-w-4xl px-6 text-center">
-    <h2 class="text-2xl font-semibold text-slate-900">Let’s collaborate</h2>
-    <p class="mx-auto mt-4 max-w-2xl text-lg text-slate-600">
-      Whether you need to enhance a mobile product, streamline operations, or lead complex delivery programmes, Liam can help you unlock momentum.
+<section id="contact" class="scroll-mt-32 bg-slate-950">
+  <div class="mx-auto max-w-3xl px-6 py-20 text-center">
+    <h2 class="text-3xl font-semibold text-white">Let’s build momentum together</h2>
+    <p class="mt-6 text-lg text-slate-300">
+      Whether you need to stabilise release operations, evolve complex training programmes, or unite teams behind a shared roadmap, Liam can help you deliver with confidence.
     </p>
-    <a class="mt-10 inline-flex items-center justify-center rounded-full border border-slate-300 px-6 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-100"
-      href="mailto:{{ site.contact.email }}">Get in touch</a>
+    <div class="mt-10 flex flex-wrap justify-center gap-4">
+      <a class="inline-flex items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-100"
+        href="mailto:{{ site.contact.email }}">
+        Book a call
+      </a>
+      <a class="inline-flex items-center justify-center rounded-full border border-white/40 px-6 py-3 text-sm font-semibold text-white transition hover:border-white hover:bg-white/10"
+        href="{{ site.contact.linkedin }}">
+        Connect on LinkedIn
+      </a>
+    </div>
   </div>
 </section>
