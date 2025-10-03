@@ -225,7 +225,7 @@
           return tone || null;
         }
 
-        const desiredContrast = 4.5;
+        const desiredContrast = 6.5;
         const backgroundLuminance = getRelativeLuminance(background);
         let workingTone = tone;
         let workingHsl = rgbToHsl(workingTone);
@@ -614,6 +614,9 @@
         }
 
         const foreground = getComplementaryTone(baseColor);
+        const surfaceBackground = mixRgb(baseColor, foreground, 0.18);
+        const surfaceBorder = mixRgb(baseColor, foreground, 0.35);
+        const mutedText = mixRgb(foreground, baseColor, 0.45);
         const baseHex = rgbToHex(baseColor);
         const rootElement = document.documentElement;
 
@@ -623,12 +626,15 @@
 
         const palette = {
           '--dynamic-text-on-background': rgbToString(foreground),
-          '--dynamic-text-muted': rgbaToString(foreground, 0.72),
+          '--dynamic-text-muted': rgbToString(mutedText),
           '--two-tone-background': baseHex,
           '--two-tone-background-rgb': rgbValuesToString(baseColor),
           '--two-tone-foreground': rgbToString(foreground),
           '--two-tone-foreground-rgb': rgbValuesToString(foreground),
-          '--two-tone-foreground-muted': rgbaToString(foreground, 0.72)
+          '--two-tone-foreground-muted': rgbToString(mutedText),
+          '--surface-background': rgbToString(surfaceBackground),
+          '--surface-background-rgb': rgbValuesToString(surfaceBackground),
+          '--surface-border': rgbaToString(surfaceBorder, 0.22)
         };
 
         Object.entries(palette).forEach(([variable, value]) => {
