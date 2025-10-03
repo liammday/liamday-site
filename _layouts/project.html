@@ -2,20 +2,31 @@
 layout: default
 ---
 <article class="pb-16">
-  <div class="bg-slate-900 py-16 text-slate-100">
-    <div class="mx-auto max-w-5xl px-6">
-      <a class="inline-flex items-center text-sm font-semibold text-brand hover:text-brand-dark" href="{{ '/' | relative_url }}#projects"
-        >← Back to projects</a
-      >
-      <h1 class="mt-6 text-3xl font-semibold sm:text-4xl">{{ page.title }}</h1>
-      {% if page.summary %}
-      <p class="mt-4 text-lg text-slate-200">{{ page.summary }}</p>
+  <div class="mx-auto max-w-5xl px-6 py-16">
+    <a class="section-tag inline-flex items-center gap-3" href="{{ '/' | relative_url }}#projects">← Back to projects</a>
+    <h1 class="mt-6 section-title">{{ page.title }}</h1>
+    {% if page.summary %}
+    <p class="section-lede mt-4 max-w-3xl">{{ page.summary }}</p>
+    {% endif %}
+    <div class="project-meta mt-10">
+      {% if page.role %}
+      <div class="project-meta__item">
+        <span class="project-meta__label">Role</span>
+        <span class="project-meta__value">{{ page.role }}</span>
+      </div>
       {% endif %}
-      <ul class="mt-8 flex flex-wrap gap-4 text-sm text-slate-200/90">
-        {% if page.role %}<li class="rounded-full border border-white/20 px-4 py-2"><strong class="font-semibold">Role:</strong> {{ page.role }}</li>{% endif %}
-        {% if page.year %}<li class="rounded-full border border-white/20 px-4 py-2"><strong class="font-semibold">Year:</strong> {{ page.year }}</li>{% endif %}
-        {% if page.client %}<li class="rounded-full border border-white/20 px-4 py-2"><strong class="font-semibold">Client:</strong> {{ page.client }}</li>{% endif %}
-      </ul>
+      {% if page.year %}
+      <div class="project-meta__item">
+        <span class="project-meta__label">Year</span>
+        <span class="project-meta__value">{{ page.year }}</span>
+      </div>
+      {% endif %}
+      {% if page.client %}
+      <div class="project-meta__item">
+        <span class="project-meta__label">Client</span>
+        <span class="project-meta__value">{{ page.client }}</span>
+      </div>
+      {% endif %}
     </div>
   </div>
   <div class="prose prose-lg prose-slate mx-auto mt-16 max-w-3xl px-6">
