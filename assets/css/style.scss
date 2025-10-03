@@ -161,6 +161,49 @@ body {
   z-index: 1;
 }
 
+.text-brand {
+  --tw-text-opacity: 1;
+  color: rgb(var(--dynamic-accent-rgb, 14 165 233) / var(--tw-text-opacity));
+}
+
+.text-brand-dark {
+  --tw-text-opacity: 1;
+  color: rgb(var(--dynamic-accent-strong-rgb, 3 105 161) / var(--tw-text-opacity));
+}
+
+.hover\:text-brand:hover,
+.group:hover .group-hover\:text-brand {
+  --tw-text-opacity: 1;
+  color: rgb(var(--dynamic-accent-rgb, 14 165 233) / var(--tw-text-opacity));
+}
+
+.hover\:text-brand-dark:hover {
+  --tw-text-opacity: 1;
+  color: rgb(var(--dynamic-accent-strong-rgb, 3 105 161) / var(--tw-text-opacity));
+}
+
+.bg-brand {
+  --tw-bg-opacity: 1;
+  background-color: rgb(var(--dynamic-accent-rgb, 14 165 233) / var(--tw-bg-opacity));
+}
+
+.bg-brand\/10 {
+  background-color: rgb(var(--dynamic-accent-rgb, 14 165 233) / 0.1);
+}
+
+.bg-brand\/20 {
+  background-color: rgb(var(--dynamic-accent-rgb, 14 165 233) / 0.2);
+}
+
+.hover\:bg-brand-dark:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(var(--dynamic-accent-strong-rgb, 3 105 161) / var(--tw-bg-opacity));
+}
+
+.focus-visible\:outline-brand:focus-visible {
+  outline-color: var(--dynamic-accent, #0ea5e9);
+}
+
 .liquid-glass-layer--cyan {
   background: radial-gradient(
     circle at calc(70% + var(--pointer-shift-x)) calc(70% + var(--pointer-shift-y)),
