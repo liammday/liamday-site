@@ -13,20 +13,20 @@ module.exports = {
     extend: {
       colors: {
         charcoal: {
-          900: '#141619',
-          950: '#0b0d0f',
+          900: '#101215',
+          950: '#07080a',
         },
         graphite: {
-          600: '#2d3036',
-          700: '#23262b',
-          800: '#1b1e22',
+          600: '#26292e',
+          700: '#1d2024',
+          800: '#15181b',
         },
         aluminum: {
-          100: '#f1f3f6',
-          200: '#d7d9df',
-          300: '#b1b4bb',
-          400: '#8c9098',
-          500: '#6f737a',
+          100: '#e4e7ec',
+          200: '#c5c8d0',
+          300: '#9da1a9',
+          400: '#787c84',
+          500: '#5a5e65',
         },
         ember: {
           200: '#f7a76b',
@@ -38,7 +38,7 @@ module.exports = {
       },
       backgroundImage: {
         'anodised-aluminum':
-          'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(18,19,22,0.08) 35%, rgba(255,255,255,0.05) 60%, rgba(5,6,8,0.15) 100%), radial-gradient(circle at top left, rgba(255,255,255,0.08), transparent 55%)',
+          "url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc0JyBoZWlnaHQ9JzQnIHNoYXBlLXJlbmRlcmluZz0nY3Jpc3BFZGdlcyc+CjxyZWN0IHdpZHRoPSc0JyBoZWlnaHQ9JzQnIGZpbGw9JyMxYTFjMWYnLz4KPHJlY3QgeD0nMCcgeT0nMCcgd2lkdGg9JzEnIGhlaWdodD0nMScgZmlsbD0nIzIzMjYyYScgb3BhY2l0eT0nMC44Jy8+CjxyZWN0IHg9JzInIHk9JzAnIHdpZHRoPScxJyBoZWlnaHQ9JzEnIGZpbGw9JyMyYjJmMzQnIG9wYWNpdHk9JzAuNycvPgo8cmVjdCB4PScxJyB5PScxJyB3aWR0aD0nMScgaGVpZ2h0PScxJyBmaWxsPScjMjAyMzI3JyBvcGFjaXR5PScwLjknLz4KPHJlY3QgeD0nMycgeT0nMScgd2lkdGg9JzEnIGhlaWdodD0nMScgZmlsbD0nIzJlMzIzNycgb3BhY2l0eT0nMC42NScvPgo8cmVjdCB4PScwJyB5PScyJyB3aWR0aD0nMScgaGVpZ2h0PScxJyBmaWxsPScjMjgyYzMxJyBvcGFjaXR5PScwLjc1Jy8+CjxyZWN0IHg9JzInIHk9JzMnIHdpZHRoPScxJyBoZWlnaHQ9JzEnIGZpbGw9JyMyMTI0MjgnIG9wYWNpdHk9JzAuODUnLz4KPC9zdmc+')",
       },
       boxShadow: {
         glow: '0 20px 40px -20px rgba(0,0,0,0.6)',
