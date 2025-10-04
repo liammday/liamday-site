@@ -9,21 +9,6 @@
       href="#main"
       >Skip to content</a
     >
-    <header class="relative z-50 border-b border-aluminum-500/25 bg-graphite-800/80 bg-anodised-aluminum backdrop-blur">
-      <div class="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-between gap-4 px-6 py-5">
-        <a class="text-base font-semibold tracking-tight text-aluminum-100" href="{{ '/' | relative_url }}">{{ site.title }}</a>
-        <div class="flex flex-wrap items-center gap-4 text-sm text-aluminum-300">
-          <a class="transition hover:text-ember-300" href="mailto:{{ site.social.email }}">Email</a>
-          {% if site.social.linkedin %}
-          <a class="transition hover:text-ember-300" href="{{ site.social.linkedin }}">LinkedIn</a>
-          {% endif %}
-          {% if site.social.github %}
-          <a class="transition hover:text-ember-300" href="{{ site.social.github }}">GitHub</a>
-          {% endif %}
-        </div>
-      </div>
-    </header>
-
     <main id="main" class="flex-1">
       {{ content }}
     </main>
