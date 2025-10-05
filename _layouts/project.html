@@ -1,8 +1,8 @@
 ---
 layout: default
 ---
-<article class="bg-charcoal-950 bg-anodised-aluminum text-aluminum-100">
-  <section class="border-b border-aluminum-500/25 bg-graphite-800 bg-anodised-aluminum">
+<article class="bg-charcoal-950 text-aluminum-100">
+  <section class="border-b border-aluminum-500/25 bg-graphite-800">
     <div class="mx-auto max-w-4xl px-6 py-20">
       <a class="text-sm text-aluminum-300 underline-offset-4 transition hover:text-ember-300 hover:underline" href="{{ '/' | relative_url }}"
         >← Back to portfolio</a
@@ -14,7 +14,7 @@ layout: default
       {% if page.summary %}
       <p class="mt-4 text-lg leading-relaxed text-aluminum-300">{{ page.summary }}</p>
       {% endif %}
-      <dl class="mt-12 grid gap-6 rounded-2xl border border-aluminum-500/25 bg-graphite-700/60 bg-anodised-aluminum p-6 text-sm text-aluminum-300 sm:grid-cols-2 lg:grid-cols-3">
+      <dl class="mt-12 grid gap-6 rounded-2xl border border-aluminum-500/25 bg-graphite-700/60 p-6 text-sm text-aluminum-300 sm:grid-cols-2 lg:grid-cols-3">
         {% if page.role %}
         <div>
           <dt class="text-aluminum-400">Role</dt>
@@ -56,11 +56,11 @@ layout: default
   </section>
 
   {% if page.nav %}
-  <nav class="sticky top-0 z-40 border-b border-aluminum-500/25 bg-graphite-800/90 bg-anodised-aluminum backdrop-blur" aria-label="Page sections" data-sticky-nav>
+  <nav class="sticky top-0 z-40 border-b border-aluminum-500/25 bg-graphite-800/90 backdrop-blur" aria-label="Page sections" data-sticky-nav>
     <div class="mx-auto max-w-4xl px-6">
       <div class="flex gap-3 overflow-x-auto py-4 text-sm" data-nav-scroll>
         {% for item in page.nav %}
-        <a class="whitespace-nowrap rounded-full border border-transparent px-4 py-2 font-medium text-aluminum-300 transition hover:text-aluminum-100 hover:border-aluminum-500/40 aria-[current=page]:border-ember-400/50 aria-[current=page]:bg-ember-500/10 aria-[current=page]:text-ember-200"
+        <a class="whitespace-nowrap rounded-full border border-transparent px-4 py-2 font-medium text-aluminum-300 transition hover:text-aluminum-100 hover:border-aluminum-500/40 aria-[current=page]:border-ember-400/50 aria-[current=page]:bg-ember-500/10 aria-[current=page]:text-ember-200 aria-[current=page]:texture-noise"
           href="#{{ item.id }}"
           data-nav-link
           >{{ item.label }}</a

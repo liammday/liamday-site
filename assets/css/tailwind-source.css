@@ -4,7 +4,7 @@
 
 @layer base {
   body {
-    @apply bg-charcoal-950 bg-anodised-aluminum text-aluminum-100 antialiased;
+    @apply bg-charcoal-950 text-aluminum-100 antialiased;
     background-attachment: fixed;
   }
 
@@ -20,10 +20,17 @@
 
 @layer components {
   .surface-panel {
-    @apply rounded-2xl border border-aluminum-500/20 bg-graphite-700/80 bg-anodised-aluminum shadow-glow backdrop-blur;
+    @apply rounded-2xl border border-aluminum-500/20 bg-graphite-700/80 shadow-glow backdrop-blur;
   }
 
   .surface-ring {
-    @apply border border-aluminum-500/25 bg-graphite-700/60 bg-anodised-aluminum backdrop-blur;
+    @apply border border-aluminum-500/25 bg-graphite-700/60 backdrop-blur;
+  }
+}
+
+@layer utilities {
+  .texture-noise {
+    @apply bg-anodised-aluminum;
+    background-blend-mode: soft-light;
   }
 }
