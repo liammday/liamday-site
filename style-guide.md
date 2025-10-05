@@ -3,7 +3,7 @@ layout: default
 title: Style Guide
 permalink: /style-guide/
 ---
-<section class="bg-charcoal-950 py-16 text-aluminum-100">
+<section class="bg-charcoal-900 py-16 text-aluminum-100">
   <div class="mx-auto flex max-w-5xl flex-col gap-12 px-6">
     <header class="space-y-4">
       <p class="text-sm font-semibold uppercase tracking-[0.3em] text-aluminum-400">Foundations</p>
@@ -18,9 +18,9 @@ permalink: /style-guide/
       <h2 class="text-2xl font-semibold text-aluminum-100">Color palette</h2>
       <div class="grid gap-6 md:grid-cols-3">
         <div class="rounded-xl border border-aluminum-500/25 bg-graphite-700/70 p-6">
-          <div class="h-16 w-full rounded-lg bg-charcoal-950"></div>
+          <div class="h-16 w-full rounded-lg bg-charcoal-900"></div>
           <p class="mt-4 text-sm font-semibold text-aluminum-100">Primary surfaces</p>
-          <p class="text-sm text-aluminum-300">Charcoal 950</p>
+          <p class="text-sm text-aluminum-300">Charcoal 900</p>
         </div>
         <div class="rounded-xl border border-aluminum-500/25 bg-graphite-700/70 p-6">
           <div class="h-16 w-full rounded-lg bg-graphite-700"></div>

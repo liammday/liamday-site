@@ -4,7 +4,7 @@
 
 @layer base {
   body {
-    @apply bg-charcoal-950 text-aluminum-100 antialiased;
+    @apply bg-charcoal-900 text-aluminum-100 antialiased;
     background-attachment: fixed;
   }
 
