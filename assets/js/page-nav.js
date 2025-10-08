@@ -80,35 +80,21 @@
         });
       }
 
-      function updateVisibleLinks() {
+      function getVisibleItems() {
         const navBottom = nav.getBoundingClientRect().bottom;
-        const visibleItems = [];
-        linkItems.forEach((item) => {
-          const { link, section } = item;
+        return linkItems.filter((item) => {
+          const { section } = item;
           const rect = section.getBoundingClientRect();
-          const isBelowNav = rect.bottom > navBottom;
-          if (isBelowNav) {
-            if (link.hidden) {
-              link.hidden = false;
-            }
-            link.removeAttribute('aria-hidden');
-            link.tabIndex = 0;
-            visibleItems.push(item);
-          } else {
-            if (!link.hidden) {
-              link.hidden = true;
-            }
-            link.setAttribute('aria-hidden', 'true');
-            link.tabIndex = -1;
-          }
+          return rect.bottom > navBottom;
         });
-        return visibleItems;
       }
 
       function handleScroll({ fromHash = false } = {}) {
-        const visibleItems = updateVisibleLinks();
+        const visibleItems = getVisibleItems();
         if (visibleItems.length) {
           setActive(visibleItems[0].section.id, { fromHash });
+        } else if (linkItems.length) {
+          setActive(linkItems[linkItems.length - 1].section.id, { fromHash });
         } else {
           setActive(null, { fromHash });
         }
