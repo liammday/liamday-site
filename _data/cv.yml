@@ -1,11 +1,17 @@
 profile: >-
-  A results-driven leader with [[experience_years]] years of British Army management experience and expertise in mobile app development within the consumer software sector. Proven ability to leverage technology for enhanced efficiency and team performance. Skilled in project and product management, and operational efficiency. Recognised for strong interpersonal skills, adaptability, and a commitment to excellence. Currently pursuing an MBA in Technology Management.
+  A dynamic and results-oriented product and operations leader with over [[experience_years]] years of combined British Army and consumer software sector experience. Expertise in driving product delivery, quality assurance, and cross-functional collaboration to enhance operational efficiency and customer satisfaction. Proven track record in leading complex projects, optimising processes, and managing stakeholder relationships across diverse teams. Skilled in Agile methodologies, data analytics, and team development, with a strong commitment to continuous improvement and innovation. Currently pursuing an MBA in Technology Management to deepen strategic leadership capabilities.
 career_start: 2012-01-01
 competencies:
-  - title: Project Leadership & Strategic Influence
-    description: Proven ability to establish clear purpose, influence cross-functional teams, and champion business requirements to achieve strategic objectives and deliver complex software projects effectively.
+  - title: Product Management & Delivery
+    description: Demonstrated ability to define product vision, prioritise backlogs, and deliver impactful features through close collaboration with UX, engineering, and business teams, ensuring alignment with customer needs and strategic goals.
+  - title: Agile Delivery & Process Optimisation
+    description: Experienced in implementing Agile frameworks to streamline workflows, reduce cycle times, and improve team productivity, including successful application within military and software development environments.
   - title: Risk, Issue & Budget Management
     description: Skilled at proactively identifying and mitigating risks, quantifying business impact, managing budgets, forecasting resources, and ensuring successful outcomes through disciplined governance and decision-making.
+  - title: Data & Analytics Driven Decision-Making
+    description: Adept at leveraging data insights and performance metrics to inform strategic decisions, optimise product features, and enhance operational effectiveness.
+  - title: Onboarding & Training Development
+    description: Proven expertise in designing and delivering training programmes that accelerate team member development, improve retention, and build organisational capability.
   - title: Stakeholder Engagement & Communication
     description: Exceptional ability to engage, influence, and negotiate with internal and external stakeholders, delivering compelling presentations and concise reporting that align diverse perspectives to reach consensus.
   - title: Collaboration & Facilitation
@@ -18,26 +24,28 @@ employment:
     location: Remote (Cambridge, UK and Immenstadt, Germany)
     period: Sep 2023 – Present
     highlights:
-      - Lead cross-platform QA for iOS, Android, and web release candidates, coordinating fixes with engineering teams prior to launch.
-      - Translate customer and partner feedback into actionable insights with UX and product managers to guide feature refinement.
-      - Prepare regular performance and roadmap updates for senior leadership, highlighting delivery risks and opportunities.
-      - Own the second-line technical support queue, managing escalations and maintaining knowledge base resources with community teams.
+      - Lead cross-platform quality assurance for iOS, Android, and web release candidates, reducing post-release defects by 19% through rigorous testing and coordination with engineering teams.
+      - Translate customer and partner feedback into actionable insights, collaborating with UX and product managers to prioritise feature development and improve user satisfaction.
+      - Prepare and deliver regular performance and roadmap updates to senior leadership, highlighting delivery risks and opportunities to inform strategic decision-making.
+      - Own second-line technical support queue, managing escalations efficiently and reducing average resolution time by 15%, while maintaining up-to-date knowledge base resources in partnership with community teams.
   - title: Product Manager & Operations Manager (SO3 Dismounted Close Combat, Combat CIS School)
     company: British Army
     location: Dorset, UK
     period: Jul 2020 – Sep 2023
     highlights:
-      - Spearheaded Project HERMES, streamlining the training pathway by reducing nine courses into five through syllabus and qualification refactoring, cutting 960 instructor training hours annually while increasing qualified student outputs by 30%.
-      - Led professional development for 32 Subject Matter Experts, resulting in the qualification and promotion of 12 team members and retention of six SMEs through strategic role rotation.
-      - Introduced Agile frameworks for Project HERMES to coordinate intra-organisational planning and execution under strict timelines, improving collaboration and efficiency.
+      - Spearheaded Project HERMES, streamlining the training pathway by consolidating nine courses into five through syllabus and qualification refactoring, saving 960 instructor training hours annually and increasing qualified student outputs by 30%.
+      - Led professional development for 32 Subject Matter Experts, resulting in the qualification and promotion of 12 team members and improved retention by implementing strategic role rotation.
+      - Introduced Agile frameworks to coordinate intra-organisational planning and execution under strict timelines, enhancing collaboration and project delivery efficiency.
+      - Optimised operational processes, reducing administrative overhead and improving resource allocation to support training and qualification goals.
   - title: Senior Project Manager & Technical Coordinator (Regimental Signals Officer, 1LANCS)
     company: British Army
     location: Chester, UK
     period: Jul 2018 – Jul 2020
     highlights:
-      - Achieved gold-standard operational coordination during key organisational assessment activities in Kenya by ensuring seamless, secure communications across all operational areas.
-      - Increased trained communication specialists across departments from 2 in 30 to 8 in 30, significantly elevating operational capability and readiness.
-      - Maintained 100% compliance with cryptographic material security protocols through organisation-wide training and rigorous adherence to policy.
+      - Delivered gold-standard operational coordination during key organisational assessment activities in Kenya, ensuring seamless, secure communications across all operational areas.
+      - Increased trained communication specialists from 2 in 30 to 8 in 30 across departments, significantly elevating operational capability and readiness.
+      - Maintained 100% compliance with cryptographic material security protocols through organisation-wide training and strict adherence to policy.
+      - Developed and implemented data-driven reporting tools to monitor operational performance and inform leadership decisions.
   - title: Project Manager & Operations Manager (Company Second in Command, 1LANCS)
     company: British Army
     location: Cyprus
@@ -45,13 +53,15 @@ employment:
     highlights:
       - Ensured training readiness of 130 soldiers for consecutive deployments to the USA, Kenya, and Jordan by managing critical risk-to-life certifications, including weapons handling and combat first aid.
       - Managed and accounted for £3M of serialised equipment across complex international deployments, maintaining 100% accountability and operational readiness.
+      - Led process improvements that enhanced deployment preparation efficiency and reduced equipment discrepancies.
   - title: Team Leader (Infantry Platoon Commander, 1LANCS)
     company: British Army
     location: Cyprus
     period: Jul 2014 – Jul 2016
     highlights:
-      - Led the change in operational role and reintegration back to the UK from Cyprus, coordinating necessary training and certification updates for new operational requirements.
-      - Directed professional development across four seniority levels, ensuring education and training requirements were met on time to support mission readiness and career progression.
+      - Directed the transition of operational roles and reintegration back to the UK from Cyprus, coordinating necessary training and certification updates to meet new operational requirements.
+      - Led professional development across four seniority levels, ensuring education and training requirements were met on time to support mission readiness and career progression.
+      - Fostered a culture of continuous improvement and team cohesion through targeted coaching and mentoring.
 education:
   - qualification: MBA (Technology Management) Candidate
     institution: Open University
@@ -61,5 +71,5 @@ education:
     period: 2010 – 2013
 certifications:
   - Level 7 Award in Leadership and Management, City & Guilds (2022)
-  - Level 5 Certificate in Management and Leadership (QCF), CMI (2014)
   - AgilePM Foundation, APMG (2022)
+  - Level 5 Certificate in Management and Leadership (QCF), CMI (2014)
