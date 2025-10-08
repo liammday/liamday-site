@@ -12,9 +12,6 @@ collections:
   projects:
     output: true
     permalink: /projects/:name/
-  experiences:
-    output: true
-    permalink: /experience/:name/
 
 plugins:
   - jekyll-feed
@@ -27,11 +24,6 @@ defaults:
     values:
       layout: project
       hero: true
-  - scope:
-      path: ""
-      type: "experiences"
-    values:
-      layout: project
 
 exclude:
   - README.md

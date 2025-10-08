@@ -24,23 +24,6 @@ layout: default
   {% endif %}
 {% endfor %}
 
-{% for experience in site.experiences %}
-  {% assign normalized_period = experience.period | replace: '–', '-' %}
-  {% assign start_part = normalized_period | split: '-' | first | strip %}
-  {% if start_part != '' %}
-    {% assign normalized_start = start_part | date: '%Y-%m-01' %}
-    {% assign candidate_timestamp = normalized_start | date: '%s' | plus: 0 %}
-    {% if earliest_start_date == '' %}
-      {% assign earliest_start_date = normalized_start %}
-    {% else %}
-      {% assign earliest_timestamp = earliest_start_date | date: '%s' | plus: 0 %}
-      {% if candidate_timestamp < earliest_timestamp %}
-        {% assign earliest_start_date = normalized_start %}
-      {% endif %}
-    {% endif %}
-  {% endif %}
-{% endfor %}
-
 {% if earliest_start_date == '' %}
   {% assign earliest_start_date = cv.career_start | default: '2014-07-01' %}
 {% endif %}
