@@ -1,6 +1,6 @@
 title: Project HERMES Training Suite
 summary: Refactoring the British Army’s dismounted close combat training to increase throughput while maintaining operational readiness.
-role: Senior Project Manager & Operations Manager
+role: Product Manager & Operations Manager
 year: 2020 – 2023
 client: British Army
 order: 2
