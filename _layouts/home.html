@@ -5,31 +5,8 @@ layout: default
 {% assign ordered_projects = site.projects | sort: 'order' %}
 {% assign case_studies = ordered_projects | where: 'type', 'Case study' %}
 {% assign app_builds = ordered_projects | where: 'type', 'App build' %}
-{% assign earliest_start_date = '' %}
-
-{% for experience in cv.employment %}
-  {% assign normalized_period = experience.period | replace: '–', '-' %}
-  {% assign start_part = normalized_period | split: '-' | first | strip %}
-  {% if start_part != '' %}
-    {% assign normalized_start = start_part | date: '%Y-%m-01' %}
-    {% assign candidate_timestamp = normalized_start | date: '%s' | plus: 0 %}
-    {% if earliest_start_date == '' %}
-      {% assign earliest_start_date = normalized_start %}
-    {% else %}
-      {% assign earliest_timestamp = earliest_start_date | date: '%s' | plus: 0 %}
-      {% if candidate_timestamp < earliest_timestamp %}
-        {% assign earliest_start_date = normalized_start %}
-      {% endif %}
-    {% endif %}
-  {% endif %}
-{% endfor %}
-
-{% if earliest_start_date == '' %}
-  {% assign earliest_start_date = cv.career_start | default: '2014-07-01' %}
-{% endif %}
-
-{% assign start_year = earliest_start_date | date: '%Y' | plus: 0 %}
-{% assign start_month = earliest_start_date | date: '%m' | plus: 0 %}
+{% assign start_year = 2013 %}
+{% assign start_month = 9 %}
 {% assign current_year = 'now' | date: '%Y' | plus: 0 %}
 {% assign current_month = 'now' | date: '%m' | plus: 0 %}
 {% assign experience_years = current_year | minus: start_year %}
@@ -39,7 +16,7 @@ layout: default
   {% assign experience_months = experience_months | plus: 12 %}
 {% endif %}
 {% assign experience_years_text = experience_years %}
-{% if experience_months >= 6 %}
+{% if experience_months > 6 %}
   {% assign experience_years_text = experience_years_text | append: '+' %}
 {% endif %}
 {% assign profile_text = cv.profile | replace: '[[experience_years]]', experience_years_text %}
