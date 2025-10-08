@@ -32,35 +32,57 @@
         return;
       }
 
-      const sections = links
-        .map((link) => {
+      const linkItems = links
+        .map((link, index) => {
           const href = link.getAttribute('href') || '';
           if (!href.startsWith('#')) {
             return null;
           }
           const id = href.slice(1);
           const section = document.getElementById(id);
-          if (section) {
-            section.dataset.navIndex = section.dataset.navIndex || String(links.indexOf(link));
+          if (!section) {
+            return null;
           }
-          return section;
+          section.dataset.navIndex = section.dataset.navIndex || String(index);
+          return { link, section };
         })
         .filter(Boolean);
 
-      if (!sections.length) {
+      if (!linkItems.length) {
         return;
       }
+
+      const navRect = nav.getBoundingClientRect();
+      const navInitialBottom = navRect.bottom + window.scrollY;
+
+      const filteredLinkItems = linkItems.filter(({ section }) => {
+        const sectionRect = section.getBoundingClientRect();
+        const sectionTop = sectionRect.top + window.scrollY;
+        return sectionTop >= navInitialBottom - 1;
+      });
+
+      if (!filteredLinkItems.length) {
+        return;
+      }
+
+      const filteredLinkSet = new Set(filteredLinkItems.map(({ link }) => link));
+      linkItems.forEach(({ link }) => {
+        if (!filteredLinkSet.has(link)) {
+          link.remove();
+        }
+      });
+
+      const itemsById = new Map(filteredLinkItems.map((item) => [item.section.id, item]));
 
       let currentId = null;
 
       function setActive(id, { fromHash = false } = {}) {
-        if (!id || id === currentId) {
+        if (id === currentId) {
           return;
         }
-        currentId = id;
-        links.forEach((link) => {
-          const targetId = (link.getAttribute('href') || '').replace('#', '');
-          if (targetId === id) {
+        currentId = id || null;
+        filteredLinkItems.forEach(({ link, section }) => {
+          if (id && section.id === id) {
             link.setAttribute('aria-current', 'page');
             if (!fromHash) {
               scrollLinkIntoView(scrollContainer, link);
@@ -71,28 +93,54 @@
         });
       }
 
-      function findCurrentSection() {
-        const navHeight = nav.offsetHeight + 24;
-        let activeSection = sections[0];
-        for (const section of sections) {
+      function updateSectionOffsets() {
+        const navHeight = nav.offsetHeight;
+        filteredLinkItems.forEach(({ section }) => {
+          section.style.scrollMarginTop = `${navHeight}px`;
+        });
+      }
+
+      function handleScroll({ fromHash = false } = {}) {
+        const navHeight = nav.offsetHeight;
+        let activeId = null;
+        for (let index = 0; index < filteredLinkItems.length; index += 1) {
+          const { section } = filteredLinkItems[index];
           const rect = section.getBoundingClientRect();
-          if (rect.top - navHeight <= 0) {
-            activeSection = section;
-          } else {
+          const topRelativeToNav = rect.top - navHeight;
+
+          if (rect.top <= navHeight && rect.bottom > navHeight) {
+            activeId = section.id;
+            break;
+          }
+
+          if (topRelativeToNav > 0) {
+            activeId = section.id;
             break;
           }
         }
-        return activeSection;
-      }
 
-      function handleScroll() {
-        const section = findCurrentSection();
-        if (section) {
-          setActive(section.id);
+        if (!activeId && filteredLinkItems.length) {
+          activeId = filteredLinkItems[filteredLinkItems.length - 1].section.id;
         }
+
+        setActive(activeId, { fromHash });
       }
 
-      handleScroll();
+      function scrollToSection(section, { behavior } = {}) {
+        if (!section) {
+          return;
+        }
+        const navHeight = nav.offsetHeight;
+        const targetTop = window.pageYOffset + section.getBoundingClientRect().top - navHeight;
+        window.scrollTo({
+          top: targetTop,
+          behavior: behavior || (reduceMotionQuery.matches ? 'auto' : 'smooth'),
+        });
+      }
+
+      updateSectionOffsets();
+      handleScroll({ fromHash: true });
+
       window.addEventListener(
         'scroll',
         () => {
@@ -100,32 +148,29 @@
         },
         { passive: true }
       );
-      window.addEventListener(
-        'resize',
-        () => {
-          window.requestAnimationFrame(handleScroll);
-        }
-      );
+
+      window.addEventListener('resize', () => {
+        updateSectionOffsets();
+        window.requestAnimationFrame(() => handleScroll({ fromHash: true }));
+      });
 
       if (window.location.hash) {
         const hashId = window.location.hash.slice(1);
-        if (sections.some((section) => section.id === hashId)) {
+        const item = itemsById.get(hashId);
+        if (item) {
+          scrollToSection(item.section, { behavior: 'auto' });
           setActive(hashId, { fromHash: true });
-          const targetSection = document.getElementById(hashId);
-          if (targetSection) {
-            targetSection.scrollIntoView();
-          }
+          window.requestAnimationFrame(() => handleScroll({ fromHash: true }));
         }
       }
 
-      links.forEach((link) => {
-        link.addEventListener('click', () => {
-          const href = link.getAttribute('href');
-          if (!href || !href.startsWith('#')) {
-            return;
-          }
-          const id = href.slice(1);
-          setActive(id);
+      filteredLinkItems.forEach(({ link, section }) => {
+        link.addEventListener('click', (event) => {
+          event.preventDefault();
+          scrollToSection(section, {});
+          window.history.replaceState(null, '', `#${section.id}`);
+          setActive(section.id);
+          window.requestAnimationFrame(handleScroll);
         });
       });
     });
