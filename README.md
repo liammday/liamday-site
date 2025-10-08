@@ -30,7 +30,7 @@ Webflow implementation with a fully version-controlled static site.
 
 - `_config.yml` — Site metadata, navigation, and plugin configuration.
 - `_layouts/` — Page templates for the home page, case studies, and blog posts.
-- `_data/experience.yml` — Structured data for the experience timeline.
+- `_data/cv.yml` — Structured data for the experience timeline and supporting copy.
 - `projects/` — Case study content powered by a custom collection.
 - `_posts/` — Articles listed in the Writing section.
 - `assets/css/tailwind-source.css` — Tailwind entrypoint compiled via the Tailwind CLI.
