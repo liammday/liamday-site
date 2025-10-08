@@ -57,8 +57,8 @@ layout: default
 
   {% if page.nav %}
   <nav class="sticky top-0 z-40 border-b border-aluminum-500/25 bg-charcoal-900/95 backdrop-blur" aria-label="Page sections" data-sticky-nav>
-    <div class="mx-auto max-w-4xl px-6">
-      <div class="flex gap-3 overflow-x-auto py-4 text-sm" data-nav-scroll>
+    <div class="mx-auto w-full max-w-4xl">
+      <div class="flex gap-3 overflow-x-auto px-6 py-4 text-sm" data-nav-scroll>
         {% for item in page.nav %}
         <a class="whitespace-nowrap rounded-full border border-transparent px-4 py-2 font-medium text-aluminum-300 transition hover:text-aluminum-100 hover:border-aluminum-500/40 aria-[current=page]:border-ember-400/50 aria-[current=page]:bg-ember-500/10 aria-[current=page]:text-ember-200 aria-[current=page]:texture-noise"
           href="#{{ item.id }}"
