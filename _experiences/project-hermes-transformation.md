@@ -1,7 +1,7 @@
 ---
 title: Project HERMES Transformation Lead
 summary: Streamlining the British Army’s Combat CIS School training pipeline to increase throughput and modernise instructor development.
-role: Senior Project Manager & Operations Manager
+role: Product Manager & Operations Manager
 period: Jul 2020 – Sep 2023
 location: Dorset, United Kingdom
 client: British Army
