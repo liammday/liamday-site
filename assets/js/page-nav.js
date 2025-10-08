@@ -75,8 +75,10 @@
 
       function updateSectionOffsets() {
         const navHeight = nav.offsetHeight;
+        const minHeight = Math.max(window.innerHeight - navHeight, 0);
         linkItems.forEach(({ section }) => {
           section.style.scrollMarginTop = `${navHeight}px`;
+          section.style.minHeight = `${minHeight}px`;
         });
       }
 
