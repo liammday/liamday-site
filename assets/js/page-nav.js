@@ -52,27 +52,7 @@
         return;
       }
 
-      const navRect = nav.getBoundingClientRect();
-      const navInitialBottom = navRect.bottom + window.scrollY;
-
-      const filteredLinkItems = linkItems.filter(({ section }) => {
-        const sectionRect = section.getBoundingClientRect();
-        const sectionTop = sectionRect.top + window.scrollY;
-        return sectionTop >= navInitialBottom - 1;
-      });
-
-      if (!filteredLinkItems.length) {
-        return;
-      }
-
-      const filteredLinkSet = new Set(filteredLinkItems.map(({ link }) => link));
-      linkItems.forEach(({ link }) => {
-        if (!filteredLinkSet.has(link)) {
-          link.remove();
-        }
-      });
-
-      const itemsById = new Map(filteredLinkItems.map((item) => [item.section.id, item]));
+      const itemsById = new Map(linkItems.map((item) => [item.section.id, item]));
 
       let currentId = null;
 
@@ -81,8 +61,8 @@
           return;
         }
         currentId = id || null;
-        filteredLinkItems.forEach(({ link, section }) => {
-          if (id && section.id === id) {
+        linkItems.forEach(({ link, section }) => {
+          if (id && section.id === id && !link.hidden) {
             link.setAttribute('aria-current', 'page');
             if (!fromHash) {
               scrollLinkIntoView(scrollContainer, link);
@@ -95,35 +75,43 @@
 
       function updateSectionOffsets() {
         const navHeight = nav.offsetHeight;
-        filteredLinkItems.forEach(({ section }) => {
+        linkItems.forEach(({ section }) => {
           section.style.scrollMarginTop = `${navHeight}px`;
         });
       }
 
-      function handleScroll({ fromHash = false } = {}) {
-        const navHeight = nav.offsetHeight;
-        let activeId = null;
-        for (let index = 0; index < filteredLinkItems.length; index += 1) {
-          const { section } = filteredLinkItems[index];
+      function updateVisibleLinks() {
+        const navBottom = nav.getBoundingClientRect().bottom;
+        const visibleItems = [];
+        linkItems.forEach((item) => {
+          const { link, section } = item;
           const rect = section.getBoundingClientRect();
-          const topRelativeToNav = rect.top - navHeight;
-
-          if (rect.top <= navHeight && rect.bottom > navHeight) {
-            activeId = section.id;
-            break;
+          const isBelowNav = rect.bottom > navBottom;
+          if (isBelowNav) {
+            if (link.hidden) {
+              link.hidden = false;
+            }
+            link.removeAttribute('aria-hidden');
+            link.tabIndex = 0;
+            visibleItems.push(item);
+          } else {
+            if (!link.hidden) {
+              link.hidden = true;
+            }
+            link.setAttribute('aria-hidden', 'true');
+            link.tabIndex = -1;
           }
+        });
+        return visibleItems;
+      }
 
-          if (topRelativeToNav > 0) {
-            activeId = section.id;
-            break;
-          }
+      function handleScroll({ fromHash = false } = {}) {
+        const visibleItems = updateVisibleLinks();
+        if (visibleItems.length) {
+          setActive(visibleItems[0].section.id, { fromHash });
+        } else {
+          setActive(null, { fromHash });
         }
-
-        if (!activeId && filteredLinkItems.length) {
-          activeId = filteredLinkItems[filteredLinkItems.length - 1].section.id;
-        }
-
-        setActive(activeId, { fromHash });
       }
 
       function scrollToSection(section, { behavior } = {}) {
@@ -164,7 +152,7 @@
         }
       }
 
-      filteredLinkItems.forEach(({ link, section }) => {
+      linkItems.forEach(({ link, section }) => {
         link.addEventListener('click', (event) => {
           event.preventDefault();
           scrollToSection(section, {});
