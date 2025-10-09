@@ -51,61 +51,34 @@
       }
 
       if (heroElements.length) {
-        gsapGlobal.set(heroElements, { y: 48, opacity: 0 });
+        gsapGlobal.set(heroElements, { y: 36, opacity: 0 });
       }
       if (statCards.length) {
-        gsapGlobal.set(statCards, { y: 32, opacity: 0 });
+        gsapGlobal.set(statCards, { y: 24, opacity: 0 });
       }
+
+      const heroTimeline = gsapGlobal.timeline({ defaults: { ease: 'power1.out' } });
 
       if (heroElements.length) {
-        const heroTimeline = gsapGlobal.timeline({
-          defaults: { ease: 'power1.out' },
-          scrollTrigger: {
-            trigger: hero,
-            start: 'top top',
-            end: () => `+=${Math.max(window.innerHeight * 0.6, 480)}`,
-            scrub: true,
-            pin: true,
-            pinSpacing: true,
-            anticipatePin: 0.8,
-            invalidateOnRefresh: true,
-          },
-        });
-
-        heroElements.forEach((element, index) => {
-          heroTimeline.to(
-            element,
-            {
-              y: 0,
-              opacity: 1,
-              duration: 0.6,
-            },
-            index === 0 ? 0 : '-=0.35'
-          );
+        heroTimeline.to(heroElements, {
+          y: 0,
+          opacity: 1,
+          duration: 0.6,
+          stagger: 0.12,
         });
       }
 
       if (statCards.length) {
-        ScrollTrigger.batch(statCards, {
-          interval: 0.12,
-          batchMax: 2,
-          start: 'top 80%',
-          onEnter: (batch) =>
-            gsapGlobal.to(batch, {
-              y: 0,
-              opacity: 1,
-              duration: 0.6,
-              ease: 'power1.out',
-              stagger: 0.12,
-            }),
-          onLeaveBack: (batch) =>
-            gsapGlobal.to(batch, {
-              y: 32,
-              opacity: 0,
-              duration: 0.45,
-              ease: 'power1.in',
-            }),
-        });
+        heroTimeline.to(
+          statCards,
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.5,
+            stagger: 0.1,
+          },
+          heroElements.length ? '-=0.2' : 0
+        );
       }
     }
 
@@ -443,97 +416,6 @@
       }
     }
 
-    function initStickyNavIndicator() {
-      const navs = gsapGlobal.utils.toArray('[data-sticky-nav]');
-      if (!navs.length) {
-        return;
-      }
-
-      navs.forEach((nav) => {
-        const indicator = nav.querySelector('[data-nav-indicator]');
-        const scrollContainer = nav.querySelector('[data-nav-scroll]');
-        if (!indicator || !scrollContainer) {
-          return;
-        }
-
-        gsapGlobal.set(indicator, { transformOrigin: 'left center' });
-
-        let activeLink = nav.querySelector('[data-nav-link][aria-current="page"]');
-
-        const computeMetrics = (link) => {
-          const linkRect = link.getBoundingClientRect();
-          const containerRect = scrollContainer.getBoundingClientRect();
-          return {
-            x: linkRect.left - containerRect.left + scrollContainer.scrollLeft,
-            width: linkRect.width,
-          };
-        };
-
-        const updateIndicator = (link, animate) => {
-          if (!indicator) {
-            return;
-          }
-
-          if (!link) {
-            gsapGlobal.to(indicator, {
-              opacity: 0,
-              duration: animate && allowMotion ? 0.2 : 0,
-              ease: 'power1.out',
-              overwrite: true,
-            });
-            activeLink = null;
-            return;
-          }
-
-          const metrics = computeMetrics(link);
-          const duration = animate && allowMotion ? 0.35 : 0;
-
-          gsapGlobal.to(indicator, {
-            x: metrics.x,
-            width: metrics.width,
-            opacity: 1,
-            duration,
-            ease: duration ? 'power2.out' : 'none',
-            overwrite: true,
-          });
-
-          activeLink = link;
-        };
-
-        updateIndicator(activeLink, false);
-
-        nav.addEventListener('nav:active-change', (event) => {
-          const link = event.detail ? event.detail.link : null;
-          updateIndicator(link, true);
-        });
-
-        let scrollFrame = null;
-        scrollContainer.addEventListener(
-          'scroll',
-          () => {
-            if (!activeLink) {
-              return;
-            }
-            if (scrollFrame) {
-              return;
-            }
-            scrollFrame = window.requestAnimationFrame(() => {
-              scrollFrame = null;
-              updateIndicator(activeLink, false);
-            });
-          },
-          { passive: true }
-        );
-
-        window.addEventListener('resize', () => {
-          if (!activeLink) {
-            return;
-          }
-          updateIndicator(activeLink, false);
-        });
-      });
-    }
-
     initHero();
     initSectionHeadings();
     initExperience();
@@ -541,7 +423,6 @@
     initEducation();
     initProjects();
     initContact();
-    initStickyNavIndicator();
 
     if (allowMotion) {
       ScrollTrigger.refresh();
