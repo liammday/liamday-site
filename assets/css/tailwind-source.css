@@ -21,31 +21,41 @@
 @layer components {
   .surface-panel {
     @apply rounded-2xl border border-aluminum-500/20 bg-graphite-700/80 shadow-glow backdrop-blur;
-  }
-
-  .surface-ring {
-    @apply border border-aluminum-500/25 bg-graphite-700/60 backdrop-blur;
-  }
-
-  [data-animate='capability-card'] {
     position: relative;
     isolation: isolate;
+    overflow: hidden;
     z-index: 0;
-    --capability-glow-opacity: 0;
-    --capability-glow-scale: 0.9;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    --spotlight-opacity: 0;
+    --spotlight-x: 50%;
+    --spotlight-y: 50%;
   }
 
-  [data-animate='capability-card']::after {
+  .surface-panel::after {
     content: '';
     position: absolute;
     inset: -1px;
     border-radius: inherit;
     pointer-events: none;
-    z-index: -1;
-    background: radial-gradient(circle at 50% 50%, rgba(255, 176, 122, 0.35) 0%, rgba(255, 176, 122, 0) 65%);
-    opacity: var(--capability-glow-opacity);
-    transform: scale(var(--capability-glow-scale));
-    transition: opacity 0.2s ease-out;
+    z-index: 0;
+    opacity: var(--spotlight-opacity);
+    transition: opacity 0.35s ease;
+    background: radial-gradient(
+      circle at var(--spotlight-x) var(--spotlight-y),
+      rgba(255, 176, 122, 0.22) 0%,
+      rgba(255, 176, 122, 0.08) 35%,
+      rgba(255, 176, 122, 0) 70%
+    );
+    mix-blend-mode: screen;
+  }
+
+  .surface-panel > :where(*) {
+    position: relative;
+    z-index: 1;
+  }
+
+  .surface-ring {
+    @apply border border-aluminum-500/25 bg-graphite-700/60 backdrop-blur;
   }
 }
 
