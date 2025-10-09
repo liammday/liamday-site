@@ -172,25 +172,71 @@
 
       cards.forEach((card, index) => {
         const fromX = index % 2 === 0 ? -32 : 32;
-        gsapGlobal.set(card, { x: fromX, opacity: 0 });
+        gsapGlobal.set(card, {
+          x: fromX,
+          opacity: 0,
+          '--capability-glow-opacity': 0,
+          '--capability-glow-scale': 0.9,
+          transformOrigin: '50% 50%',
+        });
+
+        const hoverTimeline = gsapGlobal.timeline({
+          paused: true,
+          defaults: { ease: 'power2.out' },
+        });
+
+        hoverTimeline
+          .to(
+            card,
+            {
+              y: -8,
+              '--capability-glow-opacity': 1,
+              '--capability-glow-scale': 1.08,
+              boxShadow: '0 24px 40px -28px rgba(255, 176, 122, 0.45)',
+              duration: 0.3,
+            },
+            0
+          )
+          .to(
+            card,
+            {
+              y: -4,
+              duration: 0.2,
+              ease: 'power1.out',
+            },
+            '>-0.05'
+          );
+
+        const playHover = () => hoverTimeline.play();
+        const resetHover = () => hoverTimeline.reverse();
+
+        card.addEventListener('mouseenter', playHover);
+        card.addEventListener('mouseleave', resetHover);
+        card.addEventListener('focusin', playHover);
+        card.addEventListener('focusout', resetHover);
+
         ScrollTrigger.create({
           trigger: card,
           start: 'top 85%',
           end: 'bottom 30%',
-          onEnter: () =>
+          onEnter: () => {
+            hoverTimeline.progress(0).pause();
             gsapGlobal.to(card, {
               x: 0,
               opacity: 1,
               duration: 0.6,
               ease: 'power1.out',
-            }),
-          onLeaveBack: () =>
+            });
+          },
+          onLeaveBack: () => {
+            hoverTimeline.progress(0).pause();
             gsapGlobal.to(card, {
               x: fromX,
               opacity: 0,
               duration: 0.45,
               ease: 'power1.in',
-            }),
+            });
+          },
         });
       });
     }
@@ -290,12 +336,50 @@
 
       cards.forEach((card) => {
         const arrow = card.querySelector('[data-animate="project-arrow"]');
-        gsapGlobal.set(card, { y: 48, opacity: 0 });
+        gsapGlobal.set(card, { y: 48, opacity: 0, transformOrigin: '50% 50%' });
         if (arrow) {
           gsapGlobal.set(arrow, { x: 0, opacity: 0.6 });
         }
 
+        const hoverTimeline = gsapGlobal
+          .timeline({
+            paused: true,
+            defaults: { ease: 'power2.out' },
+          })
+          .to(
+            card,
+            {
+              y: -12,
+              scale: 1.02,
+              boxShadow: '0 28px 55px -30px rgba(255, 176, 122, 0.6)',
+              duration: 0.35,
+            },
+            0
+          );
+
+        if (arrow) {
+          hoverTimeline
+            .to(
+              arrow,
+              {
+                x: 16,
+                duration: 0.18,
+              },
+              0
+            )
+            .to(
+              arrow,
+              {
+                x: 8,
+                duration: 0.24,
+                ease: 'power1.out',
+              },
+              '>-0.05'
+            );
+        }
+
         const animateIn = () => {
+          hoverTimeline.progress(0).pause();
           gsapGlobal.to(card, {
             y: 0,
             opacity: 1,
@@ -313,6 +397,7 @@
         };
 
         const resetState = () => {
+          hoverTimeline.progress(0).pause();
           gsapGlobal.to(card, {
             y: 48,
             opacity: 0,
@@ -338,6 +423,14 @@
           onLeave: resetState,
           onLeaveBack: resetState,
         });
+
+        const playHover = () => hoverTimeline.play();
+        const resetHover = () => hoverTimeline.reverse();
+
+        card.addEventListener('mouseenter', playHover);
+        card.addEventListener('mouseleave', resetHover);
+        card.addEventListener('focusin', playHover);
+        card.addEventListener('focusout', resetHover);
       });
     }
 
@@ -410,9 +503,47 @@
         contactTimeline.to(actionItems, { y: 0, opacity: 1, duration: 0.5, stagger: 0.1 }, '-=0.25');
       }
       if (cta) {
+        gsapGlobal.set(cta, { transformOrigin: '50% 50%' });
         contactTimeline
           .to(cta, { y: -6, duration: 0.25, ease: 'power1.out' }, '>-0.1')
           .to(cta, { y: 0, duration: 0.35, ease: 'power1.inOut' }, '>-0.05');
+
+        const ctaHoverTimeline = gsapGlobal.timeline({
+          paused: true,
+          defaults: { ease: 'power2.out' },
+        });
+
+        ctaHoverTimeline
+          .to(
+            cta,
+            {
+              scale: 1.05,
+              boxShadow: '0 24px 55px -28px rgba(255, 176, 122, 0.55)',
+              duration: 0.25,
+            },
+            0
+          )
+          .to(
+            cta,
+            {
+              scale: 1.02,
+              duration: 0.3,
+              ease: 'power1.inOut',
+            },
+            '>-0.05'
+          );
+
+        const resetHoverInstant = () => ctaHoverTimeline.progress(0).pause();
+        const playCtaHover = () => ctaHoverTimeline.play();
+        const reverseCtaHover = () => ctaHoverTimeline.reverse();
+
+        cta.addEventListener('mouseenter', playCtaHover);
+        cta.addEventListener('mouseleave', reverseCtaHover);
+        cta.addEventListener('focusin', playCtaHover);
+        cta.addEventListener('focusout', reverseCtaHover);
+
+        contactTimeline.eventCallback('onStart', resetHoverInstant);
+        contactTimeline.eventCallback('onReverseComplete', resetHoverInstant);
       }
     }
 
