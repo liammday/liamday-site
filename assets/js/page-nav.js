@@ -92,24 +92,29 @@
         });
       }
 
-      function getVisibleItems() {
-        const navBottom = nav.getBoundingClientRect().bottom;
-        return linkItems.filter((item) => {
-          const { section } = item;
+      function getActiveItemId() {
+        const navRect = nav.getBoundingClientRect();
+        const threshold = navRect.bottom + 1;
+
+        let lastReachedId = null;
+
+        linkItems.forEach(({ section }) => {
           const rect = section.getBoundingClientRect();
-          return rect.bottom > navBottom;
+          if (rect.top <= threshold) {
+            lastReachedId = section.id;
+          }
         });
+
+        if (lastReachedId) {
+          return lastReachedId;
+        }
+
+        return linkItems.length ? linkItems[0].section.id : null;
       }
 
       function handleScroll({ fromHash = false } = {}) {
-        const visibleItems = getVisibleItems();
-        if (visibleItems.length) {
-          setActive(visibleItems[0].section.id, { fromHash });
-        } else if (linkItems.length) {
-          setActive(linkItems[linkItems.length - 1].section.id, { fromHash });
-        } else {
-          setActive(null, { fromHash });
-        }
+        const activeId = getActiveItemId();
+        setActive(activeId, { fromHash });
       }
 
       function scrollToSection(section, { behavior } = {}) {
