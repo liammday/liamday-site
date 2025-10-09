@@ -61,9 +61,11 @@
           return;
         }
         currentId = id || null;
+        let activeLink = null;
         linkItems.forEach(({ link, section }) => {
           if (id && section.id === id && !link.hidden) {
             link.setAttribute('aria-current', 'page');
+            activeLink = link;
             if (!fromHash) {
               scrollLinkIntoView(scrollContainer, link);
             }
@@ -71,6 +73,14 @@
             link.removeAttribute('aria-current');
           }
         });
+        nav.dispatchEvent(
+          new CustomEvent('nav:active-change', {
+            detail: {
+              id: id || null,
+              link: activeLink || null,
+            },
+          })
+        );
       }
 
       function updateSectionOffsets() {
