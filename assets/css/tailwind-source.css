@@ -25,10 +25,18 @@
     isolation: isolate;
     overflow: hidden;
     z-index: 0;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
     --spotlight-opacity: 0;
     --spotlight-x: 50%;
     --spotlight-y: 50%;
+  }
+
+  .surface-panel:focus-visible {
+    outline: none;
+  }
+
+  .surface-panel:is(:hover, :focus-visible, :focus-within) {
+    @apply border-ember-300/50;
   }
 
   .surface-panel::after {
