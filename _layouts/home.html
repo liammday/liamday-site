@@ -149,7 +149,7 @@ layout: default
     </div>
     <div class="mt-12 grid gap-6 md:grid-cols-2">
       {% for competency in cv.competencies %}
-      <article class="h-full surface-panel p-6 transition-colors duration-200 hover:border-ember-300/50 focus-visible:border-ember-300/50" data-animate="capability-card">
+      <article class="h-full surface-panel p-6 transition-colors duration-200" data-animate="capability-card">
         <h3 class="text-lg font-semibold text-aluminum-100">{{ competency.title }}</h3>
         <p class="mt-3 text-sm leading-relaxed text-aluminum-300">{{ competency.description }}</p>
       </article>
@@ -206,7 +206,7 @@ layout: default
         <h3 class="text-sm font-semibold uppercase tracking-[0.35em] text-aluminum-300">Case studies</h3>
         <div class="grid gap-6 md:grid-cols-2">
           {% for project in case_studies %}
-          <a class="group flex h-full flex-col justify-between surface-panel p-6 transition hover:border-ember-400/40 hover:bg-graphite-700/80"
+          <a class="group flex h-full flex-col justify-between surface-panel p-6 transition"
             data-animate="project-card"
             href="{{ project.url | relative_url }}">
             <div class="space-y-4">
@@ -229,7 +229,7 @@ layout: default
         <h3 class="text-sm font-semibold uppercase tracking-[0.35em] text-aluminum-300">App build journals</h3>
         <div class="grid gap-6 md:grid-cols-2">
           {% for project in app_builds %}
-          <a class="group flex h-full flex-col justify-between surface-panel p-6 transition hover:border-ember-400/40 hover:bg-graphite-700/80"
+          <a class="group flex h-full flex-col justify-between surface-panel p-6 transition"
             data-animate="project-card"
             href="{{ project.url | relative_url }}">
             <div class="space-y-4">
