@@ -149,7 +149,7 @@ layout: default
     </div>
     <div class="mt-12 grid gap-6 md:grid-cols-2">
       {% for competency in cv.competencies %}
-      <article class="h-full surface-panel p-6 transition hover:border-ember-400/40 hover:bg-graphite-700/80" data-animate="capability-card">
+      <article class="h-full surface-panel p-6 transition-colors duration-200 hover:border-ember-300/50 focus-visible:border-ember-300/50" data-animate="capability-card">
         <h3 class="text-lg font-semibold text-aluminum-100">{{ competency.title }}</h3>
         <p class="mt-3 text-sm leading-relaxed text-aluminum-300">{{ competency.description }}</p>
       </article>

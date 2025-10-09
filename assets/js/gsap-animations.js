@@ -7,7 +7,84 @@
     }
   }
 
+  function initCardSpotlight() {
+    const cards = Array.from(document.querySelectorAll('.surface-panel'));
+    if (!cards.length) {
+      return;
+    }
+
+    const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
+    cards.forEach((card) => {
+      let animationFrame = null;
+
+      const setOpacity = (value) => {
+        card.style.setProperty('--spotlight-opacity', value);
+      };
+
+      const setPosition = (event) => {
+        const rect = card.getBoundingClientRect();
+        if (!rect.width || !rect.height) {
+          return;
+        }
+        const x = clamp(((event.clientX - rect.left) / rect.width) * 100, 0, 100);
+        const y = clamp(((event.clientY - rect.top) / rect.height) * 100, 0, 100);
+        card.style.setProperty('--spotlight-x', `${x}%`);
+        card.style.setProperty('--spotlight-y', `${y}%`);
+      };
+
+      const handlePointerMove = (event) => {
+        if (event.pointerType === 'touch') {
+          return;
+        }
+        if (animationFrame) {
+          window.cancelAnimationFrame(animationFrame);
+        }
+        animationFrame = window.requestAnimationFrame(() => {
+          setPosition(event);
+        });
+      };
+
+      const handlePointerEnter = (event) => {
+        if (event.pointerType === 'touch') {
+          return;
+        }
+        setPosition(event);
+        setOpacity('1');
+      };
+
+      const handlePointerLeave = (event) => {
+        if (event.pointerType === 'touch') {
+          return;
+        }
+        if (animationFrame) {
+          window.cancelAnimationFrame(animationFrame);
+          animationFrame = null;
+        }
+        setOpacity('0');
+      };
+
+      const handleFocus = () => {
+        card.style.setProperty('--spotlight-x', '50%');
+        card.style.setProperty('--spotlight-y', '50%');
+        setOpacity('0.85');
+      };
+
+      const handleBlur = () => {
+        setOpacity('0');
+      };
+
+      card.addEventListener('pointerenter', handlePointerEnter);
+      card.addEventListener('pointermove', handlePointerMove);
+      card.addEventListener('pointerleave', handlePointerLeave);
+      card.addEventListener('focusin', handleFocus);
+      card.addEventListener('focusout', handleBlur);
+    });
+  }
+
   ready(function () {
+    initCardSpotlight();
+
     const gsapGlobal = window.gsap;
     const ScrollTrigger = window.ScrollTrigger;
     if (!gsapGlobal || !ScrollTrigger) {
@@ -175,52 +252,14 @@
         gsapGlobal.set(card, {
           x: fromX,
           opacity: 0,
-          '--capability-glow-opacity': 0,
-          '--capability-glow-scale': 0.9,
           transformOrigin: '50% 50%',
         });
-
-        const hoverTimeline = gsapGlobal.timeline({
-          paused: true,
-          defaults: { ease: 'power2.out' },
-        });
-
-        hoverTimeline
-          .to(
-            card,
-            {
-              y: -8,
-              '--capability-glow-opacity': 1,
-              '--capability-glow-scale': 1.08,
-              boxShadow: '0 24px 40px -28px rgba(255, 176, 122, 0.45)',
-              duration: 0.3,
-            },
-            0
-          )
-          .to(
-            card,
-            {
-              y: -4,
-              duration: 0.2,
-              ease: 'power1.out',
-            },
-            '>-0.05'
-          );
-
-        const playHover = () => hoverTimeline.play();
-        const resetHover = () => hoverTimeline.reverse();
-
-        card.addEventListener('mouseenter', playHover);
-        card.addEventListener('mouseleave', resetHover);
-        card.addEventListener('focusin', playHover);
-        card.addEventListener('focusout', resetHover);
 
         ScrollTrigger.create({
           trigger: card,
           start: 'top 85%',
           end: 'bottom 30%',
           onEnter: () => {
-            hoverTimeline.progress(0).pause();
             gsapGlobal.to(card, {
               x: 0,
               opacity: 1,
@@ -229,7 +268,6 @@
             });
           },
           onLeaveBack: () => {
-            hoverTimeline.progress(0).pause();
             gsapGlobal.to(card, {
               x: fromX,
               opacity: 0,
