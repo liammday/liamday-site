@@ -3,9 +3,14 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --sticky-nav-height: 0px;
+  }
+
   body {
     @apply bg-charcoal-900 text-aluminum-100 antialiased;
     background-attachment: fixed;
+    scroll-padding-top: var(--sticky-nav-height, 0px);
   }
 
   a {
