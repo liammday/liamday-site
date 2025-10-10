@@ -44,6 +44,14 @@
             return null;
           }
           section.dataset.navIndex = section.dataset.navIndex || String(index);
+          if (!section.dataset.baseScrollMargin) {
+            const computedMargin = parseFloat(
+              window.getComputedStyle(section).scrollMarginTop || '0'
+            );
+            if (!Number.isNaN(computedMargin)) {
+              section.dataset.baseScrollMargin = String(computedMargin);
+            }
+          }
           return { link, section };
         })
         .filter(Boolean);
@@ -85,10 +93,17 @@
 
       function updateSectionOffsets() {
         const navHeight = nav.offsetHeight;
+        const root = document.documentElement;
+        root.style.setProperty('--sticky-nav-height', `${navHeight}px`);
+
         const minHeight = Math.max(window.innerHeight - navHeight, 0);
         linkItems.forEach(({ section }) => {
-          section.style.scrollMarginTop = `${navHeight}px`;
-          section.style.minHeight = `${minHeight}px`;
+          const baseMargin = parseFloat(section.dataset.baseScrollMargin || '0') || 0;
+          const totalMargin = navHeight + baseMargin;
+          const sectionMinHeight = Math.max(minHeight + baseMargin, 0);
+
+          section.style.scrollMarginTop = `${totalMargin}px`;
+          section.style.minHeight = `${sectionMinHeight}px`;
         });
       }
 
@@ -122,7 +137,9 @@
           return;
         }
         const navHeight = nav.offsetHeight;
-        const targetTop = window.pageYOffset + section.getBoundingClientRect().top - navHeight;
+        const baseMargin = parseFloat(section.dataset.baseScrollMargin || '0') || 0;
+        const targetTop =
+          window.pageYOffset + section.getBoundingClientRect().top - (navHeight + baseMargin);
         window.scrollTo({
           top: targetTop,
           behavior: behavior || (reduceMotionQuery.matches ? 'auto' : 'smooth'),
