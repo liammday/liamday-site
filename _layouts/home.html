@@ -124,7 +124,7 @@ layout: default
             <h3 class="text-xl font-semibold text-aluminum-100">{{ role.title }}</h3>
             <p class="text-sm text-aluminum-300">{{ role.company }} · {{ role.location }}</p>
           </div>
-          <p class="text-xs font-semibold uppercase tracking-[0.35em] text-aluminum-400">{{ role.period }}</p>
+          {% include date-period.html period=role.period %}
         </div>
         {% if role.highlights %}
         <ul class="mt-6 list-disc space-y-3 pl-6 text-sm leading-relaxed text-aluminum-300 marker:text-ember-300">
@@ -175,7 +175,7 @@ layout: default
           <li data-animate="education-item">
             <p class="text-base font-semibold text-aluminum-100">{{ qualification.qualification }}</p>
             <p class="text-sm text-aluminum-300">{{ qualification.institution }}</p>
-            <p class="mt-1 text-xs font-medium uppercase tracking-[0.3em] text-aluminum-400">{{ qualification.period }}</p>
+            <div class="mt-2">{% include date-period.html period=qualification.period %}</div>
           </li>
           {% endfor %}
         </ul>
