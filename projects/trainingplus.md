@@ -1,3 +1,4 @@
+---
 title: TrainingPlus
 type: App build
 summary: A companion for Swift and SwiftUI learners that blends spaced repetition, coding challenges, and portfolio-ready mini projects.

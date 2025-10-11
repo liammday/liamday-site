@@ -1,3 +1,4 @@
+---
 title: After Action Journal
 type: App build
 summary: Drafting a reflective operations journal that transforms field notes into structured learning loops.

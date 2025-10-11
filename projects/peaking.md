@@ -1,3 +1,4 @@
+---
 title: Peaking
 type: App build
 summary: Daily readiness and periodisation planning for endurance athletes juggling work, family, and racing goals.
