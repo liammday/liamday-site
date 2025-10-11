@@ -1,0 +1,140 @@
+---
+layout: default
+---
+{% assign ordered_projects = site.projects | sort: 'order' %}
+{% assign case_studies = ordered_projects | where: 'type', 'Case study' %}
+{% assign app_builds = ordered_projects | where: 'type', 'App build' %}
+
+<section
+  id="projects-hero"
+  class="relative flex min-h-screen flex-col justify-center overflow-hidden border-b border-aluminum-500/20 bg-charcoal-900"
+>
+  <div class="mx-auto flex w-full max-w-5xl flex-col gap-10 px-6 py-24">
+    <div class="space-y-6" data-animate="hero-copy">
+      <span class="inline-flex items-center rounded-full border border-ember-400/30 bg-ember-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.4em] text-ember-200 texture-noise"
+        data-animate="hero-badge"
+        >Projects</span
+      >
+      <h1 class="text-4xl font-semibold text-aluminum-100 sm:text-5xl" data-animate="hero-heading">Product work &amp; experiments</h1>
+      <p class="max-w-3xl text-lg leading-relaxed text-aluminum-300" data-animate="hero-text">
+        A curated collection of shipping products, operational case studies, and Swift-based builds in progress. Each entry follows the same playbook—clear framing, measurable outcomes, and transparent release notes so partners know how I operate.
+      </p>
+    </div>
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="surface-panel p-6" data-animate="hero-stat">
+        <p class="text-sm uppercase tracking-[0.3em] text-ember-200">Focus</p>
+        <p class="mt-3 text-2xl font-semibold text-aluminum-100">iOS &amp; Swift</p>
+        <p class="mt-2 text-sm text-aluminum-400">Native experiences that flex from iPhone to watchOS and visionOS.</p>
+      </div>
+      <div class="surface-panel p-6" data-animate="hero-stat">
+        <p class="text-sm uppercase tracking-[0.3em] text-ember-200">Approach</p>
+        <p class="mt-3 text-2xl font-semibold text-aluminum-100">Operational rigor</p>
+        <p class="mt-2 text-sm text-aluminum-400">Discovery, QA, and analytics loops embedded from day one.</p>
+      </div>
+      <div class="surface-panel p-6" data-animate="hero-stat">
+        <p class="text-sm uppercase tracking-[0.3em] text-ember-200">In flight</p>
+        <p class="mt-3 text-2xl font-semibold text-aluminum-100">{{ app_builds | size }} builds</p>
+        <p class="mt-2 text-sm text-aluminum-400">Personal shipping lanes to test release cadences and new APIs.</p>
+      </div>
+      <div class="surface-panel p-6" data-animate="hero-stat">
+        <p class="text-sm uppercase tracking-[0.3em] text-ember-200">Case studies</p>
+        <p class="mt-3 text-2xl font-semibold text-aluminum-100">{{ case_studies | size }}</p>
+        <p class="mt-2 text-sm text-aluminum-400">Evidence of scaled delivery across defence and consumer products.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<nav class="sticky top-0 z-40 border-b border-aluminum-500/20 bg-charcoal-900/95 backdrop-blur" aria-label="Projects navigation" data-sticky-nav>
+  <div class="mx-auto w-full max-w-5xl">
+    <div class="relative flex gap-3 overflow-x-auto px-6 py-4 text-sm" data-nav-scroll>
+      <a class="whitespace-nowrap rounded-full border border-transparent px-4 py-2 font-medium text-aluminum-300 transition hover:text-aluminum-100 hover:border-aluminum-500/40 aria-[current=page]:border-ember-400/50 aria-[current=page]:bg-ember-500/10 aria-[current=page]:text-ember-200 aria-[current=page]:texture-noise" href="#case-studies" data-nav-link>Case studies</a>
+      <a class="whitespace-nowrap rounded-full border border-transparent px-4 py-2 font-medium text-aluminum-300 transition hover:text-aluminum-100 hover:border-aluminum-500/40 aria-[current=page]:border-ember-400/50 aria-[current=page]:bg-ember-500/10 aria-[current=page]:text-ember-200 aria-[current=page]:texture-noise" href="#app-builds" data-nav-link>App builds</a>
+    </div>
+  </div>
+</nav>
+
+<section id="case-studies" class="scroll-mt-32 border-b border-aluminum-500/20 bg-charcoal-900">
+  <div class="mx-auto w-full max-w-5xl px-6 py-16">
+    <div class="max-w-3xl space-y-4" data-animate="section-heading">
+      <h2 class="text-3xl font-semibold text-aluminum-100">Case studies</h2>
+      <p class="text-lg text-aluminum-300">Operational programmes where I scaled delivery practices, modernised training, and improved release quality across large teams.</p>
+    </div>
+    <div class="mt-12 grid gap-6 lg:grid-cols-2">
+      {% for project in case_studies %}
+      <article class="surface-panel flex h-full flex-col p-6 transition hover:border-ember-400/40" data-animate="project-card">
+        <div class="flex flex-col gap-3">
+          <p class="text-xs font-semibold uppercase tracking-[0.3em] text-aluminum-400">{{ project.type }}</p>
+          <h3 class="text-2xl font-semibold text-aluminum-100">
+            <a class="underline-offset-4 hover:text-ember-300 hover:underline" href="{{ project.url | relative_url }}">{{ project.title }}</a>
+          </h3>
+          <p class="text-sm leading-relaxed text-aluminum-300">{{ project.summary }}</p>
+        </div>
+        <dl class="mt-6 grid gap-4 text-xs uppercase tracking-[0.3em] text-aluminum-500 sm:grid-cols-2">
+          {% if project.client %}
+          <div>
+            <dt class="text-aluminum-500">Client</dt>
+            <dd class="mt-1 text-aluminum-300">{{ project.client }}</dd>
+          </div>
+          {% endif %}
+          {% if project.year %}
+          <div>
+            <dt class="text-aluminum-500">Period</dt>
+            <dd class="mt-1 text-aluminum-300">{{ project.year }}</dd>
+          </div>
+          {% endif %}
+        </dl>
+        <a class="mt-8 inline-flex w-fit items-center gap-2 text-sm font-semibold text-ember-300 transition hover:text-ember-200" href="{{ project.url | relative_url }}">
+          Read the story
+          <span aria-hidden="true">→</span>
+        </a>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section id="app-builds" class="scroll-mt-32 bg-charcoal-900">
+  <div class="mx-auto w-full max-w-5xl px-6 py-16">
+    <div class="max-w-3xl space-y-4" data-animate="section-heading">
+      <h2 class="text-3xl font-semibold text-aluminum-100">App builds</h2>
+      <p class="text-lg text-aluminum-300">Hands-on SwiftUI builds exploring product ideas, automation, and measurement across Apple platforms.</p>
+    </div>
+    <div class="mt-12 grid gap-6 lg:grid-cols-2">
+      {% for project in app_builds %}
+      <article class="surface-panel flex h-full flex-col p-6 transition hover:border-ember-400/40" data-animate="project-card">
+        <div class="flex flex-col gap-3">
+          <p class="text-xs font-semibold uppercase tracking-[0.3em] text-aluminum-400">{{ project.type }}</p>
+          <h3 class="text-2xl font-semibold text-aluminum-100">
+            <a class="underline-offset-4 hover:text-ember-300 hover:underline" href="{{ project.url | relative_url }}">{{ project.title }}</a>
+          </h3>
+          <p class="text-sm leading-relaxed text-aluminum-300">{{ project.summary }}</p>
+        </div>
+        <dl class="mt-6 grid gap-4 text-xs uppercase tracking-[0.3em] text-aluminum-500 sm:grid-cols-2">
+          {% if project.platforms %}
+          <div>
+            <dt class="text-aluminum-500">Platforms</dt>
+            <dd class="mt-1 text-aluminum-300">{{ project.platforms }}</dd>
+          </div>
+          {% endif %}
+          {% if project.status %}
+          <div>
+            <dt class="text-aluminum-500">Status</dt>
+            <dd class="mt-1 text-aluminum-300">{{ project.status }}</dd>
+          </div>
+          {% elsif project.year %}
+          <div>
+            <dt class="text-aluminum-500">Year</dt>
+            <dd class="mt-1 text-aluminum-300">{{ project.year }}</dd>
+          </div>
+          {% endif %}
+        </dl>
+        <a class="mt-8 inline-flex w-fit items-center gap-2 text-sm font-semibold text-ember-300 transition hover:text-ember-200" href="{{ project.url | relative_url }}">
+          Explore the build
+          <span aria-hidden="true">→</span>
+        </a>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
