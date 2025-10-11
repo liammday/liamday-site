@@ -1,3 +1,4 @@
+---
 title: Squash Tracker
 type: App build
 summary: Rapid match capture and post-game analysis for competitive squash players training without a dedicated coaching staff.
