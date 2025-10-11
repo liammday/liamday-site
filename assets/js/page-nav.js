@@ -99,23 +99,23 @@
         const minHeight = Math.max(window.innerHeight - navHeight, 0);
         linkItems.forEach(({ section }) => {
           const baseMargin = parseFloat(section.dataset.baseScrollMargin || '0') || 0;
-          const totalMargin = navHeight + baseMargin;
+          const scrollOffset = Math.max(navHeight, baseMargin);
           const sectionMinHeight = Math.max(minHeight + baseMargin, 0);
 
-          section.style.scrollMarginTop = `${totalMargin}px`;
+          section.dataset.navScrollOffset = String(scrollOffset);
+          section.style.scrollMarginTop = `${scrollOffset}px`;
           section.style.minHeight = `${sectionMinHeight}px`;
         });
       }
 
       function getActiveItemId() {
-        const navRect = nav.getBoundingClientRect();
-        const threshold = navRect.bottom + 1;
-
         let lastReachedId = null;
 
         linkItems.forEach(({ section }) => {
           const rect = section.getBoundingClientRect();
-          if (rect.top <= threshold) {
+          const scrollOffset = parseFloat(section.dataset.navScrollOffset || '0') || 0;
+
+          if (rect.top - scrollOffset <= 1) {
             lastReachedId = section.id;
           }
         });
@@ -136,10 +136,9 @@
         if (!section) {
           return;
         }
-        const navHeight = nav.offsetHeight;
-        const baseMargin = parseFloat(section.dataset.baseScrollMargin || '0') || 0;
+        const scrollOffset = parseFloat(section.dataset.navScrollOffset || '0') || 0;
         const targetTop =
-          window.pageYOffset + section.getBoundingClientRect().top - (navHeight + baseMargin);
+          window.pageYOffset + section.getBoundingClientRect().top - scrollOffset;
         window.scrollTo({
           top: targetTop,
           behavior: behavior || (reduceMotionQuery.matches ? 'auto' : 'smooth'),
