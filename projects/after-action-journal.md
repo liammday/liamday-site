@@ -4,6 +4,19 @@ summary: Drafting a reflective operations journal that transforms field notes in
 role: Product & iOS Developer
 year: 2024
 order: 5
+platforms: iOS, iPadOS, macOS (Catalyst)
+status: Research interviews underway
+stack: SwiftUI, Core Data, Charts, CloudKit
+stats:
+  - label: Target teams
+    value: Cross-functional squads
+    description: Designed for product, ops, and engineering teams needing faster feedback loops.
+  - label: Ritual cadence
+    value: Under 10 minutes
+    description: Guided templates keep debrief capture lean without losing detail.
+  - label: Insight delivery
+    value: Automated summaries
+    description: Narrative reports and charts land in Slack and email immediately after sessions.
 nav:
   - id: overview
     label: Overview

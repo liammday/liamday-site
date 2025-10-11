@@ -4,6 +4,19 @@ summary: Building an offline-first hiking companion to test product release ritu
 role: Product & iOS Developer
 year: 2024 – Present
 order: 4
+platforms: iOS, watchOS
+status: Alpha release cadence
+stack: SwiftUI, Core Location, MapKit, CloudKit
+stats:
+  - label: Mission
+    value: Safer solo hikes
+    description: Deliver rapid readiness cues and actionable journalling for remote terrain.
+  - label: Quality practice
+    value: Release rituals
+    description: Every sprint runs through automated UI tests, smoke walks, and TestFlight notes.
+  - label: Offline focus
+    value: 100% field-ready
+    description: Critical data cached locally with background refresh to keep routes current.
 nav:
   - id: overview
     label: Overview
