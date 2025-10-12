@@ -15,12 +15,12 @@ nav:
     label: Outcomes
 ---
 ## Overview
-{: #overview .scroll-mt-32 }
+{: #overview .nav-scroll-anchor }
 
 During his tenure as Regimental Signals Officer, Liam modernised the unit’s communications readiness by pairing rigorous governance with practical coaching. The resulting toolkit ensured deployed teams could establish secure networks rapidly in challenging environments.
 
 ## Governance & training
-{: #governance .scroll-mt-32 }
+{: #governance .nav-scroll-anchor }
 
 - Designed deployment playbooks that achieved a gold standard during major operational assessments in Kenya, maintaining uninterrupted communications coverage across all operational areas.
 - Expanded the pool of trained communication specialists from 2 per company to 8, embedding knowledge through targeted upskilling and repeatable drills.
@@ -28,6 +28,6 @@ During his tenure as Regimental Signals Officer, Liam modernised the unit’s co
 - Established equipment accountability routines that safeguarded £3M of serialised kit across international exercises and operations.
 
 ## Outcomes
-{: #outcomes .scroll-mt-32 }
+{: #outcomes .nav-scroll-anchor }
 
 The battle group improved operational readiness, reduced risk around cryptographic material, and gained a resilient communications foundation for global deployments.

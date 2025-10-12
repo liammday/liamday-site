@@ -82,4 +82,8 @@
     @apply bg-anodised-aluminum;
     background-blend-mode: soft-light;
   }
+
+  .nav-scroll-anchor {
+    scroll-margin-top: var(--sticky-nav-height, 0px);
+  }
 }

@@ -15,12 +15,12 @@ nav:
     label: Outcomes
 ---
 ## Overview
-{: #overview .scroll-mt-32 }
+{: #overview .nav-scroll-anchor }
 
 Project HERMES reimagined how the Combat CIS School prepares soldiers for dismounted close combat operations. Liam led the initiative end-to-end, translating operational constraints into a streamlined syllabus and modernised delivery model.
 
 ## Delivery highlights
-{: #delivery .scroll-mt-32 }
+{: #delivery .nav-scroll-anchor }
 
 - Consolidated nine legacy courses into five integrated pathways through syllabus and qualification redesign, saving 960 instructor hours each year.
 - Used Agile ceremonies to align stakeholders from across the Combat CIS School and front-line units, ensuring priorities and dependencies were transparent throughout delivery.
@@ -28,6 +28,6 @@ Project HERMES reimagined how the Combat CIS School prepares soldiers for dismou
 - Coordinated tooling and data collection so training outcomes and readiness metrics could be monitored in real time.
 
 ## Outcomes
-{: #outcomes .scroll-mt-32 }
+{: #outcomes .nav-scroll-anchor }
 
 The school increased qualified student output by 30% while freeing instructors to focus on coaching and complex exercises. The new structure created by Project HERMES now underpins the Army’s ability to scale specialist capability at pace.

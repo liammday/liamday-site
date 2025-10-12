@@ -30,28 +30,28 @@ stats:
     description: Learners ship shareable mini projects with every module.
 ---
 ## Overview
-{: #overview .scroll-mt-32 }
+{: #overview .nav-scroll-anchor }
 
 TrainingPlus exists to help self-taught developers turn scattered tutorials into a deliberate practice routine. The app orchestrates learning loops so every topic moves from passive reading to applied builds and peer review.
 
 Learners progress through micro-lessons on Swift fundamentals, SwiftUI patterns, and Apple platform APIs. Each module unlocks a focused coding challenge, discussion prompt, and optional stretch goal. CloudKit sync keeps progress consistent across iPhone, iPad, and Mac.
 
 ## Learning experience
-{: #learning .scroll-mt-32 }
+{: #learning .nav-scroll-anchor }
 
 - **Guided sprints**: Modules are grouped into weekly sprints with clear objectives, estimated effort, and reflection prompts.
 - **Adaptive review**: A spaced repetition engine surfaces flashcards and quiz questions when confidence drops, helping learners reinforce tricky concepts quickly.
 - **Demo days**: Learners can publish mini projects directly from the app to showcase progress and invite feedback from peers.
 
 ## Content pipeline
-{: #content .scroll-mt-32 }
+{: #content .nav-scroll-anchor }
 
 - **Curriculum builder**: A macOS editor lets me design new lessons, author interactive explanations, and push updates via CloudKit without submitting a new binary.
 - **Community contributions**: Future versions will let trusted mentors contribute lessons that go through a lightweight review workflow.
 - **Analytics & support**: Opt-in analytics highlight where learners get stuck so I can prioritise new walkthroughs and office hours.
 
 ## Roadmap
-{: #roadmap .scroll-mt-32 }
+{: #roadmap .nav-scroll-anchor }
 
 1. **Mentor subscriptions** – Offer 1:1 support packages with scheduled check-ins and code reviews.
 2. **ARKit labs** – Introduce mixed-reality projects that blend spatial design with SwiftUI.

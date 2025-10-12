@@ -27,7 +27,7 @@ nav:
     label: Roadmap
 ---
 ## Overview
-{: #overview .scroll-mt-32 }
+{: #overview .nav-scroll-anchor }
 
 After Action Journal is a lightweight SwiftUI app that captures the cadence of military debriefs and reimagines it for product
 teams. The concept was born from my experience running post-operation reviews in the British Army and facilitating discovery
@@ -38,7 +38,7 @@ The build is intentionally transparent—each release will document how the faci
 patterns, notifications, and data models.
 
 ## Problem framing
-{: #problem .scroll-mt-32 }
+{: #problem .nav-scroll-anchor }
 
 - Leaders struggle to turn free-form notes into decisions people can act on.
 - Distributed teams need prompts that nudge them to contribute observations quickly.
@@ -49,7 +49,7 @@ After Action Journal structures every entry with a shared vocabulary. Tags conne
 where friction clusters. Automatic summaries then surface the most cited risks and wins for weekly planning rituals.
 
 ## Roadmap
-{: #roadmap .scroll-mt-32 }
+{: #roadmap .nav-scroll-anchor }
 
 1. **Guided capture templates** – launch flows for mission, sprint, and incident reviews with guard rails for classification and
    follow-up owners.
