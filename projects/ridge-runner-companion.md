@@ -27,7 +27,7 @@ nav:
     label: Build focus
 ---
 ## Overview
-{: #overview .scroll-mt-32 }
+{: #overview .nav-scroll-anchor }
 
 RidgeRunner Companion is my personal test bed for the operational habits I coach in client teams. The iOS app supports solo hikers
 with curated route intelligence, dynamic weather readiness cues, and after-action journalling. Each release exercises the
@@ -35,7 +35,7 @@ foundations of dependable product delivery—continuous QA, transparent changelo
 between user signal and roadmap decisions.
 
 ## Product direction
-{: #direction .scroll-mt-32 }
+{: #direction .nav-scroll-anchor }
 
 - **Audience focus:** Experienced hikers and mountain leaders who need fast, trustworthy guidance in the field.
 - **Differentiator:** Layers route cards, weather alerts, and kit checks into a single view that stays useful offline.
@@ -44,7 +44,7 @@ between user signal and roadmap decisions.
   in-app education matures.
 
 ## Build focus
-{: #build-focus .scroll-mt-32 }
+{: #build-focus .nav-scroll-anchor }
 
 Current development sprints explore three core themes:
 

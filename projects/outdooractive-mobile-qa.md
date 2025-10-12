@@ -15,12 +15,12 @@ nav:
     label: Outcomes
 ---
 ## Overview
-{: #overview .scroll-mt-32 }
+{: #overview .nav-scroll-anchor }
 
 As Outdooractive’s Technical Product Specialist, Liam established repeatable release practices that support weekly deployments across native and web platforms. By combining rigorous QA with rapid feedback loops, he ensured the platform continued to scale without eroding customer trust.
 
 ## Operating model
-{: #operations .scroll-mt-32 }
+{: #operations .nav-scroll-anchor }
 
 - Conducted fortnightly QA on release candidates for iOS, Android, and web, identifying 15–20 pre-deployment bugs each cycle and surfacing emerging issues from customer reports before they became widespread.
 - Partnered with UX and engineering teams to iterate new features quickly, reducing feature request and feedback tickets by 59% year-on-year and cutting clarification requests by 46%.
@@ -29,6 +29,6 @@ As Outdooractive’s Technical Product Specialist, Liam established repeatable r
 - Reworked help centre journeys to deliver direct-to-answer responses in 70% of remaining routine support requests while cutting overall query volume by 21%.
 
 ## Outcomes
-{: #outcomes .scroll-mt-32 }
+{: #outcomes .nav-scroll-anchor }
 
 Customers experienced steadier releases, support teams gained clearer insight into platform health, and Outdooractive accelerated delivery without sacrificing reliability. The operating model Liam designed continues to underpin the company’s mobile release cadence.
