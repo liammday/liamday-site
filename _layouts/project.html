@@ -18,11 +18,6 @@ layout: default
   >
     <div class="mx-auto flex w-full max-w-4xl flex-col gap-12 px-6 py-24">
       <div class="space-y-6" data-animate="hero-copy">
-        <a
-          class="inline-flex w-fit items-center gap-2 rounded-full border border-aluminum-500/30 px-4 py-2 text-xs font-semibold uppercase tracking-[0.35em] text-aluminum-300 transition hover:border-ember-400/50 hover:text-ember-200"
-          href="{{ '/projects/' | relative_url }}"
-          >← Back to projects</a
-        >
         {% if page.type %}
         <span class="inline-flex w-fit items-center rounded-full border border-ember-400/30 bg-ember-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.4em] text-ember-200 texture-noise"
           >{{ page.type }}</span
@@ -134,36 +129,41 @@ layout: default
 
   <nav class="sticky top-0 z-40 border-b border-aluminum-500/25 bg-charcoal-900/95 backdrop-blur" aria-label="Page sections" data-sticky-nav>
     <div class="mx-auto w-full max-w-4xl">
-      <div class="relative flex gap-3 overflow-x-auto px-6 py-4 text-sm" data-nav-scroll>
+      <div class="flex items-center gap-3 px-6 py-4 text-sm">
         <a
-          class="whitespace-nowrap rounded-full border border-aluminum-500/40 px-4 py-2 text-sm font-medium text-aluminum-300 transition hover:border-ember-400/50 hover:bg-ember-500/10 hover:text-aluminum-100"
-          href="{{ '/projects/' | relative_url }}"
+          class="shrink-0 whitespace-nowrap rounded-full border border-aluminum-500/40 px-4 py-2 text-sm font-medium text-aluminum-300 transition hover:border-ember-400/50 hover:bg-ember-500/10 hover:text-aluminum-100"
+          href="{{ '/' | relative_url }}#projects"
           >← Back</a
         >
-        {% if page.nav %}
-          {% for item in page.nav %}
-          <a
-            class="whitespace-nowrap rounded-full border border-transparent px-4 py-2 font-medium text-aluminum-300 transition hover:text-aluminum-100 hover:border-aluminum-500/40 aria-[current=page]:border-ember-400/50 aria-[current=page]:bg-ember-500/10 aria-[current=page]:text-ember-200 aria-[current=page]:texture-noise"
-            href="#{{ item.id }}"
-            data-nav-link
-            >{{ item.label }}</a
-          >
-          {% endfor %}
-        {% endif %}
-        {% if show_store_sections %}
-        <a
-          class="whitespace-nowrap rounded-full border border-transparent px-4 py-2 font-medium text-aluminum-300 transition hover:text-aluminum-100 hover:border-aluminum-500/40 aria-[current=page]:border-ember-400/50 aria-[current=page]:bg-ember-500/10 aria-[current=page]:text-ember-200 aria-[current=page]:texture-noise"
-          href="#terms"
-          data-nav-link
-          >Terms &amp; Conditions</a
-        >
-        <a
-          class="whitespace-nowrap rounded-full border border-transparent px-4 py-2 font-medium text-aluminum-300 transition hover:text-aluminum-100 hover:border-aluminum-500/40 aria-[current=page]:border-ember-400/50 aria-[current=page]:bg-ember-500/10 aria-[current=page]:text-ember-200 aria-[current=page]:texture-noise"
-          href="#privacy"
-          data-nav-link
-          >Privacy Policy</a
-        >
-        {% endif %}
+        <span class="h-6 w-px shrink-0 bg-aluminum-500/30"></span>
+        <div class="flex-1 overflow-hidden">
+          <div class="flex gap-3 overflow-x-auto" data-nav-scroll>
+            {% if page.nav %}
+              {% for item in page.nav %}
+              <a
+                class="whitespace-nowrap rounded-full border border-transparent px-4 py-2 font-medium text-aluminum-300 transition hover:text-aluminum-100 hover:border-aluminum-500/40 aria-[current=page]:border-ember-400/50 aria-[current=page]:bg-ember-500/10 aria-[current=page]:text-ember-200 aria-[current=page]:texture-noise"
+                href="#{{ item.id }}"
+                data-nav-link
+                >{{ item.label }}</a
+              >
+              {% endfor %}
+            {% endif %}
+            {% if show_store_sections %}
+            <a
+              class="whitespace-nowrap rounded-full border border-transparent px-4 py-2 font-medium text-aluminum-300 transition hover:text-aluminum-100 hover:border-aluminum-500/40 aria-[current=page]:border-ember-400/50 aria-[current=page]:bg-ember-500/10 aria-[current=page]:text-ember-200 aria-[current=page]:texture-noise"
+              href="#terms"
+              data-nav-link
+              >Terms &amp; Conditions</a
+            >
+            <a
+              class="whitespace-nowrap rounded-full border border-transparent px-4 py-2 font-medium text-aluminum-300 transition hover:text-aluminum-100 hover:border-aluminum-500/40 aria-[current=page]:border-ember-400/50 aria-[current=page]:bg-ember-500/10 aria-[current=page]:text-ember-200 aria-[current=page]:texture-noise"
+              href="#privacy"
+              data-nav-link
+              >Privacy Policy</a
+            >
+            {% endif %}
+          </div>
+        </div>
       </div>
     </div>
   </nav>

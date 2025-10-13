@@ -96,15 +96,13 @@
         const root = document.documentElement;
         root.style.setProperty('--sticky-nav-height', `${navHeight}px`);
 
-        const minHeight = Math.max(window.innerHeight - navHeight, 0);
         linkItems.forEach(({ section }) => {
           const baseMargin = parseFloat(section.dataset.baseScrollMargin || '0') || 0;
           const scrollOffset = Math.max(navHeight, baseMargin);
-          const sectionMinHeight = Math.max(minHeight + baseMargin, 0);
 
           section.dataset.navScrollOffset = String(scrollOffset);
           section.style.scrollMarginTop = `${scrollOffset}px`;
-          section.style.minHeight = `${sectionMinHeight}px`;
+          section.style.removeProperty('min-height');
         });
       }
 
