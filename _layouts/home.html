@@ -202,7 +202,7 @@ layout: default
       {% if ordered_projects != empty %}
       <div class="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
         {% for project in ordered_projects %}
-        <a class="group flex h-full flex-col justify-between surface-panel p-6 transition"
+        <a class="group flex h-full flex-col justify-between surface-panel p-6 transition no-underline hover:no-underline focus-visible:no-underline"
           data-animate="project-card"
           href="{{ project.url | relative_url }}">
           <div class="space-y-4">
