@@ -9,9 +9,9 @@ type: Case study
 nav:
   - id: overview
     label: Overview
-  - id:governance
+  - id: governance
     label: Governance & training
-  - id:outcomes
+  - id: outcomes
     label: Outcomes
 ---
 ## Overview

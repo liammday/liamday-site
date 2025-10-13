@@ -12,11 +12,11 @@ show_store_sections: true
 nav:
   - id: overview
     label: Overview
-  - id:scoring
+  - id: scoring
     label: Match intelligence
-  - id:training
+  - id: training
     label: Training loops
-  - id:roadmap
+  - id: roadmap
     label: Roadmap
 stats:
   - label: Objective

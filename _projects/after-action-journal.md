@@ -21,9 +21,9 @@ stats:
 nav:
   - id: overview
     label: Overview
-  - id:problem
+  - id: problem
     label: Problem framing
-  - id:roadmap
+  - id: roadmap
     label: Roadmap
 ---
 ## Overview

@@ -9,9 +9,9 @@ type: Case study
 nav:
   - id: overview
     label: Overview
-  - id:operations
+  - id: operations
     label: Operating model
-  - id:outcomes
+  - id: outcomes
     label: Outcomes
 ---
 ## Overview

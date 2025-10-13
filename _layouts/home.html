@@ -3,8 +3,6 @@ layout: default
 ---
 {% assign cv = site.data.cv %}
 {% assign ordered_projects = site.projects | sort: 'order' %}
-{% assign case_studies = ordered_projects | where: 'type', 'Case study' %}
-{% assign app_builds = ordered_projects | where: 'type', 'App build' %}
 {% assign start_year = 2013 %}
 {% assign start_month = 9 %}
 {% assign current_year = 'now' | date: '%Y' | plus: 0 %}
@@ -200,57 +198,32 @@ layout: default
         Explore detailed write-ups of organisational change initiatives alongside living product build journals for personal apps.
       </p>
     </div>
-    <div class="mt-12 space-y-12">
-      {% if case_studies != empty %}
-      <div class="space-y-6">
-        <h3 class="text-sm font-semibold uppercase tracking-[0.35em] text-aluminum-300">Case studies</h3>
-        <div class="grid gap-6 md:grid-cols-2">
-          {% for project in case_studies %}
-          <a class="group flex h-full flex-col justify-between surface-panel p-6 transition"
-            data-animate="project-card"
-            href="{{ project.url | relative_url }}">
-            <div class="space-y-4">
-              <p class="text-xs font-semibold uppercase tracking-[0.3em] text-aluminum-400">{{ project.year }}</p>
+    <div class="mt-12">
+      {% if ordered_projects != empty %}
+      <div class="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+        {% for project in ordered_projects %}
+        <a class="group flex h-full flex-col justify-between surface-panel p-6 transition"
+          data-animate="project-card"
+          href="{{ project.url | relative_url }}">
+          <div class="space-y-4">
+            <span class="inline-flex w-fit items-center rounded-full border border-aluminum-500/30 bg-aluminum-500/10 px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.35em] text-aluminum-300">{{ project.type }}</span>
+            <div class="space-y-2">
               <h3 class="text-lg font-semibold text-aluminum-100">{{ project.title }}</h3>
               <p class="text-sm leading-relaxed text-aluminum-300">{{ project.summary }}</p>
             </div>
-            <span class="mt-8 inline-flex items-center gap-2 text-sm font-medium text-aluminum-200">View case study
-              <svg aria-hidden="true" class="h-4 w-4 transition group-hover:translate-x-1" data-animate="project-arrow" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                <path d="M5 12h14m-6-6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </span>
-          </a>
-          {% endfor %}
+          </div>
+          <span class="mt-8 inline-flex items-center gap-2 text-sm font-medium text-aluminum-200">View project
+            <svg aria-hidden="true" class="h-4 w-4 transition group-hover:translate-x-1" data-animate="project-arrow" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+              <path d="M5 12h14m-6-6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </span>
+        </a>
+        {% endfor %}
+      </div>
+      {% else %}
+        <div class="rounded-2xl border border-dashed border-aluminum-500/30 bg-graphite-700/60 p-6 text-sm text-aluminum-300">
+          Project highlights coming soon. In the meantime, explore Liam’s updates on LinkedIn.
         </div>
-      </div>
-      {% endif %}
-      {% if app_builds != empty %}
-      <div class="space-y-6">
-        <h3 class="text-sm font-semibold uppercase tracking-[0.35em] text-aluminum-300">App build journals</h3>
-        <div class="grid gap-6 md:grid-cols-2">
-          {% for project in app_builds %}
-          <a class="group flex h-full flex-col justify-between surface-panel p-6 transition"
-            data-animate="project-card"
-            href="{{ project.url | relative_url }}">
-            <div class="space-y-4">
-              <p class="text-xs font-semibold uppercase tracking-[0.3em] text-aluminum-400">{{ project.year }}</p>
-              <h3 class="text-lg font-semibold text-aluminum-100">{{ project.title }}</h3>
-              <p class="text-sm leading-relaxed text-aluminum-300">{{ project.summary }}</p>
-            </div>
-            <span class="mt-8 inline-flex items-center gap-2 text-sm font-medium text-aluminum-200">Read build notes
-              <svg aria-hidden="true" class="h-4 w-4 transition group-hover:translate-x-1" data-animate="project-arrow" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                <path d="M5 12h14m-6-6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </span>
-          </a>
-          {% endfor %}
-        </div>
-      </div>
-      {% endif %}
-      {% if ordered_projects == empty %}
-      <div class="rounded-2xl border border-dashed border-aluminum-500/30 bg-graphite-700/60 p-6 text-sm text-aluminum-300">
-        Project highlights coming soon. In the meantime, explore Liam’s updates on LinkedIn.
-      </div>
       {% endif %}
     </div>
   </div>

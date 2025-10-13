@@ -12,11 +12,11 @@ show_store_sections: true
 nav:
   - id: overview
     label: Overview
-  - id:learning
+  - id: learning
     label: Learning experience
-  - id:content
+  - id: content
     label: Content pipeline
-  - id:roadmap
+  - id: roadmap
     label: Roadmap
 stats:
   - label: Curriculum
