@@ -21,9 +21,9 @@ stats:
 nav:
   - id: overview
     label: Overview
-  - id:direction
+  - id: direction
     label: Product direction
-  - id:build-focus
+  - id: build-focus
     label: Build focus
 ---
 ## Overview

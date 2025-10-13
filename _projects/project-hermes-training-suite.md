@@ -9,9 +9,9 @@ type: Case study
 nav:
   - id: overview
     label: Overview
-  - id:delivery
+  - id: delivery
     label: Delivery highlights
-  - id:outcomes
+  - id: outcomes
     label: Outcomes
 ---
 ## Overview

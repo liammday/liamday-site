@@ -12,11 +12,11 @@ show_store_sections: true
 nav:
   - id: overview
     label: Overview
-  - id:readiness
+  - id: readiness
     label: Readiness model
-  - id:planning
+  - id: planning
     label: Planning system
-  - id:roadmap
+  - id: roadmap
     label: Roadmap
 stats:
   - label: Feedback cadence
