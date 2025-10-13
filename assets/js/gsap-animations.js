@@ -363,93 +363,28 @@
 
       if (!allowMotion) {
         gsapGlobal.set(cards, { y: 0, opacity: 1 });
-        const arrows = cards
-          .map((card) => card.querySelector('[data-animate="project-arrow"]'))
-          .filter(Boolean);
-        if (arrows.length) {
-          gsapGlobal.set(arrows, { x: 0, opacity: 1 });
-        }
         return;
       }
 
       cards.forEach((card) => {
-        const arrow = card.querySelector('[data-animate="project-arrow"]');
         gsapGlobal.set(card, { y: 48, opacity: 0, transformOrigin: '50% 50%' });
-        if (arrow) {
-          gsapGlobal.set(arrow, { x: 0, opacity: 0.6 });
-        }
-
-        const hoverTimeline = gsapGlobal
-          .timeline({
-            paused: true,
-            defaults: { ease: 'power2.out' },
-          })
-          .to(
-            card,
-            {
-              y: -12,
-              scale: 1.02,
-              boxShadow: '0 28px 55px -30px rgba(255, 176, 122, 0.6)',
-              duration: 0.35,
-            },
-            0
-          );
-
-        if (arrow) {
-          hoverTimeline
-            .to(
-              arrow,
-              {
-                x: 16,
-                duration: 0.18,
-              },
-              0
-            )
-            .to(
-              arrow,
-              {
-                x: 8,
-                duration: 0.24,
-                ease: 'power1.out',
-              },
-              '>-0.05'
-            );
-        }
 
         const animateIn = () => {
-          hoverTimeline.progress(0).pause();
           gsapGlobal.to(card, {
             y: 0,
             opacity: 1,
             duration: 0.6,
             ease: 'power1.out',
           });
-          if (arrow) {
-            gsapGlobal.to(arrow, {
-              x: 8,
-              opacity: 1,
-              duration: 0.5,
-              ease: 'power1.out',
-            });
-          }
         };
 
         const resetState = () => {
-          hoverTimeline.progress(0).pause();
           gsapGlobal.to(card, {
             y: 48,
             opacity: 0,
             duration: 0.4,
             ease: 'power1.in',
           });
-          if (arrow) {
-            gsapGlobal.to(arrow, {
-              x: 0,
-              opacity: 0.6,
-              duration: 0.3,
-              ease: 'power1.in',
-            });
-          }
         };
 
         ScrollTrigger.create({
@@ -461,14 +396,6 @@
           onLeave: resetState,
           onLeaveBack: resetState,
         });
-
-        const playHover = () => hoverTimeline.play();
-        const resetHover = () => hoverTimeline.reverse();
-
-        card.addEventListener('mouseenter', playHover);
-        card.addEventListener('mouseleave', resetHover);
-        card.addEventListener('focusin', playHover);
-        card.addEventListener('focusout', resetHover);
       });
     }
 
