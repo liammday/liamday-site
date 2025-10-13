@@ -143,6 +143,16 @@
         });
       }
 
+      function refreshNav({ immediate = false } = {}) {
+        updateSectionOffsets();
+        const trigger = () => handleScroll({ fromHash: true });
+        if (immediate) {
+          trigger();
+        } else {
+          window.requestAnimationFrame(trigger);
+        }
+      }
+
       updateSectionOffsets();
       handleScroll({ fromHash: true });
 
@@ -155,9 +165,16 @@
       );
 
       window.addEventListener('resize', () => {
-        updateSectionOffsets();
-        window.requestAnimationFrame(() => handleScroll({ fromHash: true }));
+        refreshNav();
       });
+
+      nav.addEventListener('nav:refresh', () => {
+        refreshNav();
+      });
+
+      if (document.documentElement.dataset.projectSectionsReady === 'true') {
+        refreshNav({ immediate: true });
+      }
 
       if (window.location.hash) {
         const hashId = window.location.hash.slice(1);
@@ -178,6 +195,12 @@
           window.requestAnimationFrame(handleScroll);
         });
       });
+    });
+  });
+
+  document.addEventListener('projectSections:ready', () => {
+    document.querySelectorAll('[data-sticky-nav]').forEach((nav) => {
+      nav.dispatchEvent(new CustomEvent('nav:refresh'));
     });
   });
 })();

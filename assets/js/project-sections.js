@@ -7,6 +7,20 @@
     }
   }
 
+  function getHeadings(container) {
+    if (!container || !container.children) {
+      return [];
+    }
+
+    return Array.from(container.children).filter((child) => {
+      return (
+        child.nodeType === Node.ELEMENT_NODE &&
+        child.matches &&
+        child.matches('h2.nav-scroll-anchor')
+      );
+    });
+  }
+
   function collectFollowingNodes(start) {
     const nodes = [];
     let node = start;
@@ -87,9 +101,7 @@
       return;
     }
 
-    const headings = Array.from(
-      container.querySelectorAll(':scope > h2.nav-scroll-anchor')
-    );
+    const headings = getHeadings(container);
 
     if (!headings.length) {
       return;
@@ -101,6 +113,16 @@
 
     container.dataset.projectSectionsReady = 'true';
     container.classList.add('project-sections-ready');
+    document.documentElement.dataset.projectSectionsReady = 'true';
     removeEmptyTextNodes(container);
+
+    document.dispatchEvent(
+      new CustomEvent('projectSections:ready', {
+        detail: {
+          container,
+          sectionCount: getHeadings(container).length,
+        },
+      })
+    );
   });
 })();
