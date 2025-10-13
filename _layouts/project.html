@@ -168,8 +168,8 @@ layout: default
     </div>
   </nav>
 
-  <div class="mx-auto max-w-4xl px-6 py-16">
-    <div class="detail-content prose prose-invert">
+  <div class="mx-auto max-w-4xl px-6">
+    <div class="detail-content project-sections" data-project-sections>
       {{ content }}
     </div>
   </div>
@@ -220,3 +220,4 @@ layout: default
   </div>
   {% endif %}
 </article>
+<script src="{{ '/assets/js/project-sections.js' | relative_url }}" defer></script>
