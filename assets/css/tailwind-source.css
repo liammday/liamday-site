@@ -101,49 +101,4 @@
   .project-sections {
     @apply flex flex-col;
   }
-
-  .project-section {
-    @apply border-b border-aluminum-500/20 py-16 gap-10;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    min-height: calc(100vh - var(--sticky-nav-height, 0px));
-    position: relative;
-  }
-
-  .project-section-inner {
-    @apply flex flex-col gap-8;
-    position: relative;
-    top: calc(var(--sticky-nav-height, 0px) / -2);
-  }
-
-  .project-section-heading {
-    @apply max-w-3xl space-y-4;
-  }
-
-  .project-section-title {
-    @apply text-3xl font-semibold text-aluminum-100;
-  }
-
-  .project-section-body {
-    @apply max-w-3xl gap-6;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .project-section-body > :where(p) {
-    @apply text-lg leading-relaxed text-aluminum-300;
-  }
-
-  .project-section-body > :where(ul) {
-    @apply list-disc space-y-3 pl-6 text-lg leading-relaxed text-aluminum-300 marker:text-ember-300;
-  }
-
-  .project-section-body > :where(ol) {
-    @apply list-decimal space-y-3 pl-6 text-lg leading-relaxed text-aluminum-300 marker:text-ember-300;
-  }
-
-  .project-section-body > :where(h3) {
-    @apply text-xl font-semibold text-aluminum-100;
-  }
 }
