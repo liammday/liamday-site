@@ -7,4 +7,7 @@
   {% assign css_version = site.time | date: '%s' %}
 {% endunless %}
 <link rel="stylesheet" href="{{ '/assets/css/tailwind.css' | relative_url }}?v={{ css_version }}" />
+{% if page.layout == 'project' or page.collection == 'projects' %}
+<link rel="stylesheet" href="{{ '/assets/css/project-sections.css' | relative_url }}?v={{ css_version }}" />
+{% endif %}
 {% seo %}
