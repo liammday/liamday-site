@@ -8,7 +8,9 @@
   }
 
   function initCardSpotlight() {
-    const cards = Array.from(document.querySelectorAll('.surface-panel'));
+    const cards = Array.from(document.querySelectorAll('.surface-panel')).filter(
+      (card) => card.dataset.spotlight !== 'static'
+    );
     if (!cards.length) {
       return;
     }
@@ -351,10 +353,9 @@
         return;
       }
 
-      animateCardStack(wrapper, {
-        start: 'top 80%',
-        end: 'bottom 25%',
-      });
+      if (wrapper) {
+        gsapGlobal.set(wrapper, { y: 48, opacity: 0 });
+      }
 
       if (glow) {
         gsapGlobal.set(glow, { opacity: 0, scale: 0.7, transformOrigin: '50% 50%' });
@@ -378,6 +379,10 @@
           toggleActions: 'play none none reverse',
         },
       });
+
+      if (wrapper) {
+        contactTimeline.to(wrapper, { y: 0, opacity: 1, duration: 0.6 }, 0);
+      }
 
       if (glow) {
         contactTimeline.to(glow, { opacity: 1, scale: 1.05, duration: 0.8 }, 0);
