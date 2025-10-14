@@ -62,6 +62,43 @@
 
       const itemsById = new Map(linkItems.map((item) => [item.section.id, item]));
 
+      const dockTargetId = nav.dataset.dockTarget;
+      const dockTarget = dockTargetId ? document.getElementById(dockTargetId) : null;
+      const dockPlaceholder =
+        nav.nextElementSibling &&
+        nav.nextElementSibling.hasAttribute('data-sticky-nav-placeholder')
+          ? nav.nextElementSibling
+          : null;
+      let isDocked = false;
+
+      function applyDockState(shouldDock) {
+        if (isDocked === shouldDock) {
+          return;
+        }
+        isDocked = shouldDock;
+        if (shouldDock) {
+          nav.dataset.dockState = 'bottom';
+        } else {
+          delete nav.dataset.dockState;
+        }
+        if (dockPlaceholder) {
+          dockPlaceholder.style.height = shouldDock
+            ? 'var(--sticky-nav-height, 0px)'
+            : '0px';
+        }
+      }
+
+      function updateDockState() {
+        if (!dockTarget) {
+          return;
+        }
+
+        const heroRect = dockTarget.getBoundingClientRect();
+        const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+        const shouldDock = heroRect.top < viewportHeight && heroRect.bottom > viewportHeight;
+        applyDockState(shouldDock);
+      }
+
       let currentId = null;
 
       function setActive(id, { fromHash = false } = {}) {
@@ -128,6 +165,7 @@
       function handleScroll({ fromHash = false } = {}) {
         const activeId = getActiveItemId();
         setActive(activeId, { fromHash });
+        updateDockState();
       }
 
       function scrollToSection(section, { behavior } = {}) {
