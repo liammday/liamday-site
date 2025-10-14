@@ -48,11 +48,11 @@
     outline: none;
   }
 
-  .surface-panel:is(:hover, :focus-visible, :focus-within) {
+  .surface-panel:not([data-spotlight='static']):is(:hover, :focus-visible, :focus-within) {
     @apply border-ember-300/50;
   }
 
-  .surface-panel:is(:hover, :focus-visible, :focus-within)
+  .surface-panel:not([data-spotlight='static']):is(:hover, :focus-visible, :focus-within)
     :is(.text-aluminum-300, .text-aluminum-400) {
     color: theme('colors.aluminum.100');
   }
