@@ -200,7 +200,7 @@
         linkItems.forEach(({ section }, index) => {
           const rect = section.getBoundingClientRect();
           const scrollOffset = parseFloat(section.dataset.navScrollOffset || '0') || 0;
-          const hasReachedAnchor = rect.top - scrollOffset <= -activationThreshold;
+          const hasReachedAnchor = rect.top - scrollOffset <= activationThreshold;
 
           if (index === 0) {
             const intersectsViewport =
