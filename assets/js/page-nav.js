@@ -192,21 +192,18 @@
 
       function getActiveItemId() {
         let lastReachedId = null;
+        const activationThreshold = 1;
 
         linkItems.forEach(({ section }) => {
           const rect = section.getBoundingClientRect();
           const scrollOffset = parseFloat(section.dataset.navScrollOffset || '0') || 0;
 
-          if (rect.top - scrollOffset <= 1) {
+          if (rect.top - scrollOffset <= -activationThreshold) {
             lastReachedId = section.id;
           }
         });
 
-        if (lastReachedId) {
-          return lastReachedId;
-        }
-
-        return linkItems.length ? linkItems[0].section.id : null;
+        return lastReachedId;
       }
 
       function handleScroll({ fromHash = false } = {}) {
