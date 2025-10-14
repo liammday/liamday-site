@@ -142,7 +142,10 @@
 
         const heroRect = dockTarget.getBoundingClientRect();
         const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
-        const shouldDock = heroRect.top < viewportHeight && heroRect.bottom > viewportHeight;
+        const navHeight = nav.offsetHeight || 0;
+        const dockThreshold = Math.max(viewportHeight - navHeight, 0);
+        const shouldDock =
+          heroRect.top >= 0 && heroRect.top < viewportHeight && heroRect.bottom > dockThreshold;
         applyDockState(shouldDock);
       }
 
