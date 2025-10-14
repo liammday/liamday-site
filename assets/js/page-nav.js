@@ -27,9 +27,56 @@
 
     navs.forEach((nav) => {
       const scrollContainer = nav.querySelector('[data-nav-scroll]');
+      if (!scrollContainer) {
+        return;
+      }
+
       const links = Array.from(nav.querySelectorAll('[data-nav-link]'));
       if (!links.length) {
         return;
+      }
+
+      function updateScrollIndicators() {
+        if (!scrollContainer) {
+          return;
+        }
+        const maxScrollLeft = Math.max(scrollContainer.scrollWidth - scrollContainer.clientWidth, 0);
+        const epsilon = 1;
+
+        if (maxScrollLeft <= epsilon) {
+          scrollContainer.setAttribute('data-scroll-start', '');
+          scrollContainer.setAttribute('data-scroll-end', '');
+          return;
+        }
+
+        if (scrollContainer.scrollLeft <= epsilon) {
+          scrollContainer.setAttribute('data-scroll-start', '');
+        } else {
+          scrollContainer.removeAttribute('data-scroll-start');
+        }
+
+        if (scrollContainer.scrollLeft >= maxScrollLeft - epsilon) {
+          scrollContainer.setAttribute('data-scroll-end', '');
+        } else {
+          scrollContainer.removeAttribute('data-scroll-end');
+        }
+      }
+
+      const handleScrollIndicators = () => {
+        window.requestAnimationFrame(updateScrollIndicators);
+      };
+
+      updateScrollIndicators();
+
+      scrollContainer.addEventListener('scroll', handleScrollIndicators, { passive: true });
+
+      if ('ResizeObserver' in window) {
+        const resizeObserver = new ResizeObserver(() => {
+          updateScrollIndicators();
+        });
+        resizeObserver.observe(scrollContainer);
+      } else {
+        window.addEventListener('resize', handleScrollIndicators);
       }
 
       const linkItems = links
@@ -189,10 +236,12 @@
         } else {
           window.requestAnimationFrame(trigger);
         }
+        updateScrollIndicators();
       }
 
       updateSectionOffsets();
       handleScroll({ fromHash: true });
+      updateScrollIndicators();
 
       window.addEventListener(
         'scroll',
