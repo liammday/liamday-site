@@ -21,6 +21,14 @@
   a:focus-visible {
     @apply text-ember-200 underline;
   }
+
+  [data-nav-link] {
+    @apply no-underline;
+  }
+
+  [data-nav-link]:is(:hover, :focus-visible) {
+    @apply no-underline;
+  }
 }
 
 @layer components {

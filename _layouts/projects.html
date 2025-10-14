@@ -7,7 +7,7 @@ layout: default
 
 <section
   id="projects-hero"
-  class="relative flex min-h-screen flex-col justify-center overflow-hidden border-b border-aluminum-500/20 bg-charcoal-900"
+  class="relative flex min-h-[calc(100vh-var(--sticky-nav-height,0px))] flex-col justify-center overflow-hidden border-b border-aluminum-500/20 bg-charcoal-900"
 >
   <div class="mx-auto flex w-full max-w-5xl flex-col gap-10 px-6 py-24">
     <div class="space-y-6" data-animate="hero-copy">
@@ -49,10 +49,10 @@ layout: default
   <div class="mx-auto w-full max-w-5xl">
     <div class="relative flex gap-3 overflow-x-auto px-6 py-4 text-sm" data-nav-scroll>
       {% if case_studies != empty %}
-      <a class="whitespace-nowrap rounded-full border border-transparent px-4 py-2 font-medium text-aluminum-300 transition hover:text-aluminum-100 hover:border-aluminum-500/40 aria-[current=page]:border-ember-400/50 aria-[current=page]:bg-ember-500/10 aria-[current=page]:text-ember-200 aria-[current=page]:texture-noise" href="#case-studies" data-nav-link>Case studies</a>
+      <a class="whitespace-nowrap rounded-full border border-transparent px-4 py-2 font-medium text-aluminum-300 transition hover:text-aluminum-100 hover:border-aluminum-500/40 aria-[current=page]:border-ember-400/50 aria-[current=page]:bg-ember-500/10 aria-[current=page]:text-ember-200 aria-[current=page]:texture-noise no-underline hover:no-underline focus-visible:no-underline" href="#case-studies" data-nav-link>Case studies</a>
       {% endif %}
       {% if app_builds != empty %}
-      <a class="whitespace-nowrap rounded-full border border-transparent px-4 py-2 font-medium text-aluminum-300 transition hover:text-aluminum-100 hover:border-aluminum-500/40 aria-[current=page]:border-ember-400/50 aria-[current=page]:bg-ember-500/10 aria-[current=page]:text-ember-200 aria-[current=page]:texture-noise" href="#app-builds" data-nav-link>App builds</a>
+      <a class="whitespace-nowrap rounded-full border border-transparent px-4 py-2 font-medium text-aluminum-300 transition hover:text-aluminum-100 hover:border-aluminum-500/40 aria-[current=page]:border-ember-400/50 aria-[current=page]:bg-ember-500/10 aria-[current=page]:text-ember-200 aria-[current=page]:texture-noise no-underline hover:no-underline focus-visible:no-underline" href="#app-builds" data-nav-link>App builds</a>
       {% endif %}
     </div>
   </div>
