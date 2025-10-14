@@ -101,6 +101,95 @@
     const shouldReduceMotion = reduceMotionQuery.matches || manualMotionDisabled;
     const allowMotion = !shouldReduceMotion;
 
+    function animateCardStack(elements, config = {}) {
+      const cards = gsapGlobal.utils.toArray(elements);
+      if (!cards.length) {
+        return;
+      }
+
+      const {
+        start = 'top 80%',
+        end = 'bottom 20%',
+        fromY = 48,
+        durationIn = 0.6,
+        durationOut = 0.45,
+      } = config;
+
+      if (!allowMotion) {
+        gsapGlobal.set(cards, { y: 0, opacity: 1 });
+        return;
+      }
+
+      cards.forEach((card) => {
+        gsapGlobal.set(card, { y: fromY, opacity: 0, transformOrigin: '50% 50%' });
+
+        ScrollTrigger.create({
+          trigger: card,
+          start,
+          end,
+          onEnter: () =>
+            gsapGlobal.to(card, {
+              y: 0,
+              opacity: 1,
+              duration: durationIn,
+              ease: 'power1.out',
+            }),
+          onLeaveBack: () =>
+            gsapGlobal.to(card, {
+              y: fromY,
+              opacity: 0,
+              duration: durationOut,
+              ease: 'power1.in',
+            }),
+        });
+      });
+    }
+
+    function animateCardGrid(elements, config = {}) {
+      const cards = gsapGlobal.utils.toArray(elements);
+      if (!cards.length) {
+        return;
+      }
+
+      const {
+        start = 'top 85%',
+        end = 'bottom 30%',
+        fromX = 32,
+        durationIn = 0.6,
+        durationOut = 0.45,
+      } = config;
+
+      if (!allowMotion) {
+        gsapGlobal.set(cards, { x: 0, opacity: 1 });
+        return;
+      }
+
+      cards.forEach((card, index) => {
+        const direction = index % 2 === 0 ? -fromX : fromX;
+        gsapGlobal.set(card, { x: direction, opacity: 0, transformOrigin: '50% 50%' });
+
+        ScrollTrigger.create({
+          trigger: card,
+          start,
+          end,
+          onEnter: () =>
+            gsapGlobal.to(card, {
+              x: 0,
+              opacity: 1,
+              duration: durationIn,
+              ease: 'power1.out',
+            }),
+          onLeaveBack: () =>
+            gsapGlobal.to(card, {
+              x: direction,
+              opacity: 0,
+              duration: durationOut,
+              ease: 'power1.in',
+            }),
+        });
+      });
+    }
+
     function initHero() {
       const hero = document.querySelector('#profile');
       if (!hero) return;
@@ -202,200 +291,26 @@
     }
 
     function initExperience() {
-      const cards = gsapGlobal.utils.toArray('[data-animate="experience-card"]');
-      if (!cards.length) {
-        return;
-      }
-
-      if (!allowMotion) {
-        gsapGlobal.set(cards, { y: 0, opacity: 1 });
-        return;
-      }
-
-      cards.forEach((card) => {
-        gsapGlobal.set(card, { y: 48, opacity: 0 });
-        ScrollTrigger.create({
-          trigger: card,
-          start: 'top 80%',
-          end: 'bottom 20%',
-          onEnter: () =>
-            gsapGlobal.to(card, {
-              y: 0,
-              opacity: 1,
-              duration: 0.6,
-              ease: 'power1.out',
-            }),
-          onLeaveBack: () =>
-            gsapGlobal.to(card, {
-              y: 48,
-              opacity: 0,
-              duration: 0.45,
-              ease: 'power1.in',
-            }),
-        });
-      });
+      animateCardStack('[data-animate="experience-card"]');
     }
 
     function initCapabilities() {
-      const cards = gsapGlobal.utils.toArray('[data-animate="capability-card"]');
-      if (!cards.length) {
-        return;
-      }
-
-      if (!allowMotion) {
-        gsapGlobal.set(cards, { x: 0, opacity: 1 });
-        return;
-      }
-
-      cards.forEach((card, index) => {
-        const fromX = index % 2 === 0 ? -32 : 32;
-        gsapGlobal.set(card, {
-          x: fromX,
-          opacity: 0,
-          transformOrigin: '50% 50%',
-        });
-
-        ScrollTrigger.create({
-          trigger: card,
-          start: 'top 85%',
-          end: 'bottom 30%',
-          onEnter: () => {
-            gsapGlobal.to(card, {
-              x: 0,
-              opacity: 1,
-              duration: 0.6,
-              ease: 'power1.out',
-            });
-          },
-          onLeaveBack: () => {
-            gsapGlobal.to(card, {
-              x: fromX,
-              opacity: 0,
-              duration: 0.45,
-              ease: 'power1.in',
-            });
-          },
-        });
-      });
+      animateCardGrid('[data-animate="capability-card"]');
     }
 
     function initEducation() {
-      const section = document.querySelector('#education');
-      if (!section) {
-        return;
-      }
-      const panels = gsapGlobal.utils.toArray('[data-animate="education-panel"]', section);
-      const items = gsapGlobal.utils.toArray('[data-animate="education-item"]', section);
-
-      if (!panels.length && !items.length) {
-        return;
-      }
-
-      if (!allowMotion) {
-        if (panels.length) {
-          gsapGlobal.set(panels, { scale: 1, opacity: 1 });
-        }
-        if (items.length) {
-          gsapGlobal.set(items, { y: 0, opacity: 1 });
-        }
-        return;
-      }
-
-      if (panels.length) {
-        gsapGlobal.set(panels, { scale: 0.97, opacity: 0, transformOrigin: '50% 50%' });
-      }
-      if (items.length) {
-        gsapGlobal.set(items, { y: 24, opacity: 0 });
-      }
-
-      ScrollTrigger.create({
-        trigger: section,
-        start: 'top 75%',
+      animateCardGrid('[data-animate="education-panel"]', {
+        start: 'top 80%',
         end: 'bottom 25%',
-        onEnter: () => {
-          if (panels.length) {
-            gsapGlobal.to(panels, {
-              scale: 1,
-              opacity: 1,
-              duration: 0.6,
-              ease: 'power1.out',
-              stagger: 0.12,
-            });
-          }
-          if (items.length) {
-            gsapGlobal.to(items, {
-              y: 0,
-              opacity: 1,
-              duration: 0.45,
-              ease: 'power1.out',
-              stagger: 0.05,
-            });
-          }
-        },
-        onLeaveBack: () => {
-          if (panels.length) {
-            gsapGlobal.to(panels, {
-              scale: 0.97,
-              opacity: 0,
-              duration: 0.45,
-              ease: 'power1.in',
-              stagger: 0.08,
-            });
-          }
-          if (items.length) {
-            gsapGlobal.to(items, {
-              y: 24,
-              opacity: 0,
-              duration: 0.35,
-              ease: 'power1.in',
-              stagger: 0.04,
-            });
-          }
-        },
+        fromX: 28,
       });
     }
 
     function initProjects() {
-      const cards = gsapGlobal.utils.toArray('[data-animate="project-card"]');
-      if (!cards.length) {
-        return;
-      }
-
-      if (!allowMotion) {
-        gsapGlobal.set(cards, { y: 0, opacity: 1 });
-        return;
-      }
-
-      cards.forEach((card) => {
-        gsapGlobal.set(card, { y: 48, opacity: 0, transformOrigin: '50% 50%' });
-
-        const animateIn = () => {
-          gsapGlobal.to(card, {
-            y: 0,
-            opacity: 1,
-            duration: 0.6,
-            ease: 'power1.out',
-          });
-        };
-
-        const resetState = () => {
-          gsapGlobal.to(card, {
-            y: 48,
-            opacity: 0,
-            duration: 0.4,
-            ease: 'power1.in',
-          });
-        };
-
-        ScrollTrigger.create({
-          trigger: card,
-          start: 'top 80%',
-          end: 'bottom 90%',
-          onEnter: animateIn,
-          onEnterBack: animateIn,
-          onLeave: resetState,
-          onLeaveBack: resetState,
-        });
+      animateCardStack('[data-animate="project-card"]', {
+        start: 'top 80%',
+        end: 'bottom 30%',
+        durationOut: 0.4,
       });
     }
 
@@ -405,6 +320,7 @@
         return;
       }
 
+      const wrapper = section.querySelector('[data-animate="contact-wrapper"]');
       const heading = section.querySelector('[data-animate="contact-heading"]');
       const copy = section.querySelector('[data-animate="contact-copy"]');
       const actions = section.querySelector('[data-animate="contact-actions"]');
@@ -414,6 +330,9 @@
       const actionItems = actions ? gsapGlobal.utils.toArray(':scope > *', actions) : [];
 
       if (!allowMotion) {
+        if (wrapper) {
+          gsapGlobal.set(wrapper, { y: 0, opacity: 1 });
+        }
         if (glow) {
           gsapGlobal.set(glow, { opacity: 1, scale: 1 });
         }
@@ -431,6 +350,11 @@
         }
         return;
       }
+
+      animateCardStack(wrapper, {
+        start: 'top 80%',
+        end: 'bottom 25%',
+      });
 
       if (glow) {
         gsapGlobal.set(glow, { opacity: 0, scale: 0.7, transformOrigin: '50% 50%' });
