@@ -193,14 +193,31 @@
       function getActiveItemId() {
         let lastReachedId = null;
         const activationThreshold = 1;
+        const navHeight = nav.offsetHeight;
+        const viewportHeight =
+          window.innerHeight || document.documentElement.clientHeight || 0;
 
-        linkItems.forEach(({ section }) => {
+        linkItems.forEach(({ section }, index) => {
           const rect = section.getBoundingClientRect();
           const scrollOffset = parseFloat(section.dataset.navScrollOffset || '0') || 0;
+          const hasReachedAnchor = rect.top - scrollOffset <= -activationThreshold;
 
-          if (rect.top - scrollOffset <= -activationThreshold) {
+          if (index === 0) {
+            const intersectsViewport =
+              rect.bottom > navHeight + activationThreshold &&
+              rect.top < viewportHeight - activationThreshold;
+
+            if (intersectsViewport || hasReachedAnchor) {
+              lastReachedId = section.id;
+            }
+
+            return;
+          }
+
+          if (hasReachedAnchor) {
             lastReachedId = section.id;
           }
+        });
 
         return lastReachedId;
       }
