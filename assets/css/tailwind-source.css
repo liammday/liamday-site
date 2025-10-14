@@ -114,8 +114,8 @@
 
   [data-nav-scroll] {
     --nav-scroll-fade-size: 3rem;
-    --nav-scroll-fade-color-rgb: 16 18 21;
-    --nav-scroll-fade-opacity: 0.95;
+    --nav-scroll-fade-color-rgb: 7 8 10;
+    --nav-scroll-fade-opacity: 1;
     position: relative;
     scrollbar-width: none;
     -ms-overflow-style: none;
