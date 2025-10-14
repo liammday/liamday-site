@@ -201,7 +201,6 @@
           if (rect.top - scrollOffset <= -activationThreshold) {
             lastReachedId = section.id;
           }
-        });
 
         return lastReachedId;
       }
