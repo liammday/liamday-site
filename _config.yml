@@ -3,7 +3,7 @@ name: Liam Day
 description: >-
   Technical product specialist and ex-British Army officer blending operational leadership with mobile app development expertise.
 url: https://www.liamday.co.uk
-baseurl: "/liamday-site"
+baseurl: ""
 
 permalink: pretty
 timezone: Europe/London
