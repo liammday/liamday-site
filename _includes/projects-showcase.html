@@ -1,0 +1,64 @@
+{% assign app_projects = site.data.app_projects %}
+<section id="apps" class="scroll-mt-32 flex min-h-screen flex-col justify-center border-b border-aluminum-500/20 bg-charcoal-900">
+  <div class="mx-auto w-full max-w-5xl px-6 py-16">
+    <div class="max-w-3xl space-y-4" data-animate="section-heading">
+      <h2 class="text-3xl font-semibold text-aluminum-100">Product app projects</h2>
+      <p class="text-lg text-aluminum-300">
+        Two flagship iOS products currently in active development, focused on practical utility for athletes, hikers, and
+        mountain communities.
+      </p>
+    </div>
+    {% if app_projects != empty %}
+    <div class="mt-12 grid gap-6 lg:grid-cols-2">
+      {% for app in app_projects %}
+      <article class="surface-panel h-full p-6 lg:p-8" data-animate="project-card">
+        <div class="flex items-start gap-4">
+          <img class="h-16 w-16 rounded-xl border border-aluminum-500/30 object-cover"
+            src="{{ app.icon | relative_url }}"
+            alt="{{ app.name }} app icon"
+            loading="lazy"
+            width="64"
+            height="64"
+          >
+          <div class="space-y-2">
+            <p class="text-xs font-semibold uppercase tracking-[0.3em] text-aluminum-400">{{ app.platform }} · {{ app.status }}</p>
+            <h3 class="text-xl font-semibold text-aluminum-100">{{ app.name }}</h3>
+            <p class="text-sm leading-relaxed text-aluminum-300">{{ app.audience }}</p>
+          </div>
+        </div>
+
+        <p class="mt-6 text-sm leading-relaxed text-aluminum-300">{{ app.summary }}</p>
+
+        {% if app.technologies %}
+        <div class="mt-6 space-y-3">
+          <p class="text-xs font-semibold uppercase tracking-[0.3em] text-aluminum-400">Core technologies</p>
+          <ul class="flex flex-wrap gap-2">
+            {% for technology in app.technologies %}
+            <li class="rounded-full border border-aluminum-500/30 bg-graphite-700/70 px-3 py-1 text-xs font-medium text-aluminum-200">
+              {{ technology }}
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+
+        {% if app.features %}
+        <div class="mt-6 space-y-3">
+          <p class="text-xs font-semibold uppercase tracking-[0.3em] text-aluminum-400">Key features</p>
+          <ul class="list-disc space-y-2 pl-5 text-sm leading-relaxed text-aluminum-300 marker:text-ember-300">
+            {% for feature in app.features %}
+            <li>{{ feature }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+      </article>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="mt-12 rounded-2xl border border-dashed border-aluminum-500/30 bg-graphite-700/60 p-6 text-sm text-aluminum-300">
+      Product app highlights are being prepared.
+    </div>
+    {% endif %}
+  </div>
+</section>

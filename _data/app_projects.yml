@@ -1,0 +1,55 @@
+# Template for future entries:
+# - name: App name
+#   platform: Platform (for example iOS)
+#   status: Lifecycle status
+#   audience: Primary audience
+#   icon: /assets/images/projects/your-icon.png
+#   summary: One-sentence public-facing description
+#   technologies:
+#     - Core technology
+#   features:
+#     - Key feature
+
+- name: Training
+  platform: iOS
+  status: Active development
+  audience: Athletes, coaches, and habit-focused users who want stronger training consistency.
+  icon: /assets/images/projects/training-icon.png
+  summary: >
+    Training is a planning-and-accountability app that turns weekly intentions into measurable progress by comparing planned sessions with real workouts recorded in Apple Health.
+  technologies:
+    - SwiftUI
+    - SwiftData
+    - HealthKit
+    - EventKit
+    - UserNotifications
+    - AppIntents
+    - Foundation Models (iOS 26+)
+  features:
+    - Unified timeline for planned workouts, completed sessions, period goals, and rest days.
+    - Goal system for daily, weekly, monthly, and yearly targets, including nutrition and body metrics.
+    - Smart creation flow with natural-language workout parsing on supported devices.
+    - Calendar sync and notifications that keep plans visible and actionable.
+
+- name: Peaking
+  platform: iOS
+  status: Active development
+  audience: Hikers and mountaineers who track summits, routes, and collection progress.
+  icon: /assets/images/projects/peaking-icon.png
+  summary: >
+    Peaking is a mountain companion app for discovering peaks, verifying summits from route data, and tracking progress across iconic hiking lists even with patchy connectivity.
+  technologies:
+    - SwiftUI
+    - SwiftData
+    - CloudKit
+    - MapKit
+    - Overpass API (OpenStreetMap)
+    - HealthKit
+    - Strava API
+    - PhotosUI
+    - Charts
+  features:
+    - Interactive peak discovery map with clustering, filtering, and rich metadata.
+    - Route imports from HealthKit, Strava, and GPX with automated summit matching.
+    - Published and user-created collections (for example Munros and Wainwrights) with completion tracking.
+    - Offline-first cache layers for map tiles and peak data with cloud-synced personal progress.
