@@ -1,3 +1,4 @@
+---
 title: RidgeRunner Companion
 type: App build
 summary: Building an offline-first hiking companion to test product release rituals and resilient mobile tooling.
@@ -7,9 +8,9 @@ order: 4
 nav:
   - id: overview
     label: Overview
-  - id:direction
+  - id: direction
     label: Product direction
-  - id:build-focus
+  - id: build-focus
     label: Build focus
 ---
 ## Overview

@@ -1,3 +1,4 @@
+---
 title: Project HERMES Training Suite
 summary: Refactoring the British Army’s dismounted close combat training to increase throughput while maintaining operational readiness.
 role: Product Manager & Operations Manager
@@ -8,9 +9,9 @@ type: Case study
 nav:
   - id: overview
     label: Overview
-  - id:delivery
+  - id: delivery
     label: Delivery highlights
-  - id:outcomes
+  - id: outcomes
     label: Outcomes
 ---
 ## Overview

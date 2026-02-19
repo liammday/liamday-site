@@ -4,7 +4,7 @@ module.exports = {
     './_includes/**/*.html',
     './_layouts/**/*.html',
     './_posts/**/*.{html,md}',
-    './projects/**/*.{html,md}',
+    './_projects/**/*.{html,md}',
     './_data/**/*.{yml,json}',
     './*.{html,md}',
   ],

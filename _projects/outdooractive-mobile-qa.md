@@ -1,3 +1,4 @@
+---
 title: Outdooractive Mobile Release Operations
 summary: Strengthening quality loops across Outdooractive’s iOS, Android, and web apps to deliver more reliable experiences for outdoor enthusiasts.
 role: Technical Product Specialist
@@ -8,9 +9,9 @@ type: Case study
 nav:
   - id: overview
     label: Overview
-  - id:operations
+  - id: operations
     label: Operating model
-  - id:outcomes
+  - id: outcomes
     label: Outcomes
 ---
 ## Overview

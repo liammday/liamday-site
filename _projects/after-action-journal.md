@@ -1,3 +1,4 @@
+---
 title: After Action Journal
 type: App build
 summary: Drafting a reflective operations journal that transforms field notes into structured learning loops.
@@ -7,9 +8,9 @@ order: 5
 nav:
   - id: overview
     label: Overview
-  - id:problem
+  - id: problem
     label: Problem framing
-  - id:roadmap
+  - id: roadmap
     label: Roadmap
 ---
 ## Overview

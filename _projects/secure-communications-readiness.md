@@ -1,3 +1,4 @@
+---
 title: Secure Communications Readiness Toolkit
 summary: Elevating communications capability and compliance for the 1LANCS battle group across multinational deployments.
 role: Senior Project Manager & Technical Coordinator
@@ -8,9 +9,9 @@ type: Case study
 nav:
   - id: overview
     label: Overview
-  - id:governance
+  - id: governance
     label: Governance & training
-  - id:outcomes
+  - id: outcomes
     label: Outcomes
 ---
 ## Overview

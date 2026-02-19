@@ -39,8 +39,8 @@ kramdown:
 nav_links:
   - title: Profile
     url: /#profile
-  - title: Competencies
-    url: /#competencies
+  - title: Capabilities
+    url: /#capabilities
   - title: Experience
     url: /#experience
   - title: Projects
@@ -48,7 +48,7 @@ nav_links:
   - title: Education
     url: /#education
   - title: Contact
-    url: /#connect
+    url: /#contact
   - title: Style Guide
     url: /style-guide/
 
