@@ -374,50 +374,56 @@
 
       cards.forEach((card) => {
         const arrow = card.querySelector('[data-animate="project-arrow"]');
+        const shouldUseLiftHover = !card.closest('#apps');
         gsapGlobal.set(card, { y: 48, opacity: 0, transformOrigin: '50% 50%' });
         if (arrow) {
           gsapGlobal.set(arrow, { x: 0, opacity: 0.6 });
         }
 
-        const hoverTimeline = gsapGlobal
-          .timeline({
-            paused: true,
-            defaults: { ease: 'power2.out' },
-          })
-          .to(
-            card,
-            {
-              y: -12,
-              scale: 1.02,
-              boxShadow: '0 28px 55px -30px rgba(255, 176, 122, 0.6)',
-              duration: 0.35,
-            },
-            0
-          );
-
-        if (arrow) {
-          hoverTimeline
+        let hoverTimeline = null;
+        if (shouldUseLiftHover) {
+          hoverTimeline = gsapGlobal
+            .timeline({
+              paused: true,
+              defaults: { ease: 'power2.out' },
+            })
             .to(
-              arrow,
+              card,
               {
-                x: 16,
-                duration: 0.18,
+                y: -12,
+                scale: 1.02,
+                boxShadow: '0 28px 55px -30px rgba(255, 176, 122, 0.6)',
+                duration: 0.35,
               },
               0
-            )
-            .to(
-              arrow,
-              {
-                x: 8,
-                duration: 0.24,
-                ease: 'power1.out',
-              },
-              '>-0.05'
             );
+
+          if (arrow) {
+            hoverTimeline
+              .to(
+                arrow,
+                {
+                  x: 16,
+                  duration: 0.18,
+                },
+                0
+              )
+              .to(
+                arrow,
+                {
+                  x: 8,
+                  duration: 0.24,
+                  ease: 'power1.out',
+                },
+                '>-0.05'
+              );
+          }
         }
 
         const animateIn = () => {
-          hoverTimeline.progress(0).pause();
+          if (hoverTimeline) {
+            hoverTimeline.progress(0).pause();
+          }
           gsapGlobal.to(card, {
             y: 0,
             opacity: 1,
@@ -435,7 +441,9 @@
         };
 
         const resetState = () => {
-          hoverTimeline.progress(0).pause();
+          if (hoverTimeline) {
+            hoverTimeline.progress(0).pause();
+          }
           gsapGlobal.to(card, {
             y: 48,
             opacity: 0,
@@ -462,13 +470,15 @@
           onLeaveBack: resetState,
         });
 
-        const playHover = () => hoverTimeline.play();
-        const resetHover = () => hoverTimeline.reverse();
+        if (hoverTimeline) {
+          const playHover = () => hoverTimeline.play();
+          const resetHover = () => hoverTimeline.reverse();
 
-        card.addEventListener('mouseenter', playHover);
-        card.addEventListener('mouseleave', resetHover);
-        card.addEventListener('focusin', playHover);
-        card.addEventListener('focusout', resetHover);
+          card.addEventListener('mouseenter', playHover);
+          card.addEventListener('mouseleave', resetHover);
+          card.addEventListener('focusin', playHover);
+          card.addEventListener('focusout', resetHover);
+        }
       });
     }
 
