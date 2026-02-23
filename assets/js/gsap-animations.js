@@ -285,73 +285,45 @@
         return;
       }
       const panels = gsapGlobal.utils.toArray('[data-animate="education-panel"]', section);
-      const items = gsapGlobal.utils.toArray('[data-animate="education-item"]', section);
 
-      if (!panels.length && !items.length) {
+      if (!panels.length) {
         return;
       }
 
       if (!allowMotion) {
-        if (panels.length) {
-          gsapGlobal.set(panels, { scale: 1, opacity: 1 });
-        }
-        if (items.length) {
-          gsapGlobal.set(items, { y: 0, opacity: 1 });
-        }
+        gsapGlobal.set(panels, { x: 0, opacity: 1 });
         return;
       }
 
-      if (panels.length) {
-        gsapGlobal.set(panels, { scale: 0.97, opacity: 0, transformOrigin: '50% 50%' });
-      }
-      if (items.length) {
-        gsapGlobal.set(items, { y: 24, opacity: 0 });
-      }
+      panels.forEach((panel, index) => {
+        const fromX = index % 2 === 0 ? -32 : 32;
+        gsapGlobal.set(panel, {
+          x: fromX,
+          opacity: 0,
+          transformOrigin: '50% 50%',
+        });
 
-      ScrollTrigger.create({
-        trigger: section,
-        start: 'top 75%',
-        end: 'bottom 25%',
-        onEnter: () => {
-          if (panels.length) {
-            gsapGlobal.to(panels, {
-              scale: 1,
+        ScrollTrigger.create({
+          trigger: panel,
+          start: 'top 85%',
+          end: 'bottom 30%',
+          onEnter: () => {
+            gsapGlobal.to(panel, {
+              x: 0,
               opacity: 1,
               duration: 0.6,
               ease: 'power1.out',
-              stagger: 0.12,
             });
-          }
-          if (items.length) {
-            gsapGlobal.to(items, {
-              y: 0,
-              opacity: 1,
-              duration: 0.45,
-              ease: 'power1.out',
-              stagger: 0.05,
-            });
-          }
-        },
-        onLeaveBack: () => {
-          if (panels.length) {
-            gsapGlobal.to(panels, {
-              scale: 0.97,
+          },
+          onLeaveBack: () => {
+            gsapGlobal.to(panel, {
+              x: fromX,
               opacity: 0,
               duration: 0.45,
               ease: 'power1.in',
-              stagger: 0.08,
             });
-          }
-          if (items.length) {
-            gsapGlobal.to(items, {
-              y: 24,
-              opacity: 0,
-              duration: 0.35,
-              ease: 'power1.in',
-              stagger: 0.04,
-            });
-          }
-        },
+          },
+        });
       });
     }
 
@@ -362,7 +334,7 @@
       }
 
       if (!allowMotion) {
-        gsapGlobal.set(cards, { y: 0, opacity: 1 });
+        gsapGlobal.set(cards, { x: 0, opacity: 1 });
         const arrows = cards
           .map((card) => card.querySelector('[data-animate="project-arrow"]'))
           .filter(Boolean);
@@ -372,10 +344,20 @@
         return;
       }
 
-      cards.forEach((card) => {
+      cards.forEach((card, index) => {
         const arrow = card.querySelector('[data-animate="project-arrow"]');
-        const shouldUseLiftHover = !card.closest('#apps');
-        gsapGlobal.set(card, { y: 48, opacity: 0, transformOrigin: '50% 50%' });
+        const isAppsSection = card.closest('#apps');
+        const shouldUseLiftHover = !isAppsSection;
+        
+        // Alternating x pattern like capabilities
+        const fromX = index % 2 === 0 ? -32 : 32;
+
+        gsapGlobal.set(card, { 
+          x: fromX, 
+          opacity: 0, 
+          transformOrigin: '50% 50%' 
+        });
+
         if (arrow) {
           gsapGlobal.set(arrow, { x: 0, opacity: 0.6 });
         }
@@ -425,7 +407,7 @@
             hoverTimeline.progress(0).pause();
           }
           gsapGlobal.to(card, {
-            y: 0,
+            x: 0,
             opacity: 1,
             duration: 0.6,
             ease: 'power1.out',
@@ -445,9 +427,9 @@
             hoverTimeline.progress(0).pause();
           }
           gsapGlobal.to(card, {
-            y: 48,
+            x: fromX,
             opacity: 0,
-            duration: 0.4,
+            duration: 0.45,
             ease: 'power1.in',
           });
           if (arrow) {
@@ -462,8 +444,8 @@
 
         ScrollTrigger.create({
           trigger: card,
-          start: 'top 80%',
-          end: 'bottom 90%',
+          start: 'top 85%',
+          end: 'bottom 30%',
           onEnter: animateIn,
           onEnterBack: animateIn,
           onLeave: resetState,
