@@ -35,7 +35,7 @@
   platform: iOS
   status: Active development
   audience: Hikers and mountaineers who track summits, routes, and collection progress.
-  icon: /assets/images/projects/peaking-icon.png
+  icon: /assets/images/projects/PeakingAppIcon-iOS-Default-1024x1024@1x.png
   summary: >
     Peaking is a mountain companion app for discovering peaks, verifying summits from route data, and tracking progress across iconic hiking lists even with patchy connectivity.
   technologies:
