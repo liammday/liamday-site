@@ -14,7 +14,7 @@
   platform: iOS
   status: Active development
   audience: Athletes, coaches, and habit-focused users who want stronger training consistency.
-  icon: /assets/images/projects/training-icon.png
+  icon: /assets/images/projects/TrainingAppIcon-iOS-Default-1024x1024@1x.png
   summary: >
     Training is a planning-and-accountability app that turns weekly intentions into measurable progress by comparing planned sessions with real workouts recorded in Apple Health.
   technologies:
