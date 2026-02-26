@@ -17,11 +17,15 @@ Webflow implementation with a fully version-controlled static site.
    ```bash
    npm run build:css
    ```
-4. Run the development server:
+4. Run the local development preview (Tailwind watch + Jekyll with LiveReload):
    ```bash
-   bundle exec jekyll serve
+   npm run dev
    ```
-5. Build the production site:
+5. (Optional) Run the Jekyll development server only:
+   ```bash
+   npm run serve
+   ```
+6. Build the production site:
    ```bash
    bundle exec jekyll build
    ```

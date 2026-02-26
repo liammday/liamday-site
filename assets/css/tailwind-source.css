@@ -16,6 +16,7 @@
   a:focus-visible {
     @apply text-ember-200 underline;
   }
+
 }
 
 @layer components {
@@ -72,4 +73,11 @@
     @apply bg-anodised-aluminum;
     background-blend-mode: soft-light;
   }
+}
+
+/* Keep button-style and otherwise hover-styled links from inheriting the global underline.
+   Explicit hover:underline links are exempt. */
+a[class*='hover:']:not([class*='hover:underline']):hover,
+a[class*='hover:']:not([class*='hover:underline']):focus-visible {
+  text-decoration-line: none;
 }

@@ -73,6 +73,12 @@ education:
     institution: University of Southampton
     period: 2010 – 2013
 certifications:
-  - Level 7 Award in Leadership and Management, City & Guilds (2022)
-  - AgilePM Foundation, APMG (2022)
-  - Level 5 Certificate in Management and Leadership (QCF), CMI (2014)
+  - qualification: Level 7 Award in Leadership and Management
+    institution: City & Guilds
+    period: 2022
+  - qualification: AgilePM Foundation
+    institution: APMG
+    period: 2022
+  - qualification: Level 5 Certificate in Management and Leadership (QCF)
+    institution: CMI
+    period: 2014

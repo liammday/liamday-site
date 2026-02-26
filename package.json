@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "description": "This repository contains a Jekyll-powered portfolio site for product design leader Liam Day. It replaces the previous Webflow implementation with a fully version-controlled static site.",
   "scripts": {
-    "build:css": "tailwindcss -i ./assets/css/tailwind-source.css -o ./assets/css/tailwind.css --minify"
+    "build:css": "tailwindcss -i ./assets/css/tailwind-source.css -o ./assets/css/tailwind.css --minify",
+    "watch:css": "tailwindcss -i ./assets/css/tailwind-source.css -o ./assets/css/tailwind.css --watch",
+    "serve": "bundle exec jekyll serve --livereload",
+    "dev": "sh -c 'npm run watch:css & css_pid=$!; trap \"kill $css_pid\" EXIT INT TERM; bundle exec jekyll serve --livereload'"
   },
   "keywords": [],
   "author": "",

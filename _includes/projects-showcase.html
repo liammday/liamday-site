@@ -13,16 +13,16 @@
       {% for app in app_projects %}
       <article class="surface-panel h-full p-6 lg:p-8" data-animate="project-card">
         <div class="flex items-start gap-4">
-          <img class="h-16 w-16 rounded-xl border border-aluminum-500/30 object-cover"
+          <img class="h-32 w-32 shrink-0 object-cover"
             src="{{ app.icon | relative_url }}"
             alt="{{ app.name }} app icon"
             loading="lazy"
-            width="64"
-            height="64"
+            width="128"
+            height="128"
           >
           <div class="space-y-2">
             <p class="text-xs font-semibold uppercase tracking-[0.3em] text-aluminum-400">{{ app.platform }} · {{ app.status }}</p>
-            <h3 class="text-xl font-semibold text-aluminum-100">{{ app.name }}</h3>
+            <h3 class="text-xl font-semibold leading-tight text-aluminum-100">{{ app.name }}</h3>
             <p class="text-sm leading-relaxed text-aluminum-300">{{ app.audience }}</p>
           </div>
         </div>

@@ -116,12 +116,10 @@ layout: default
     <div class="mt-12 space-y-8">
       {% for role in cv.employment %}
       <article class="surface-panel p-6 shadow-[0_20px_45px_-30px_rgba(0,0,0,0.9)] lg:p-8" data-animate="experience-card">
-        <div class="flex flex-col gap-3 md:flex-row md:items-baseline md:justify-between">
-          <div>
-            <h3 class="text-xl font-semibold text-aluminum-100">{{ role.title }}</h3>
-            <p class="text-sm text-aluminum-300">{{ role.company }} · {{ role.location }}</p>
-          </div>
-          <p class="text-xs font-semibold uppercase tracking-[0.35em] text-aluminum-400">{{ role.period }}</p>
+        <div class="space-y-1">
+          <h3 class="text-xl font-semibold leading-tight text-aluminum-100">{{ role.title }}</h3>
+          <p class="text-sm text-aluminum-300">{{ role.company }} · {{ role.location }}</p>
+          <p class="text-xs font-semibold uppercase text-aluminum-400">{{ role.period }}</p>
         </div>
         {% if role.highlights %}
         <ul class="mt-6 list-disc space-y-3 pl-6 text-sm leading-relaxed text-aluminum-300 marker:text-ember-300">
@@ -147,7 +145,7 @@ layout: default
     <div class="mt-12 grid gap-6 md:grid-cols-2">
       {% for competency in cv.competencies %}
       <article class="h-full surface-panel p-6 transition-colors duration-200" data-animate="capability-card">
-        <h3 class="text-lg font-semibold text-aluminum-100">{{ competency.title }}</h3>
+        <h3 class="text-lg font-semibold leading-tight text-aluminum-100">{{ competency.title }}</h3>
         <p class="mt-3 text-sm leading-relaxed text-aluminum-300">{{ competency.description }}</p>
       </article>
       {% endfor %}
@@ -170,18 +168,22 @@ layout: default
         <ul class="space-y-4 text-sm leading-relaxed text-aluminum-300">
           {% for qualification in cv.education %}
           <li data-animate="education-item">
-            <p class="text-base font-semibold text-aluminum-100">{{ qualification.qualification }}</p>
+            <p class="text-base font-semibold leading-tight text-aluminum-100">{{ qualification.qualification }}</p>
             <p class="text-sm text-aluminum-300">{{ qualification.institution }}</p>
-            <p class="mt-1 text-xs font-medium uppercase tracking-[0.3em] text-aluminum-400">{{ qualification.period }}</p>
+            <p class="mt-1 text-xs font-medium uppercase text-aluminum-400">{{ qualification.period }}</p>
           </li>
           {% endfor %}
         </ul>
       </div>
       <div class="space-y-6 surface-panel p-8" data-animate="education-panel">
         <h3 class="text-sm font-semibold uppercase tracking-[0.3em] text-aluminum-300">Certifications</h3>
-        <ul class="list-disc space-y-3 pl-6 text-sm leading-relaxed text-aluminum-300 marker:text-ember-300">
+        <ul class="space-y-4 text-sm leading-relaxed text-aluminum-300">
           {% for certification in cv.certifications %}
-          <li data-animate="education-item">{{ certification }}</li>
+          <li data-animate="education-item">
+            <p class="text-base font-semibold leading-tight text-aluminum-100">{{ certification.qualification }}</p>
+            <p class="text-sm text-aluminum-300">{{ certification.institution }}</p>
+            <p class="mt-1 text-xs font-medium uppercase text-aluminum-400">{{ certification.period }}</p>
+          </li>
           {% endfor %}
         </ul>
       </div>
@@ -202,7 +204,7 @@ layout: default
       <a class="inline-flex items-center justify-center rounded-full bg-ember-400 px-6 py-3 text-sm font-semibold text-charcoal-950 transition texture-noise hover:bg-ember-300"
         data-animate="contact-cta"
         href="mailto:{{ site.contact.email }}">
-        Book a call
+        Message me
       </a>
       <a class="inline-flex items-center justify-center rounded-full border border-aluminum-500/25 px-6 py-3 text-sm font-semibold text-aluminum-100 transition hover:border-ember-400/40 hover:bg-ember-500/10"
         href="{{ site.contact.linkedin }}">
