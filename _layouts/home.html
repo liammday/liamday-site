@@ -10,64 +10,101 @@ layout: default
 {% assign experience_months = current_month | minus: start_month %}
 {% if experience_months < 0 %}
   {% assign experience_years = experience_years | minus: 1 %}
-  {% assign experience_months = experience_months | plus: 12 %}
 {% endif %}
 {% assign experience_years_text = experience_years %}
 {% if experience_months > 6 %}
   {% assign experience_years_text = experience_years_text | append: '+' %}
 {% endif %}
-{% assign profile_text = cv.profile | replace: '[[experience_years]]', experience_years_text %}
 
+{% comment %} Build an ordered list: default first, then each named variant {% endcomment %}
+{% assign all_variant_keys = "default,pm,defence" | split: "," %}
+
+{%- comment -%}
+  Helper macro: resolve a field — use variant override if present, else cv root.
+  Liquid doesn't have real macros so we assign to local vars before each section.
+{%- endcomment -%}
+
+<!-- ═══════════════════════════════════════════════════════════
+     HERO / PROFILE
+════════════════════════════════════════════════════════════ -->
 <section
   id="profile"
   class="relative flex min-h-screen flex-col justify-center overflow-hidden border-b border-aluminum-500/20 bg-charcoal-900"
 >
   <div class="mx-auto flex w-full max-w-5xl flex-col justify-center gap-10 px-6 py-24">
     <div class="space-y-6" data-animate="hero-copy">
-      <span class="inline-flex items-center rounded-full border border-ember-400/30 bg-ember-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.4em] text-ember-200 texture-noise"
-        data-animate="hero-badge"
-        >Product &amp; Operations Leader</span
-      >
-      <h1 class="text-4xl font-semibold text-aluminum-100 sm:text-5xl" data-animate="hero-heading">Hello, I’m Liam Day</h1>
-      <p class="max-w-3xl text-lg leading-relaxed text-aluminum-300" data-animate="hero-text">
-        {{ profile_text }}
-      </p>
+
+      {% comment %} ── Hero badge — one per variant ── {% endcomment %}
+      {% for vkey in all_variant_keys %}
+        {% if vkey == "default" %}
+          {% assign vdata = cv %}
+        {% else %}
+          {% assign vdata = cv.variants[vkey] %}
+        {% endif %}
+        {% assign badge_text = vdata.hero_badge | default: cv.hero_badge %}
+        <span
+          class="inline-flex items-center rounded-full border border-ember-400/30 bg-ember-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.4em] text-ember-200 texture-noise"
+          data-animate="hero-badge"
+          data-variant="{{ vkey }}"
+          {% unless vkey == "default" %}hidden{% endunless %}
+          >{{ badge_text }}</span>
+      {% endfor %}
+
+      <h1 class="text-4xl font-semibold text-aluminum-100 sm:text-5xl" data-animate="hero-heading">Hello, I'm Liam Day</h1>
+
+      {% comment %} ── Profile text — one per variant ── {% endcomment %}
+      {% for vkey in all_variant_keys %}
+        {% if vkey == "default" %}
+          {% assign vdata = cv %}
+        {% else %}
+          {% assign vdata = cv.variants[vkey] %}
+        {% endif %}
+        {% assign profile_raw = vdata.profile | default: cv.profile %}
+        {% assign profile_text = profile_raw | replace: '[[experience_years]]', experience_years_text %}
+        <p class="max-w-3xl text-lg leading-relaxed text-aluminum-300"
+           data-animate="hero-text"
+           data-variant="{{ vkey }}"
+           {% unless vkey == "default" %}hidden{% endunless %}>
+          {{ profile_text }}
+        </p>
+      {% endfor %}
+
       <div class="flex flex-wrap gap-4" data-animate="hero-actions">
         <a class="inline-flex items-center justify-center rounded-full bg-ember-400 px-6 py-3 text-sm font-semibold text-charcoal-950 shadow-glow transition texture-noise hover:bg-ember-300"
           href="#experience"
-          >View CV highlights</a
-        >
+          >View experience</a>
         <a class="inline-flex items-center justify-center rounded-full border border-aluminum-500/25 px-6 py-3 text-sm font-semibold text-aluminum-100 transition hover:border-ember-400/40 hover:bg-ember-500/10"
           href="mailto:{{ site.contact.email }}"
-          >Start a conversation</a
-        >
+          >Start a conversation</a>
       </div>
     </div>
-    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      <div class="surface-panel p-6" data-animate="hero-stat">
-        <p class="text-sm uppercase tracking-[0.3em] text-aluminum-400">Experience</p>
-        <p class="mt-3 text-2xl font-semibold text-aluminum-100">{{ experience_years_text }} years</p>
-        <p class="mt-2 text-sm text-aluminum-400">Leadership roles across defence and consumer software.</p>
+
+    {% comment %} ── Hero stats — one grid per variant ── {% endcomment %}
+    {% for vkey in all_variant_keys %}
+      {% if vkey == "default" %}
+        {% assign vdata = cv %}
+      {% else %}
+        {% assign vdata = cv.variants[vkey] %}
+      {% endif %}
+      {% assign stats = vdata.hero_stats | default: cv.hero_stats %}
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4" data-variant="{{ vkey }}" {% unless vkey == "default" %}hidden{% endunless %}>
+        {% for stat in stats %}
+          {% assign stat_value = stat.value | replace: '[[experience_years]]', experience_years_text %}
+          <div class="surface-panel p-6" data-animate="hero-stat">
+            <p class="text-sm uppercase tracking-[0.3em] text-aluminum-400">{{ stat.label }}</p>
+            <p class="mt-3 text-2xl font-semibold text-aluminum-100">{{ stat_value }}</p>
+            <p class="mt-2 text-sm text-aluminum-400">{{ stat.detail }}</p>
+          </div>
+        {% endfor %}
       </div>
-      <div class="surface-panel p-6" data-animate="hero-stat">
-        <p class="text-sm uppercase tracking-[0.3em] text-aluminum-400">Current focus</p>
-        <p class="mt-3 text-2xl font-semibold text-aluminum-100">Product operations</p>
-        <p class="mt-2 text-sm text-aluminum-400">Strengthening release quality and customer feedback loops.</p>
-      </div>
-      <div class="surface-panel p-6" data-animate="hero-stat">
-        <p class="text-sm uppercase tracking-[0.3em] text-aluminum-400">Studies</p>
-        <p class="mt-3 text-2xl font-semibold text-aluminum-100">MBA candidate</p>
-        <p class="mt-2 text-sm text-aluminum-400">Technology Management · Open University (2026 expected).</p>
-      </div>
-      <div class="surface-panel p-6" data-animate="hero-stat">
-        <p class="text-sm uppercase tracking-[0.3em] text-aluminum-400">Based in</p>
-        <p class="mt-3 text-2xl font-semibold text-aluminum-100">Winchester, UK</p>
-        <p class="mt-2 text-sm text-aluminum-400">UK citizen with full right to work.</p>
-      </div>
-    </div>
+    {% endfor %}
+
   </div>
 </section>
 
+<!-- ═══════════════════════════════════════════════════════════
+     STICKY NAV
+════════════════════════════════════════════════════════════ -->
 <nav
   class="sticky top-0 z-40 border-b border-aluminum-500/20 bg-charcoal-900/95 backdrop-blur"
   aria-label="On this page"
@@ -75,65 +112,64 @@ layout: default
 >
   <div class="mx-auto w-full max-w-5xl">
     <div class="relative flex gap-3 overflow-x-auto px-6 py-4 text-sm" data-nav-scroll>
-      <a class="relative z-10 whitespace-nowrap rounded-full border border-transparent px-4 py-2 font-medium text-aluminum-300 transition hover:text-aluminum-100 hover:border-aluminum-500/40 aria-[current=page]:border-ember-400/50 aria-[current=page]:bg-ember-500/10 aria-[current=page]:text-ember-200 aria-[current=page]:texture-noise"
-        href="#experience"
-        data-nav-link
-        >Experience</a
-      >
-      <a class="relative z-10 whitespace-nowrap rounded-full border border-transparent px-4 py-2 font-medium text-aluminum-300 transition hover:text-aluminum-100 hover:border-aluminum-500/40 aria-[current=page]:border-ember-400/50 aria-[current=page]:bg-ember-500/10 aria-[current=page]:text-ember-200 aria-[current=page]:texture-noise"
-        href="#capabilities"
-        data-nav-link
-        >Capabilities</a
-      >
-      <a class="relative z-10 whitespace-nowrap rounded-full border border-transparent px-4 py-2 font-medium text-aluminum-300 transition hover:text-aluminum-100 hover:border-aluminum-500/40 aria-[current=page]:border-ember-400/50 aria-[current=page]:bg-ember-500/10 aria-[current=page]:text-ember-200 aria-[current=page]:texture-noise"
-        href="#education"
-        data-nav-link
-        >Education</a
-      >
-      <a class="relative z-10 whitespace-nowrap rounded-full border border-transparent px-4 py-2 font-medium text-aluminum-300 transition hover:text-aluminum-100 hover:border-aluminum-500/40 aria-[current=page]:border-ember-400/50 aria-[current=page]:bg-ember-500/10 aria-[current=page]:text-ember-200 aria-[current=page]:texture-noise"
-        href="#apps"
-        data-nav-link
-        >Apps</a
-      >
-      <a class="relative z-10 whitespace-nowrap rounded-full border border-transparent px-4 py-2 font-medium text-aluminum-300 transition hover:text-aluminum-100 hover:border-aluminum-500/40 aria-[current=page]:border-ember-400/50 aria-[current=page]:bg-ember-500/10 aria-[current=page]:text-ember-200 aria-[current=page]:texture-noise"
-        href="#contact"
-        data-nav-link
-        >Contact</a
-      >
+      {% assign nav_items = "experience,capabilities,education,apps,contact" | split: "," %}
+      {% for item in nav_items %}
+        <a class="relative z-10 whitespace-nowrap rounded-full border border-transparent px-4 py-2 font-medium text-aluminum-300 transition hover:text-aluminum-100 hover:border-aluminum-500/40 aria-[current=page]:border-ember-400/50 aria-[current=page]:bg-ember-500/10 aria-[current=page]:text-ember-200 aria-[current=page]:texture-noise"
+          href="#{{ item }}"
+          data-nav-link
+          >{{ item | capitalize }}</a>
+      {% endfor %}
     </div>
   </div>
 </nav>
 
+<!-- ═══════════════════════════════════════════════════════════
+     EXPERIENCE
+════════════════════════════════════════════════════════════ -->
 <section id="experience" class="scroll-mt-32 flex min-h-screen flex-col justify-center border-b border-aluminum-500/20 bg-charcoal-900">
   <div class="mx-auto w-full max-w-5xl px-6 py-16">
     <div class="max-w-3xl space-y-4" data-animate="section-heading">
       <h2 class="text-3xl font-semibold text-aluminum-100">Experience</h2>
       <p class="text-lg text-aluminum-300">
-        A career spanning operational command and digital delivery. Highlights below reflect roles where I led teams through
-        change, scaled new practices, and kept complex products moving.
+        A career spanning operational command and digital delivery — leading teams through change,
+        scaling new practices, and keeping complex products moving.
       </p>
     </div>
-    <div class="mt-12 space-y-8">
-      {% for role in cv.employment %}
-      <article class="surface-panel p-6 shadow-[0_20px_45px_-30px_rgba(0,0,0,0.9)] lg:p-8" data-animate="experience-card">
-        <div class="space-y-1">
-          <h3 class="text-xl font-semibold leading-tight text-aluminum-100">{{ role.title }}</h3>
-          <p class="text-sm text-aluminum-300">{{ role.company }} · {{ role.location }}</p>
-          <p class="text-xs font-semibold uppercase text-aluminum-400">{{ role.period }}</p>
-        </div>
-        {% if role.highlights %}
-        <ul class="mt-6 list-disc space-y-3 pl-6 text-sm leading-relaxed text-aluminum-300 marker:text-ember-300">
-          {% for highlight in role.highlights %}
-          <li>{{ highlight }}</li>
-          {% endfor %}
-        </ul>
-        {% endif %}
-      </article>
-      {% endfor %}
-    </div>
+
+    {% comment %} ── Employment list — one per variant ── {% endcomment %}
+    {% for vkey in all_variant_keys %}
+      {% if vkey == "default" %}
+        {% assign vdata = cv %}
+      {% else %}
+        {% assign vdata = cv.variants[vkey] %}
+      {% endif %}
+      {% assign roles = vdata.employment | default: cv.employment %}
+      <div class="mt-12 space-y-8" data-variant="{{ vkey }}" {% unless vkey == "default" %}hidden{% endunless %}>
+        {% for role in roles %}
+        <article class="surface-panel p-6 shadow-[0_20px_45px_-30px_rgba(0,0,0,0.9)] lg:p-8" data-animate="experience-card">
+          <div class="space-y-1">
+            <h3 class="text-xl font-semibold leading-tight text-aluminum-100">{{ role.title }}</h3>
+            <p class="text-sm text-aluminum-300">{{ role.company }} · {{ role.location }}</p>
+            <p class="text-xs font-semibold uppercase text-aluminum-400">{{ role.period }}</p>
+          </div>
+          {% if role.highlights %}
+          <ul class="mt-6 list-disc space-y-3 pl-6 text-sm leading-relaxed text-aluminum-300 marker:text-ember-300">
+            {% for highlight in role.highlights %}
+            <li>{{ highlight }}</li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+        </article>
+        {% endfor %}
+      </div>
+    {% endfor %}
+
   </div>
 </section>
 
+<!-- ═══════════════════════════════════════════════════════════
+     CAPABILITIES
+════════════════════════════════════════════════════════════ -->
 <section id="capabilities" class="scroll-mt-32 flex min-h-screen flex-col justify-center border-b border-aluminum-500/20 bg-charcoal-900">
   <div class="mx-auto w-full max-w-5xl px-6 py-16">
     <div class="max-w-3xl space-y-4" data-animate="section-heading">
@@ -142,24 +178,38 @@ layout: default
         A blend of operational discipline and modern product practice to move complex teams forward with clarity.
       </p>
     </div>
-    <div class="mt-12 grid gap-6 md:grid-cols-2">
-      {% for competency in cv.competencies %}
-      <article class="h-full surface-panel p-6 transition-colors duration-200" data-animate="capability-card">
-        <h3 class="text-lg font-semibold leading-tight text-aluminum-100">{{ competency.title }}</h3>
-        <p class="mt-3 text-sm leading-relaxed text-aluminum-300">{{ competency.description }}</p>
-      </article>
-      {% endfor %}
-    </div>
+
+    {% comment %} ── Competency grid — one per variant ── {% endcomment %}
+    {% for vkey in all_variant_keys %}
+      {% if vkey == "default" %}
+        {% assign vdata = cv %}
+      {% else %}
+        {% assign vdata = cv.variants[vkey] %}
+      {% endif %}
+      {% assign comps = vdata.competencies | default: cv.competencies %}
+      <div class="mt-12 grid gap-6 md:grid-cols-2" data-variant="{{ vkey }}" {% unless vkey == "default" %}hidden{% endunless %}>
+        {% for competency in comps %}
+        <article class="h-full surface-panel p-6 transition-colors duration-200" data-animate="capability-card">
+          <h3 class="text-lg font-semibold leading-tight text-aluminum-100">{{ competency.title }}</h3>
+          <p class="mt-3 text-sm leading-relaxed text-aluminum-300">{{ competency.description }}</p>
+        </article>
+        {% endfor %}
+      </div>
+    {% endfor %}
+
   </div>
 </section>
 
+<!-- ═══════════════════════════════════════════════════════════
+     EDUCATION  (same for all variants)
+════════════════════════════════════════════════════════════ -->
 <section id="education" class="scroll-mt-32 flex min-h-screen flex-col justify-center border-b border-aluminum-500/20 bg-charcoal-900">
   <div class="mx-auto w-full max-w-5xl px-6 py-16">
     <div class="max-w-3xl space-y-4" data-animate="section-heading">
       <h2 class="text-3xl font-semibold text-aluminum-100">Education &amp; Certifications</h2>
       <p class="text-lg text-aluminum-300">
-        Continuous learning underpins how I introduce new practices. Formal study and targeted certifications keep my leadership
-        grounded in current technology and governance standards.
+        Continuous learning underpins how I introduce new practices. Formal study and targeted certifications
+        keep my leadership grounded in current technology and governance standards.
       </p>
     </div>
     <div class="mt-12 grid gap-8 lg:grid-cols-2">
@@ -193,12 +243,16 @@ layout: default
 
 {% include projects-showcase.html %}
 
+<!-- ═══════════════════════════════════════════════════════════
+     CONTACT  (same for all variants)
+════════════════════════════════════════════════════════════ -->
 <section id="contact" class="scroll-mt-32 flex min-h-screen flex-col justify-center border-t border-aluminum-500/20 bg-charcoal-900">
   <div class="relative mx-auto w-full max-w-3xl px-6 py-20 text-center" data-animate="contact-wrapper">
     <div aria-hidden="true" class="pointer-events-none absolute inset-x-1/2 top-12 -z-10 h-64 w-[36rem] -translate-x-1/2 rounded-full bg-ember-400/20 blur-[120px] opacity-0" data-animate="contact-glow"></div>
-    <h2 class="text-3xl font-semibold text-aluminum-100" data-animate="contact-heading">Let’s build momentum together</h2>
+    <h2 class="text-3xl font-semibold text-aluminum-100" data-animate="contact-heading">Let's build momentum together</h2>
     <p class="mt-6 text-lg text-aluminum-300" data-animate="contact-copy">
-      Whether you need to stabilise release operations, evolve complex training programmes, or unite teams behind a shared roadmap, Liam can help you deliver with confidence.
+      Whether you need to stabilise release operations, evolve complex training programmes, or unite teams
+      behind a shared roadmap — let's talk.
     </p>
     <div class="mt-10 flex flex-wrap justify-center gap-4" data-animate="contact-actions">
       <a class="inline-flex items-center justify-center rounded-full bg-ember-400 px-6 py-3 text-sm font-semibold text-charcoal-950 transition texture-noise hover:bg-ember-300"

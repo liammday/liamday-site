@@ -1,84 +1,250 @@
+# ─────────────────────────────────────────────────────────────
+# cv.yml  —  single source of truth for liamday.co.uk
+# Edit here; the site auto-rebuilds on push to main.
+# Variants (pm, defence) are defined at the bottom of this file
+# and rendered via home.html + assets/js/variant.js
+# ─────────────────────────────────────────────────────────────
+
+# ── DEFAULT (shown when no ?variant= param is set) ───────────
+
+hero_badge: "Product & Operations Leader"
+
 profile: >-
-  A dynamic and results-oriented product and operations leader with over [[experience_years]] years of combined British Army and consumer software sector experience. Expertise in driving product delivery, quality assurance, and cross-functional collaboration to enhance operational efficiency and customer satisfaction. Proven track record in leading complex projects, optimising processes, and managing stakeholder relationships across diverse teams. Skilled in Agile methodologies, data analytics, and team development, with a strong commitment to continuous improvement and innovation. Currently pursuing an MBA in Technology Management to deepen strategic leadership capabilities.
-career_start: 2012-01-01
+  A results-driven product and operations leader with [[experience_years]] years of experience
+  spanning consumer tech and the British Army. Proven track record delivering digital products,
+  leading cross-functional teams, and driving measurable improvements across complex programmes.
+  Combines commercial product instinct with operational discipline — and holds active Developed
+  Vetting (DV) security clearance. Currently completing an MBA in Technology Management.
+
+hero_stats:
+  - label: Experience
+    value: "[[experience_years]] years"
+    detail: Leadership across defence and consumer software.
+  - label: Current focus
+    value: Product management
+    detail: B2B partner products, mobile and web platforms.
+  - label: Studies
+    value: MBA candidate
+    detail: Technology Management · Open University (2026 expected).
+  - label: Based in
+    value: Winchester, UK
+    detail: UK citizen with full right to work.
+
 competencies:
-  - title: Product Management & Delivery
-    description: Demonstrated ability to define product vision, prioritise backlogs, and deliver impactful features through close collaboration with UX, engineering, and business teams, ensuring alignment with customer needs and strategic goals.
-  - title: Agile Delivery & Process Optimisation
-    description: Experienced in implementing Agile frameworks to streamline workflows, reduce cycle times, and improve team productivity, including successful application within military and software development environments.
-  - title: Risk, Issue & Budget Management
-    description: Skilled at proactively identifying and mitigating risks, quantifying business impact, managing budgets, forecasting resources, and ensuring successful outcomes through disciplined governance and decision-making.
-  - title: Data & Analytics Driven Decision-Making
-    description: Adept at leveraging data insights and performance metrics to inform strategic decisions, optimise product features, and enhance operational effectiveness.
-  - title: Onboarding & Training Development
-    description: Proven expertise in designing and delivering training programmes that accelerate team member development, improve retention, and build organisational capability.
-  - title: Stakeholder Engagement & Communication
-    description: Exceptional ability to engage, influence, and negotiate with internal and external stakeholders, delivering compelling presentations and concise reporting that align diverse perspectives to reach consensus.
-  - title: Collaboration & Facilitation
-    description: Strong record of fostering inclusive, innovative, and collaborative team environments, facilitating effective meetings, driving consensus, and improving project efficiency.
-  - title: Technical & Domain Expertise
-    description: In-depth knowledge of software product development lifecycles, enabling effective collaboration with engineering and product teams to translate technical concepts into clear, actionable strategies. Application developer (Swift).
+  - title: Product Roadmap & Strategy
+    description: Experienced contributing to product vision and roadmap planning, prioritising features using RICE and MoSCoW frameworks to align delivery with business OKRs and stakeholder KPIs.
+  - title: Agile Delivery
+    description: Active participant in agile sprint cycles — planning, backlog refinement, reviews and retrospectives — working alongside engineering, design and QA to sustain delivery momentum.
+  - title: User Research & Discovery
+    description: Skilled at surfacing root causes through structured discovery, stakeholder interviews and usage analytics, translating findings into iterative product improvements.
+  - title: Data-Driven Decision Making
+    description: Adept at building analytics approaches and performance reporting to inform prioritisation decisions and measure impact of product changes against defined KPIs.
+  - title: Stakeholder Management
+    description: Proven ability to manage relationships across engineering, commercial and senior leadership, communicating product decisions clearly and maintaining alignment throughout delivery.
+  - title: Cross-Functional Leadership
+    description: Experienced leading and coordinating cross-functional teams in both commercial and high-stakes operational environments, maintaining accountability and delivery pace under pressure.
+  - title: Programme & Risk Management
+    description: Skilled at producing business cases, roadmaps and risk registers to secure investment approval and manage complex multi-stakeholder programmes through to successful delivery.
+  - title: Technical Domain Expertise
+    description: Strong working knowledge of mobile app product development (iOS & Android), API integrations, and software release processes. Application developer in Swift.
+
 employment:
   - title: Technical Product Specialist
     company: Outdooractive
-    location: Remote (Cambridge, UK and Immenstadt, Germany)
+    location: Remote (Cambridge, UK · Immenstadt, Germany)
     period: Sep 2023 – Present
     highlights:
-      - Lead cross-platform quality assurance for iOS, Android, and web release candidates, reducing post-release defects by 19% through rigorous testing and coordination with engineering teams.
-      - Translate customer and partner feedback into actionable insights, collaborating with UX and product managers to prioritise feature development and improve user satisfaction.
-      - Prepare and deliver regular performance and roadmap updates to senior leadership, highlighting delivery risks and opportunities to inform strategic decision-making.
-      - Own second-line technical support queue, managing escalations efficiently and reducing average resolution time by 15%, while maintaining up-to-date knowledge base resources in partnership with community teams.
-  - title: Product Manager & Operations Manager (SO3 Dismounted Close Combat, Combat CIS School)
+      - Contributed to B2B product roadmap prioritisation, providing structured input using RICE scoring and MoSCoW frameworks to align feature delivery with business OKRs and partner KPIs.
+      - Reduced feature request support tickets by 59% through structured discovery work, stakeholder interviews and user research that surfaced root causes and informed iterative improvements to partner-facing functionality.
+      - Drove a 46% year-on-year reduction in partner information requests by identifying UX friction points via product analytics and collaborating with engineering and design to ship targeted dashboard improvements.
+      - Active contributor to agile sprint ceremonies — planning, backlog refinement, reviews and retrospectives — working alongside engineering, design and QA to maintain delivery momentum.
+      - Reduced inbound support volume by 19% year-on-year through product documentation, API guides and release notes that empowered partners to self-serve effectively.
+
+  - title: Product Manager & Operations Manager
     company: British Army
     location: Dorset, UK
     period: Jul 2020 – Sep 2023
     highlights:
-      - Spearheaded Project HERMES, streamlining the training pathway by consolidating nine courses into five through syllabus and qualification refactoring, saving 960 instructor training hours annually and increasing qualified student outputs by 30%.
-      - Led professional development for 32 Subject Matter Experts, resulting in the qualification and promotion of 12 team members and improved retention by implementing strategic role rotation.
-      - Introduced Agile frameworks to coordinate intra-organisational planning and execution under strict timelines, enhancing collaboration and project delivery efficiency.
-      - Optimised operational processes, reducing administrative overhead and improving resource allocation to support training and qualification goals.
-  - title: Senior Project Manager & Technical Coordinator (Regimental Signals Officer, 1LANCS)
-    company: British Army
-    location: Chester, UK
-    period: Jul 2018 – Jul 2020
+      - Delivered end-to-end product lifecycle management for a multi-organisation capability programme across 5 entities — defining product vision, building the roadmap and overseeing iterative development from concept to fielding.
+      - Saved 960 instructor hours per year (24 full working weeks) by redesigning training delivery processes and introducing digital tooling, directly improving organisational capacity and throughput.
+      - Increased student output by 30% through data-driven curriculum redesign, applying analytics and structured feedback loops to identify bottlenecks and optimise outcomes.
+      - Managed a cross-functional team of 12, running weekly stand-ups, sprint reviews and retrospectives aligned to agile principles in a regulated, security-sensitive environment.
+      - Produced business cases, roadmaps and risk registers to secure Director-level investment approval; managed programme budget and resource allocation throughout delivery.
+
+  - title: Operations Officer & Signals Officer
+    company: British Army — 1st Bn Duke of Lancaster's Regiment
+    location: Chester, UK · Cyprus
+    period: Sep 2013 – Jul 2020
     highlights:
-      - Delivered gold-standard operational coordination during key organisational assessment activities in Kenya, ensuring seamless, secure communications across all operational areas.
-      - Increased trained communication specialists from 2 in 30 to 8 in 30 across departments, significantly elevating operational capability and readiness.
-      - Maintained 100% compliance with cryptographic material security protocols through organisation-wide training and strict adherence to policy.
-      - Developed and implemented data-driven reporting tools to monitor operational performance and inform leadership decisions.
-  - title: Project Manager & Operations Manager (Company Second in Command, 1LANCS)
-    company: British Army
-    location: Cyprus
-    period: Jul 2016 – Jul 2018
-    highlights:
-      - Ensured training readiness of 130 soldiers for consecutive deployments to the USA, Kenya, and Jordan by managing critical risk-to-life certifications, including weapons handling and combat first aid.
-      - Managed and accounted for £3M of serialised equipment across complex international deployments, maintaining 100% accountability and operational readiness.
-      - Led process improvements that enhanced deployment preparation efficiency and reduced equipment discrepancies.
-  - title: Team Leader (Infantry Platoon Commander, 1LANCS)
-    company: British Army
-    location: Cyprus
-    period: Jul 2014 – Jul 2016
-    highlights:
-      - Directed the transition of operational roles and reintegration back to the UK from Cyprus, coordinating necessary training and certification updates to meet new operational requirements.
-      - Led professional development across four seniority levels, ensuring education and training requirements were met on time to support mission readiness and career progression.
-      - Fostered a culture of continuous improvement and team cohesion through targeted coaching and mentoring.
+      - Served as Regimental Signals Officer and Company Operations Officer across successive postings, coordinating cross-functional planning for exercises and deployments of up to 500 personnel.
+      - Managed and maintained full accountability for £3M of serialised equipment across complex international deployments (Kenya, Jordan, USA), achieving 100% readiness throughout.
+      - Designed and delivered structured training programmes for 100+ personnel, using performance data and after-action reviews to iterate and improve outcomes.
+      - Commanded a 30-person platoon on operational deployments, accountable for team performance, risk management and mission execution under time-critical conditions.
+
 education:
-  - qualification: MBA (Technology Management) Candidate
+  - qualification: MBA, Technology Management (in progress)
     institution: Open University
     period: 2022 – 2026 (expected)
-  - qualification: Queen's Commission, 1st Battalion, The Duke of Lancaster's Regiment (1LANCS)
+  - qualification: Queen's Commission
     institution: Royal Military Academy Sandhurst
     period: 2013 – 2014
-  - qualification: BSc International Relations (2:1)
+  - qualification: BSc International Relations, 2:1
     institution: University of Southampton
     period: 2010 – 2013
+
 certifications:
+  - qualification: AgilePM Foundation
+    institution: APMG International
+    period: 2024
   - qualification: Level 7 Award in Leadership and Management
     institution: City & Guilds
-    period: 2022
-  - qualification: AgilePM Foundation
-    institution: APMG
-    period: 2022
-  - qualification: Level 5 Certificate in Management and Leadership (QCF)
+    period: 2023
+  - qualification: Level 5 Certificate in Management and Leadership
     institution: CMI
-    period: 2014
+    period: 2021
+
+# ─────────────────────────────────────────────────────────────
+# VARIANTS
+# Each variant overrides specific sections of the default above.
+# Accessed via ?variant=pm or ?variant=defence
+# ─────────────────────────────────────────────────────────────
+
+variants:
+
+  pm:
+    hero_badge: "Product Manager · Digital & Mobile"
+    profile: >-
+      Product Manager with 10+ years of leadership experience, combining a background in mobile
+      app product management with a proven record of delivering user-centred digital products.
+      Skilled across the full product lifecycle — from discovery and user research through roadmap
+      definition, agile delivery and go-to-market execution. Adept at translating stakeholder
+      requirements into prioritised backlogs, user stories and clear acceptance criteria. Holds
+      active DV security clearance and is completing an MBA in Technology Management.
+    hero_stats:
+      - label: Experience
+        value: "[[experience_years]] years"
+        detail: Product management across consumer tech and defence.
+      - label: Clearance
+        value: DV cleared
+        detail: Developed Vetting — highest UK government clearance.
+      - label: Studies
+        value: MBA candidate
+        detail: Technology Management · Open University (2026).
+      - label: Based in
+        value: Winchester, UK
+        detail: UK citizen, full right to work.
+    competencies:
+      - title: Product Roadmap & Strategy
+        description: Experienced contributing to product vision and roadmap planning, using RICE and MoSCoW prioritisation to align delivery with OKRs and KPIs across B2B and consumer contexts.
+      - title: Agile / Scrum / Kanban
+        description: Active sprint ceremony contributor — planning, backlog refinement, reviews and retros — working alongside engineering, design and QA to maintain velocity and surface blockers early.
+      - title: User Research & Discovery
+        description: Skilled at structured discovery: stakeholder interviews, usage analytics and friction analysis — translating findings into iterative product improvements with measurable impact.
+      - title: Backlog Prioritisation (RICE / MoSCoW)
+        description: Experienced applying RICE scoring and MoSCoW frameworks to maintain a groomed, well-ordered backlog aligned to business and user value.
+      - title: OKRs, KPIs & Metrics
+        description: Comfortable defining success metrics, building analytics instrumentation and reporting approaches to enable data-driven decisions and demonstrate product impact.
+      - title: Mobile App Products (iOS & Android)
+        description: Strong working knowledge of mobile product development and release processes across iOS and Android, including API integrations and cross-platform QA coordination.
+      - title: Go-to-Market Planning
+        description: Experience coordinating GTM launches for new partner integrations, working across sales, marketing and engineering to deliver successful rollouts to B2B customers.
+      - title: Stakeholder Management
+        description: Proven communicator with engineering, commercial and Director-level stakeholders — maintaining alignment, managing expectations and articulating product decisions clearly.
+    employment:
+      - title: Technical Product Specialist
+        company: Outdooractive
+        location: Remote (Cambridge, UK · Immenstadt, Germany)
+        period: Sep 2023 – Present
+        highlights:
+          - Contributed to B2B product roadmap prioritisation, providing structured input using RICE scoring and MoSCoW frameworks to align feature delivery with business OKRs and partner KPIs.
+          - Reduced feature request support tickets by 59% through structured discovery, stakeholder interviews and user research that surfaced root causes and informed iterative improvements to partner-facing functionality.
+          - Drove a 46% year-on-year reduction in partner information requests by identifying UX friction points via product analytics and collaborating with engineering and design to ship targeted dashboard improvements.
+          - Active contributor to agile sprint ceremonies (planning, backlog refinement, reviews, retrospectives) working alongside engineering, design and QA to maintain delivery momentum.
+          - Supported go-to-market coordination for new partner integrations, working across sales, marketing and engineering for successful rollouts to 200+ B2B customers.
+          - Reduced inbound support volume by 19% year-on-year through product documentation, API guides and release notes that empowered partners to self-serve.
+      - title: Product Manager & Operations Manager
+        company: British Army
+        location: Dorset, UK
+        period: Jul 2020 – Sep 2023
+        highlights:
+          - Delivered end-to-end product lifecycle management for a multi-organisation capability programme — defining product vision, building the roadmap and overseeing iterative development from concept to fielding.
+          - Saved 960 instructor hours per year by redesigning delivery processes and introducing digital tooling, directly improving organisational capacity and throughput.
+          - Increased student output by 30% through data-driven redesign, applying analytics and feedback loops to identify bottlenecks and optimise outcomes.
+          - Managed a cross-functional team of 12, running weekly stand-ups, sprint reviews and retrospectives aligned to agile principles in a regulated environment.
+          - Translated complex requirements into a prioritised product backlog, liaising with engineering partners and Director-level stakeholders to maintain strategic alignment.
+      - title: Operations Officer & Platoon Commander
+        company: British Army — 1st Bn Duke of Lancaster's Regiment
+        location: Chester, UK · Cyprus
+        period: Sep 2013 – Jul 2020
+        highlights:
+          - Coordinated cross-functional planning for exercises and deployments of up to 500 personnel as Operations Officer at regimental headquarters.
+          - Commanded a 30-person platoon on operational deployments, accountable for team performance, risk management and mission execution under time-critical conditions.
+          - Designed and delivered training programmes for 100+ personnel, using performance data and after-action reviews to continuously iterate and improve outcomes.
+
+  defence:
+    hero_badge: "Product Manager · Defence & Government"
+    profile: >-
+      Product Manager and former British Army officer with [[experience_years]] years of experience
+      delivering complex capability programmes and digital products in defence and regulated
+      environments. Experienced managing multi-stakeholder programmes from concept through
+      fielding, building product roadmaps, and leading cross-functional teams under operational
+      constraints. Holds active Developed Vetting (DV) security clearance — the UK's highest
+      government clearance — and is completing an MBA in Technology Management.
+    hero_stats:
+      - label: DV Cleared
+        value: Active clearance
+        detail: Developed Vetting — highest UK government clearance level.
+      - label: Experience
+        value: "[[experience_years]] years"
+        detail: Programme delivery and product management in defence and tech.
+      - label: Studies
+        value: MBA candidate
+        detail: Technology Management · Open University (2026).
+      - label: Based in
+        value: Winchester, UK
+        detail: UK citizen, full right to work.
+    competencies:
+      - title: Capability Programme Delivery
+        description: End-to-end ownership of complex, multi-stakeholder capability programmes — from requirements definition and product vision through iterative development, risk management and fielding.
+      - title: Stakeholder Management (Director Level)
+        description: Proven ability to manage relationships with senior military and government stakeholders, producing business cases and roadmaps to secure investment and maintain strategic alignment.
+      - title: Product Roadmap & Backlog Management
+        description: Experienced translating complex operational requirements into prioritised product backlogs, maintaining alignment between engineering partners and senior stakeholders throughout delivery.
+      - title: Agile in Regulated Environments
+        description: Applied agile working principles (stand-ups, sprint reviews, retrospectives) within security-sensitive, regulated environments — maintaining pace without compromising governance.
+      - title: Risk & Programme Governance
+        description: Skilled at producing and maintaining risk registers, programme documentation and business cases for Director-level approval, managing budget and resource allocation throughout.
+      - title: Cross-Functional Team Leadership
+        description: Led cross-functional teams of up to 12 in complex programme environments, coordinating across engineering, training, operations and policy stakeholders simultaneously.
+      - title: Digital Transformation & Tooling
+        description: Track record of introducing digital tooling to replace manual processes — delivering measurable efficiency gains including 960 instructor hours saved annually.
+      - title: DV Security Clearance
+        description: Holds active Developed Vetting (DV) clearance — the UK's highest government clearance level — enabling immediate engagement on sensitive programmes.
+    employment:
+      - title: Product Manager & Operations Manager
+        company: British Army
+        location: Dorset, UK
+        period: Jul 2020 – Sep 2023
+        highlights:
+          - Led end-to-end delivery of a multi-organisation capability programme across 5 entities — defining product vision, managing stakeholder requirements, building the roadmap and overseeing iterative development from concept to fielding.
+          - Saved 960 instructor hours per year (24 full working weeks) by redesigning training delivery and introducing digital tooling, directly improving organisational capacity.
+          - Increased student output by 30% through data-driven curriculum redesign, applying analytics and structured feedback loops to identify bottlenecks and optimise outcomes.
+          - Translated complex technical and operational requirements into a prioritised product backlog, maintaining alignment between engineering partners and Director-level stakeholders throughout.
+          - Produced business cases, roadmaps and risk registers to secure investment approval; managed programme budget and resource allocation throughout the delivery lifecycle.
+      - title: Operations Officer & Signals Officer
+        company: British Army — 1st Bn Duke of Lancaster's Regiment
+        location: Chester, UK · Cyprus
+        period: Sep 2013 – Jul 2020
+        highlights:
+          - Served as Regimental Signals Officer responsible for secure communications infrastructure and cryptographic material compliance across a regiment of 500+ personnel.
+          - Coordinated cross-functional operational planning as Operations Officer at regimental headquarters, spanning logistics, intelligence and command elements.
+          - Managed and maintained 100% accountability for £3M of serialised equipment across international deployments to Kenya, Jordan and the USA.
+          - Commanded a 30-person platoon on operational deployments, accountable for team performance, risk management and mission execution under time-critical conditions.
+      - title: Technical Product Specialist
+        company: Outdooractive
+        location: Remote (Cambridge, UK · Immenstadt, Germany)
+        period: Sep 2023 – Present
+        highlights:
+          - Reduced feature request support tickets by 59% and partner information requests by 46% year-on-year through structured discovery and data-driven product improvements.
+          - Contributed to B2B product roadmap prioritisation and agile sprint delivery alongside engineering and design teams.
+          - Reduced inbound support volume by 19% year-on-year through product documentation and API guides.
