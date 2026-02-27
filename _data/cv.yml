@@ -22,7 +22,7 @@ hero_stats:
     detail: Leadership across defence and consumer software.
   - label: Current focus
     value: Product management
-    detail: B2B partner products, mobile and web platforms.
+    detail: Consumer and partner-facing mobile and web products.
   - label: Studies
     value: MBA candidate
     detail: Technology Management · Open University (2026 expected).
@@ -54,11 +54,11 @@ employment:
     location: Remote (Cambridge, UK · Immenstadt, Germany)
     period: Sep 2023 – Present
     highlights:
-      - Contributed to B2B product roadmap prioritisation, providing structured input using RICE scoring and MoSCoW frameworks to align feature delivery with business OKRs and partner KPIs.
-      - Reduced feature request support tickets by 59% through structured discovery work, stakeholder interviews and user research that surfaced root causes and informed iterative improvements to partner-facing functionality.
-      - Drove a 46% year-on-year reduction in partner information requests by identifying UX friction points via product analytics and collaborating with engineering and design to ship targeted dashboard improvements.
+      - Contributed to product roadmap prioritisation across consumer-facing (B2C) and partner-facing product areas, providing structured input using RICE and MoSCoW frameworks to align delivery with business OKRs.
+      - Reduced feature request support tickets by 59% through structured discovery, stakeholder interviews and user research that surfaced root causes and informed iterative product improvements.
+      - Drove a 46% year-on-year reduction in partner information requests by identifying UX friction points via analytics and collaborating with engineering and design to ship targeted dashboard improvements.
       - Active contributor to agile sprint ceremonies — planning, backlog refinement, reviews and retrospectives — working alongside engineering, design and QA to maintain delivery momentum.
-      - Reduced inbound support volume by 19% year-on-year through product documentation, API guides and release notes that empowered partners to self-serve effectively.
+      - Provides second-line technical support for B2C users, maintaining direct contact with consumer pain points and feeding insights into product prioritisation — reducing inbound support volume by 19% year-on-year.
 
   - title: Product Manager & Operations Manager
     company: British Army
@@ -112,14 +112,15 @@ certifications:
 variants:
 
   pm:
-    hero_badge: "Product Manager · Digital & Mobile"
+    hero_badge: "Product Manager · Consumer & Mobile"
     profile: >-
-      Product Manager with 10+ years of leadership experience, combining a background in mobile
-      app product management with a proven record of delivering user-centred digital products.
-      Skilled across the full product lifecycle — from discovery and user research through roadmap
-      definition, agile delivery and go-to-market execution. Adept at translating stakeholder
-      requirements into prioritised backlogs, user stories and clear acceptance criteria. Holds
-      active DV security clearance and is completing an MBA in Technology Management.
+      Product Manager with 10+ years of leadership experience, combining hands-on work across
+      consumer-facing (B2C) and partner-facing digital products with a proven record of delivering
+      measurable user-centred improvements. Skilled across the full product lifecycle — from
+      discovery and user research through roadmap contribution, agile delivery and go-to-market
+      execution. Adept at translating user and stakeholder needs into prioritised backlogs, user
+      stories and clear acceptance criteria. Holds active DV security clearance and is completing
+      an MBA in Technology Management.
     hero_stats:
       - label: Experience
         value: "[[experience_years]] years"
@@ -135,7 +136,7 @@ variants:
         detail: UK citizen, full right to work.
     competencies:
       - title: Product Roadmap & Strategy
-        description: Experienced contributing to product vision and roadmap planning, using RICE and MoSCoW prioritisation to align delivery with OKRs and KPIs across B2B and consumer contexts.
+        description: Experienced contributing to product vision and roadmap planning, using RICE and MoSCoW prioritisation to align delivery with OKRs and KPIs across consumer and partner-facing contexts.
       - title: Agile / Scrum / Kanban
         description: Active sprint ceremony contributor — planning, backlog refinement, reviews and retros — working alongside engineering, design and QA to maintain velocity and surface blockers early.
       - title: User Research & Discovery
@@ -147,7 +148,7 @@ variants:
       - title: Mobile App Products (iOS & Android)
         description: Strong working knowledge of mobile product development and release processes across iOS and Android, including API integrations and cross-platform QA coordination.
       - title: Go-to-Market Planning
-        description: Experience coordinating GTM launches for new partner integrations, working across sales, marketing and engineering to deliver successful rollouts to B2B customers.
+        description: Experience coordinating GTM launches for product improvements and partner integrations, working across sales, marketing and engineering to deliver successful rollouts.
       - title: Stakeholder Management
         description: Proven communicator with engineering, commercial and Director-level stakeholders — maintaining alignment, managing expectations and articulating product decisions clearly.
     employment:
@@ -156,12 +157,12 @@ variants:
         location: Remote (Cambridge, UK · Immenstadt, Germany)
         period: Sep 2023 – Present
         highlights:
-          - Contributed to B2B product roadmap prioritisation, providing structured input using RICE scoring and MoSCoW frameworks to align feature delivery with business OKRs and partner KPIs.
-          - Reduced feature request support tickets by 59% through structured discovery, stakeholder interviews and user research that surfaced root causes and informed iterative improvements to partner-facing functionality.
-          - Drove a 46% year-on-year reduction in partner information requests by identifying UX friction points via product analytics and collaborating with engineering and design to ship targeted dashboard improvements.
+          - Contributed to product roadmap prioritisation across consumer-facing (B2C) and partner-facing product areas, providing structured input using RICE and MoSCoW frameworks to align delivery with business OKRs.
+          - Reduced feature request support tickets by 59% through structured discovery, stakeholder interviews and user research that surfaced root causes and informed iterative product improvements.
+          - Drove a 46% year-on-year reduction in partner information requests by identifying UX friction points via analytics and collaborating with engineering and design to ship targeted dashboard improvements.
           - Active contributor to agile sprint ceremonies (planning, backlog refinement, reviews, retrospectives) working alongside engineering, design and QA to maintain delivery momentum.
-          - Supported go-to-market coordination for new partner integrations, working across sales, marketing and engineering for successful rollouts to 200+ B2B customers.
-          - Reduced inbound support volume by 19% year-on-year through product documentation, API guides and release notes that empowered partners to self-serve.
+          - Supported go-to-market coordination for product launches and partner integrations, working across sales, marketing and engineering for successful rollouts to 200+ partner organisations.
+          - Provides second-line technical support for B2C users, maintaining direct contact with consumer pain points and reducing inbound support volume by 19% year-on-year.
       - title: Product Manager & Operations Manager
         company: British Army
         location: Dorset, UK
@@ -246,5 +247,5 @@ variants:
         period: Sep 2023 – Present
         highlights:
           - Reduced feature request support tickets by 59% and partner information requests by 46% year-on-year through structured discovery and data-driven product improvements.
-          - Contributed to B2B product roadmap prioritisation and agile sprint delivery alongside engineering and design teams.
-          - Reduced inbound support volume by 19% year-on-year through product documentation and API guides.
+          - Contributed to product roadmap prioritisation across consumer and partner-facing product areas, participating in agile sprint delivery alongside engineering and design teams.
+          - Provides second-line technical support for B2C users, reducing inbound support volume by 19% year-on-year through improved product documentation and self-serve tooling.
