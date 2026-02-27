@@ -16,13 +16,20 @@ layout: default
   {% assign experience_years_text = experience_years_text | append: '+' %}
 {% endif %}
 
-{% comment %} Build an ordered list: default first, then each named variant {% endcomment %}
-{% assign all_variant_keys = "default,pm,defence" | split: "," %}
+{% comment %} Resolve which variant to render — set by page front matter {% endcomment %}
+{% assign variant_key = page.variant | default: 'default' %}
+{% if variant_key == 'default' %}
+  {% assign vdata = cv %}
+{% else %}
+  {% assign vdata = cv.variants[variant_key] %}
+{% endif %}
 
-{%- comment -%}
-  Helper macro: resolve a field — use variant override if present, else cv root.
-  Liquid doesn't have real macros so we assign to local vars before each section.
-{%- endcomment -%}
+{% assign badge_text    = vdata.hero_badge    | default: cv.hero_badge %}
+{% assign profile_raw   = vdata.profile       | default: cv.profile %}
+{% assign profile_text  = profile_raw | replace: '[[experience_years]]', experience_years_text %}
+{% assign stats         = vdata.hero_stats    | default: cv.hero_stats %}
+{% assign competencies  = vdata.competencies  | default: cv.competencies %}
+{% assign roles         = vdata.employment    | default: cv.employment %}
 
 <!-- ═══════════════════════════════════════════════════════════
      HERO / PROFILE
@@ -34,40 +41,16 @@ layout: default
   <div class="mx-auto flex w-full max-w-5xl flex-col justify-center gap-10 px-6 py-24">
     <div class="space-y-6" data-animate="hero-copy">
 
-      {% comment %} ── Hero badge — one per variant ── {% endcomment %}
-      {% for vkey in all_variant_keys %}
-        {% if vkey == "default" %}
-          {% assign vdata = cv %}
-        {% else %}
-          {% assign vdata = cv.variants[vkey] %}
-        {% endif %}
-        {% assign badge_text = vdata.hero_badge | default: cv.hero_badge %}
-        <span
-          class="inline-flex items-center rounded-full border border-ember-400/30 bg-ember-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.4em] text-ember-200 texture-noise"
-          data-animate="hero-badge"
-          data-variant="{{ vkey }}"
-          {% unless vkey == "default" %}hidden{% endunless %}
-          >{{ badge_text }}</span>
-      {% endfor %}
+      <span
+        class="inline-flex items-center rounded-full border border-ember-400/30 bg-ember-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.4em] text-ember-200 texture-noise"
+        data-animate="hero-badge"
+        >{{ badge_text }}</span>
 
       <h1 class="text-4xl font-semibold text-aluminum-100 sm:text-5xl" data-animate="hero-heading">Hello, I'm Liam Day</h1>
 
-      {% comment %} ── Profile text — one per variant ── {% endcomment %}
-      {% for vkey in all_variant_keys %}
-        {% if vkey == "default" %}
-          {% assign vdata = cv %}
-        {% else %}
-          {% assign vdata = cv.variants[vkey] %}
-        {% endif %}
-        {% assign profile_raw = vdata.profile | default: cv.profile %}
-        {% assign profile_text = profile_raw | replace: '[[experience_years]]', experience_years_text %}
-        <p class="max-w-3xl text-lg leading-relaxed text-aluminum-300"
-           data-animate="hero-text"
-           data-variant="{{ vkey }}"
-           {% unless vkey == "default" %}hidden{% endunless %}>
-          {{ profile_text }}
-        </p>
-      {% endfor %}
+      <p class="max-w-3xl text-lg leading-relaxed text-aluminum-300" data-animate="hero-text">
+        {{ profile_text }}
+      </p>
 
       <div class="flex flex-wrap gap-4" data-animate="hero-actions">
         <a class="inline-flex items-center justify-center rounded-full bg-ember-400 px-6 py-3 text-sm font-semibold text-charcoal-950 shadow-glow transition texture-noise hover:bg-ember-300"
@@ -79,25 +62,16 @@ layout: default
       </div>
     </div>
 
-    {% comment %} ── Hero stats — one grid per variant ── {% endcomment %}
-    {% for vkey in all_variant_keys %}
-      {% if vkey == "default" %}
-        {% assign vdata = cv %}
-      {% else %}
-        {% assign vdata = cv.variants[vkey] %}
-      {% endif %}
-      {% assign stats = vdata.hero_stats | default: cv.hero_stats %}
-      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4" data-variant="{{ vkey }}" {% unless vkey == "default" %}hidden{% endunless %}>
-        {% for stat in stats %}
-          {% assign stat_value = stat.value | replace: '[[experience_years]]', experience_years_text %}
-          <div class="surface-panel p-6" data-animate="hero-stat">
-            <p class="text-sm uppercase tracking-[0.3em] text-aluminum-400">{{ stat.label }}</p>
-            <p class="mt-3 text-2xl font-semibold text-aluminum-100">{{ stat_value }}</p>
-            <p class="mt-2 text-sm text-aluminum-400">{{ stat.detail }}</p>
-          </div>
-        {% endfor %}
-      </div>
-    {% endfor %}
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {% for stat in stats %}
+        {% assign stat_value = stat.value | replace: '[[experience_years]]', experience_years_text %}
+        <div class="surface-panel p-6" data-animate="hero-stat">
+          <p class="text-sm uppercase tracking-[0.3em] text-aluminum-400">{{ stat.label }}</p>
+          <p class="mt-3 text-2xl font-semibold text-aluminum-100">{{ stat_value }}</p>
+          <p class="mt-2 text-sm text-aluminum-400">{{ stat.detail }}</p>
+        </div>
+      {% endfor %}
+    </div>
 
   </div>
 </section>
@@ -136,33 +110,24 @@ layout: default
       </p>
     </div>
 
-    {% comment %} ── Employment list — one per variant ── {% endcomment %}
-    {% for vkey in all_variant_keys %}
-      {% if vkey == "default" %}
-        {% assign vdata = cv %}
-      {% else %}
-        {% assign vdata = cv.variants[vkey] %}
-      {% endif %}
-      {% assign roles = vdata.employment | default: cv.employment %}
-      <div class="mt-12 space-y-8" data-variant="{{ vkey }}" {% unless vkey == "default" %}hidden{% endunless %}>
-        {% for role in roles %}
-        <article class="surface-panel p-6 shadow-[0_20px_45px_-30px_rgba(0,0,0,0.9)] lg:p-8" data-animate="experience-card">
-          <div class="space-y-1">
-            <h3 class="text-xl font-semibold leading-tight text-aluminum-100">{{ role.title }}</h3>
-            <p class="text-sm text-aluminum-300">{{ role.company }} · {{ role.location }}</p>
-            <p class="text-xs font-semibold uppercase text-aluminum-400">{{ role.period }}</p>
-          </div>
-          {% if role.highlights %}
-          <ul class="mt-6 list-disc space-y-3 pl-6 text-sm leading-relaxed text-aluminum-300 marker:text-ember-300">
-            {% for highlight in role.highlights %}
-            <li>{{ highlight }}</li>
-            {% endfor %}
-          </ul>
-          {% endif %}
-        </article>
-        {% endfor %}
-      </div>
-    {% endfor %}
+    <div class="mt-12 space-y-8">
+      {% for role in roles %}
+      <article class="surface-panel p-6 shadow-[0_20px_45px_-30px_rgba(0,0,0,0.9)] lg:p-8" data-animate="experience-card">
+        <div class="space-y-1">
+          <h3 class="text-xl font-semibold leading-tight text-aluminum-100">{{ role.title }}</h3>
+          <p class="text-sm text-aluminum-300">{{ role.company }} · {{ role.location }}</p>
+          <p class="text-xs font-semibold uppercase text-aluminum-400">{{ role.period }}</p>
+        </div>
+        {% if role.highlights %}
+        <ul class="mt-6 list-disc space-y-3 pl-6 text-sm leading-relaxed text-aluminum-300 marker:text-ember-300">
+          {% for highlight in role.highlights %}
+          <li>{{ highlight }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+      </article>
+      {% endfor %}
+    </div>
 
   </div>
 </section>
@@ -179,23 +144,14 @@ layout: default
       </p>
     </div>
 
-    {% comment %} ── Competency grid — one per variant ── {% endcomment %}
-    {% for vkey in all_variant_keys %}
-      {% if vkey == "default" %}
-        {% assign vdata = cv %}
-      {% else %}
-        {% assign vdata = cv.variants[vkey] %}
-      {% endif %}
-      {% assign comps = vdata.competencies | default: cv.competencies %}
-      <div class="mt-12 grid gap-6 md:grid-cols-2" data-variant="{{ vkey }}" {% unless vkey == "default" %}hidden{% endunless %}>
-        {% for competency in comps %}
-        <article class="h-full surface-panel p-6 transition-colors duration-200" data-animate="capability-card">
-          <h3 class="text-lg font-semibold leading-tight text-aluminum-100">{{ competency.title }}</h3>
-          <p class="mt-3 text-sm leading-relaxed text-aluminum-300">{{ competency.description }}</p>
-        </article>
-        {% endfor %}
-      </div>
-    {% endfor %}
+    <div class="mt-12 grid gap-6 md:grid-cols-2">
+      {% for competency in competencies %}
+      <article class="h-full surface-panel p-6 transition-colors duration-200" data-animate="capability-card">
+        <h3 class="text-lg font-semibold leading-tight text-aluminum-100">{{ competency.title }}</h3>
+        <p class="mt-3 text-sm leading-relaxed text-aluminum-300">{{ competency.description }}</p>
+      </article>
+      {% endfor %}
+    </div>
 
   </div>
 </section>
