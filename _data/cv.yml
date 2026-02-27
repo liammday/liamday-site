@@ -13,8 +13,8 @@ profile: >-
   A results-driven product and operations leader with [[experience_years]] years of experience
   spanning consumer tech and the British Army. Proven track record delivering digital products,
   leading cross-functional teams, and driving measurable improvements across complex programmes.
-  Combines commercial product instinct with operational discipline — and holds active Developed
-  Vetting (DV) security clearance. Currently completing an MBA in Technology Management.
+  Combines commercial product instinct with operational discipline — security cleared, with
+  details available on request. Currently completing an MBA in Technology Management.
 
 hero_stats:
   - label: Experience
@@ -119,15 +119,15 @@ variants:
       measurable user-centred improvements. Skilled across the full product lifecycle — from
       discovery and user research through roadmap contribution, agile delivery and go-to-market
       execution. Adept at translating user and stakeholder needs into prioritised backlogs, user
-      stories and clear acceptance criteria. Holds active DV security clearance and is completing
+      stories and clear acceptance criteria. Security cleared (details on request) and completing
       an MBA in Technology Management.
     hero_stats:
       - label: Experience
         value: "[[experience_years]] years"
         detail: Product management across consumer tech and defence.
       - label: Clearance
-        value: DV cleared
-        detail: Developed Vetting — highest UK government clearance.
+        value: Security cleared
+        detail: Details available on request.
       - label: Studies
         value: MBA candidate
         detail: Technology Management · Open University (2026).
@@ -189,12 +189,12 @@ variants:
       delivering complex capability programmes and digital products in defence and regulated
       environments. Experienced managing multi-stakeholder programmes from concept through
       fielding, building product roadmaps, and leading cross-functional teams under operational
-      constraints. Holds active Developed Vetting (DV) security clearance — the UK's highest
-      government clearance — and is completing an MBA in Technology Management.
+      constraints. Security cleared (details available on request) and completing an MBA in
+      Technology Management.
     hero_stats:
-      - label: DV Cleared
-        value: Active clearance
-        detail: Developed Vetting — highest UK government clearance level.
+      - label: Security clearance
+        value: Cleared
+        detail: Details available on request.
       - label: Experience
         value: "[[experience_years]] years"
         detail: Programme delivery and product management in defence and tech.
@@ -219,8 +219,8 @@ variants:
         description: Led cross-functional teams of up to 12 in complex programme environments, coordinating across engineering, training, operations and policy stakeholders simultaneously.
       - title: Digital Transformation & Tooling
         description: Track record of introducing digital tooling to replace manual processes — delivering measurable efficiency gains including 960 instructor hours saved annually.
-      - title: DV Security Clearance
-        description: Holds active Developed Vetting (DV) clearance — the UK's highest government clearance level — enabling immediate engagement on sensitive programmes.
+      - title: Security Clearance
+        description: Holds active UK government security clearance — details available on request — enabling immediate engagement on sensitive and regulated programmes.
     employment:
       - title: Product Manager & Operations Manager
         company: British Army
