@@ -12,27 +12,27 @@ module.exports = {
     extend: {
       colors: {
         charcoal: {
-          900: '#101215',
-          950: '#07080a',
+          900: 'rgb(var(--charcoal-900) / <alpha-value>)',
+          950: 'rgb(var(--charcoal-950) / <alpha-value>)',
         },
         graphite: {
-          600: '#26292e',
-          700: '#1d2024',
-          800: '#15181b',
+          600: 'rgb(var(--graphite-600) / <alpha-value>)',
+          700: 'rgb(var(--graphite-700) / <alpha-value>)',
+          800: 'rgb(var(--graphite-800) / <alpha-value>)',
         },
         aluminum: {
-          100: '#e4e7ec',
-          200: '#c5c8d0',
-          300: '#9da1a9',
-          400: '#787c84',
-          500: '#5a5e65',
+          100: 'rgb(var(--aluminum-100) / <alpha-value>)',
+          200: 'rgb(var(--aluminum-200) / <alpha-value>)',
+          300: 'rgb(var(--aluminum-300) / <alpha-value>)',
+          400: 'rgb(var(--aluminum-400) / <alpha-value>)',
+          500: 'rgb(var(--aluminum-500) / <alpha-value>)',
         },
         ember: {
-          200: '#f9b98b',
-          300: '#f6a268',
-          400: '#f08b4a',
-          500: '#d87435',
-          600: '#b75c29',
+          200: 'rgb(var(--ember-200) / <alpha-value>)',
+          300: 'rgb(var(--ember-300) / <alpha-value>)',
+          400: 'rgb(var(--ember-400) / <alpha-value>)',
+          500: 'rgb(var(--ember-500) / <alpha-value>)',
+          600: 'rgb(var(--ember-600) / <alpha-value>)',
         },
       },
       backgroundImage: {

@@ -3,6 +3,50 @@
 @tailwind utilities;
 
 @layer base {
+  /* ── Dark theme (default) ── */
+  :root {
+    --charcoal-900: 16 18 21;
+    --charcoal-950: 7 8 10;
+    --graphite-600: 38 41 46;
+    --graphite-700: 29 32 36;
+    --graphite-800: 21 24 27;
+    --aluminum-100: 228 231 236;
+    --aluminum-200: 197 200 208;
+    --aluminum-300: 157 161 169;
+    --aluminum-400: 131 135 143;
+    --aluminum-500: 90 94 101;
+    --ember-200: 249 185 139;
+    --ember-300: 246 162 104;
+    --ember-400: 240 139 74;
+    --ember-500: 216 116 53;
+    --ember-600: 183 92 41;
+
+    --spotlight-glow-center: rgba(255, 176, 122, 0.22);
+    --spotlight-glow-mid: rgba(255, 176, 122, 0.08);
+  }
+
+  /* ── Light theme ── */
+  :root[data-theme="light"] {
+    --charcoal-900: 248 249 251;
+    --charcoal-950: 7 8 10;
+    --graphite-600: 226 229 234;
+    --graphite-700: 238 240 244;
+    --graphite-800: 244 245 248;
+    --aluminum-100: 26 29 35;
+    --aluminum-200: 45 48 56;
+    --aluminum-300: 74 78 88;
+    --aluminum-400: 104 109 125;
+    --aluminum-500: 176 181 192;
+    --ember-200: 160 68 0;
+    --ember-300: 179 77 9;
+    --ember-400: 240 139 74;
+    --ember-500: 216 116 53;
+    --ember-600: 183 92 41;
+
+    --spotlight-glow-center: rgba(255, 200, 150, 0.35);
+    --spotlight-glow-mid: rgba(255, 200, 150, 0.12);
+  }
+
   body {
     @apply bg-charcoal-900 text-aluminum-100 antialiased;
     background-attachment: fixed;
@@ -51,10 +95,14 @@
     transition: opacity 0.35s ease;
     background: radial-gradient(
       circle at var(--spotlight-x) var(--spotlight-y),
-      rgba(255, 176, 122, 0.22) 0%,
-      rgba(255, 176, 122, 0.08) 35%,
-      rgba(255, 176, 122, 0) 70%
+      var(--spotlight-glow-center) 0%,
+      var(--spotlight-glow-mid) 35%,
+      transparent 70%
     );
+    mix-blend-mode: screen;
+  }
+
+  :root[data-theme="light"] .surface-panel::after {
     mix-blend-mode: screen;
   }
 
@@ -66,12 +114,65 @@
   .surface-ring {
     @apply border border-aluminum-500/25 bg-graphite-700/60 backdrop-blur;
   }
+
+  /* Theme picker segment — active state */
+  .theme-seg[aria-checked="true"] {
+    background-color: rgb(var(--aluminum-500) / 0.2);
+    color: rgb(var(--aluminum-100));
+  }
+
+  .theme-seg[aria-checked="false"] {
+    color: rgb(var(--aluminum-400));
+  }
+
+  .theme-seg[aria-checked="false"]:hover {
+    color: rgb(var(--aluminum-200));
+  }
+
+  /* Light-mode shadow override — heavy dark shadows look wrong on white */
+  :root[data-theme="light"] .surface-panel {
+    --tw-shadow: 0 20px 40px -20px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  }
+
+  :root[data-theme="light"] [data-animate="experience-card"] {
+    --tw-shadow: 0 20px 45px -30px rgba(0, 0, 0, 0.08) !important;
+  }
+
+  /* Light-mode CTA hover — ember-300 is darkened for link text, too dark as button bg */
+  :root[data-theme="light"] a.texture-noise:hover {
+    background-color: rgb(var(--ember-500));
+  }
+
+  /* Prose-invert overrides for light mode — adapts post/project pages automatically */
+  :root[data-theme="light"] .prose-invert {
+    --tw-prose-body: rgb(var(--aluminum-300));
+    --tw-prose-headings: rgb(var(--aluminum-100));
+    --tw-prose-links: rgb(var(--ember-300));
+    --tw-prose-bold: rgb(var(--aluminum-100));
+    --tw-prose-counters: rgb(var(--aluminum-400));
+    --tw-prose-bullets: rgb(var(--ember-300));
+    --tw-prose-hr: rgb(var(--aluminum-500) / 0.25);
+    --tw-prose-quotes: rgb(var(--aluminum-200));
+    --tw-prose-quote-borders: rgb(var(--ember-400) / 0.4);
+    --tw-prose-captions: rgb(var(--aluminum-400));
+    --tw-prose-code: rgb(var(--aluminum-200));
+    --tw-prose-pre-code: rgb(var(--aluminum-300));
+    --tw-prose-pre-bg: rgb(var(--graphite-700));
+    --tw-prose-th-borders: rgb(var(--aluminum-500) / 0.3);
+    --tw-prose-td-borders: rgb(var(--aluminum-500) / 0.2);
+  }
 }
 
 @layer utilities {
   .texture-noise {
     @apply bg-anodised-aluminum;
     background-blend-mode: soft-light;
+  }
+
+  :root[data-theme="light"] .texture-noise {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc4MCcgaGVpZ2h0PSc4MCcgdmlld0JveD0nMCAwIDgwIDgwJz4KICA8ZGVmcz4KICAgIDxmaWx0ZXIgaWQ9J2dyYWluJyB4PSctMjAlJyB5PSctMjAlJyB3aWR0aD0nMTQwJScgaGVpZ2h0PScxNDAlJz4KICAgICAgPGZlVHVyYnVsZW5jZSB0eXBlPSdmcmFjdGFsTm9pc2UnIGJhc2VGcmVxdWVuY3k9JzAuOScgbnVtT2N0YXZlcz0nMycgc2VlZD0nMTcnIHN0aXRjaFRpbGVzPSdzdGl0Y2gnLz4KICAgICAgPGZlQ29tcG9uZW50VHJhbnNmZXI+CiAgICAgICAgPGZlRnVuY0EgdHlwZT0nbGluZWFyJyBzbG9wZT0nMC4yJy8+CiAgICAgIDwvZmVDb21wb25lbnRUcmFuc2Zlcj4KICAgIDwvZmlsdGVyPgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0nODAnIGhlaWdodD0nODAnIGZpbGw9JyNlOGVhZWUnLz4KICA8cmVjdCB3aWR0aD0nODAnIGhlaWdodD0nODAnIGZpbGw9JyNkZmUyZTcnIGZpbHRlcj0ndXJsKCNncmFpbiknIG9wYWNpdHk9JzAuNDUnLz4KPC9zdmc+');
+    background-blend-mode: overlay;
   }
 }
 
