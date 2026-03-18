@@ -7,14 +7,14 @@
 
 # ── DEFAULT (shown when no ?variant= param is set) ───────────
 
-hero_badge: "Product & Operations Leader"
+hero_badge: "Technical Product Builder"
 
 profile: >-
-  A results-driven product and operations leader with [[experience_years]] years of experience
-  spanning consumer tech and the British Army. Proven track record delivering digital products,
-  leading cross-functional teams, and driving measurable improvements across complex programmes.
-  Combines commercial product instinct with operational discipline — security cleared, with
-  details available on request. Currently completing an MBA in Technology Management.
+  I'm a product manager with [[experience_years]] years of experience delivering user-centred
+  digital products — combining a technical background in mobile and web platforms with operational
+  leadership developed as a British Army officer. My career sits at the intersection of product
+  thinking and complex stakeholder environments, spanning consumer tech, defence and government.
+  UK security cleared. Currently completing an MBA in Technology Management.
 
 hero_stats:
   - label: Experience
