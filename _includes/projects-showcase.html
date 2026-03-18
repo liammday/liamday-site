@@ -13,13 +13,16 @@
       {% for app in app_projects %}
       <article class="surface-panel h-full p-6 lg:p-8" data-animate="project-card">
         <div class="flex items-start gap-4">
-          <img class="h-32 w-32 shrink-0 object-cover"
-            src="{{ app.icon | relative_url }}"
-            alt="{{ app.name }} app icon"
-            loading="lazy"
-            width="128"
-            height="128"
-          >
+          <picture class="h-32 w-32 shrink-0">
+            {% if app.icon_webp %}<source srcset="{{ app.icon_webp | relative_url }}" type="image/webp">{% endif %}
+            <img class="h-32 w-32 object-cover"
+              src="{{ app.icon | relative_url }}"
+              alt="{{ app.name }} app icon"
+              loading="lazy"
+              width="128"
+              height="128"
+            >
+          </picture>
           <div class="space-y-2">
             <p class="text-xs font-semibold uppercase tracking-[0.3em] text-aluminum-400">{{ app.platform }} · {{ app.status }}</p>
             <h3 class="text-xl font-semibold leading-tight text-aluminum-100">{{ app.name }}</h3>
