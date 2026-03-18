@@ -39,7 +39,18 @@ layout: default
   class="relative flex min-h-screen flex-col justify-center overflow-hidden border-b border-aluminum-500/20 bg-charcoal-900"
 >
   <div class="mx-auto flex w-full max-w-5xl flex-col justify-center gap-10 px-6 py-24">
-    <div class="space-y-6" data-animate="hero-copy">
+    <div class="grid gap-10 lg:grid-cols-4 lg:items-center lg:gap-4">
+      <div class="flex justify-center" data-animate="hero-photo">
+        <img
+          src="{{ '/assets/images/profile-photo.png' | relative_url }}"
+          alt="Liam Day"
+          class="h-40 w-40 rounded-full object-cover ring-4 ring-aluminum-500/20 shadow-lg"
+          width="160"
+          height="160"
+        >
+      </div>
+
+    <div class="space-y-6 lg:col-span-3" data-animate="hero-copy">
 
       <span
         class="inline-flex items-center rounded-full border border-ember-400/30 bg-ember-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.4em] text-ember-200 texture-noise"
@@ -58,8 +69,9 @@ layout: default
           >View experience</a>
         <a class="inline-flex items-center justify-center rounded-full border border-aluminum-500/25 px-6 py-3 text-sm font-semibold text-aluminum-100 transition hover:border-ember-400/40 hover:bg-ember-500/10"
           href="mailto:{{ site.contact.email }}"
-          >Start a conversation</a>
+          >Let's connect</a>
       </div>
+    </div>
     </div>
 
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
