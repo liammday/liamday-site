@@ -55,3 +55,24 @@
     - Route imports from HealthKit, Strava, and GPX with automated summit matching.
     - Published and user-created collections (for example Munros and Wainwrights) with completion tracking.
     - Offline-first cache layers for map tiles and peak data with cloud-synced personal progress.
+
+- name: Squash Tracker
+  platform: iOS & watchOS
+  status: Active development
+  audience: Squash players who want to record matches, track scores, and review performance over time.
+  icon: /assets/images/projects/SquashTrackerAppIcon-256.png
+  icon_webp: /assets/images/projects/SquashTrackerAppIcon-256.webp
+  summary: >
+    Squash Tracker is a match companion app for recording live squash games on Apple Watch, capturing rally-by-rally scores and health metrics, and reviewing detailed match statistics across your playing history.
+  technologies:
+    - SwiftUI
+    - SwiftData
+    - HealthKit
+    - WatchKit
+    - CloudKit
+    - MapKit
+  features:
+    - Live match recording on Apple Watch with rally input, service tracking, and score announcements.
+    - Heart rate and active energy capture via HealthKit workout sessions during play.
+    - Player and court management with location mapping and match history.
+    - Detailed match statistics including win-loss records, game breakdowns, and milestone tracking.
