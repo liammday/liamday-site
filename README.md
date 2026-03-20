@@ -1,7 +1,6 @@
 # Liam Day — Jekyll Site
 
-This repository contains a Jekyll-powered portfolio site for product design leader Liam Day. It replaces the previous
-Webflow implementation with a fully version-controlled static site.
+This repository contains a Jekyll-powered portfolio site for Liam Day.
 
 ## Getting started
 
