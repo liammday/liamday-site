@@ -232,6 +232,12 @@ layout: default
         href="{{ site.contact.linkedin }}">
         Connect on LinkedIn
       </a>
+      {% if site.social.github %}
+      <a class="inline-flex items-center justify-center rounded-full border border-aluminum-500/25 px-6 py-3 text-sm font-semibold text-aluminum-100 transition hover:border-ember-400/40 hover:bg-ember-500/10"
+        href="{{ site.social.github }}">
+        View on GitHub
+      </a>
+      {% endif %}
     </div>
   </div>
 </section>
