@@ -2,11 +2,7 @@
 <section id="apps" class="scroll-mt-32 flex min-h-screen flex-col justify-center border-b border-aluminum-500/20 bg-charcoal-900">
   <div class="mx-auto w-full max-w-5xl px-6 py-16">
     <div class="max-w-3xl space-y-4" data-animate="section-heading">
-      <h2 class="text-3xl font-semibold text-aluminum-100">Product app projects</h2>
-      <p class="text-lg text-aluminum-300">
-        Two flagship iOS products currently in active development, focused on practical utility for athletes, hikers, and
-        mountain communities.
-      </p>
+      <h2 class="text-3xl font-semibold text-aluminum-100">App projects</h2>
     </div>
     {% if app_projects != empty %}
     <div class="mt-12 grid gap-6 lg:grid-cols-2">
@@ -24,7 +20,7 @@
             >
           </picture>
           <div class="space-y-2">
-            <p class="text-xs font-semibold uppercase tracking-[0.3em] text-aluminum-400">{{ app.platform }} · {{ app.status }}</p>
+            <p class="text-xs font-semibold uppercase tracking-[0.3em] text-aluminum-400">{{ app.platform }}{% if app.status %} · {{ app.status }}{% endif %}</p>
             <h3 class="text-xl font-semibold leading-tight text-aluminum-100">{{ app.name }}</h3>
             <p class="text-sm leading-relaxed text-aluminum-300">{{ app.audience }}</p>
           </div>

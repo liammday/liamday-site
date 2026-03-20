@@ -13,7 +13,7 @@
 - name: Training
   platform: iOS
   status: Active development
-  audience: Athletes, coaches, and habit-focused users who want stronger training consistency.
+  audience: For athletes, coaches, and habit-focused users who want stronger training consistency.
   icon: /assets/images/projects/TrainingAppIcon-256.png
   icon_webp: /assets/images/projects/TrainingAppIcon-256.webp
   summary: >
@@ -35,7 +35,7 @@
 - name: Peaking
   platform: iOS
   status: Active development
-  audience: Hikers and mountaineers who track summits, routes, and collection progress.
+  audience: For hikers and mountaineers who track summits, routes, and collection progress.
   icon: /assets/images/projects/PeakingAppIcon-256.png
   icon_webp: /assets/images/projects/PeakingAppIcon-256.webp
   summary: >
@@ -58,8 +58,7 @@
 
 - name: Squash Tracker
   platform: iOS & watchOS
-  status: Active development
-  audience: Squash players who want to record matches, track scores, and review performance over time.
+  audience: For squash players who want to record matches, track scores, and review performance over time.
   icon: /assets/images/projects/SquashTrackerAppIcon-256.png
   icon_webp: /assets/images/projects/SquashTrackerAppIcon-256.webp
   summary: >
