@@ -7,29 +7,47 @@
     {% if app_projects != empty %}
     <div class="mt-12 grid gap-6 lg:grid-cols-2">
       {% for app in app_projects %}
-      <article class="surface-panel h-full p-6 lg:p-8" data-animate="project-card">
-        <div class="flex items-start gap-4">
-          <picture class="h-32 w-32 shrink-0">
+      <article class="surface-panel h-full p-6 lg:p-8{% if app.featured %} surface-panel--featured{% endif %}" data-animate="project-card">
+        {% if app.featured %}
+        <span class="featured-tag texture-noise">
+          <span class="featured-tag__dot"></span>
+          Featured project
+        </span>
+        {% endif %}
+
+        {% assign icon_size_class = 'h-32 w-32' %}
+        {% assign icon_dim = '128' %}
+        {% if app.featured %}
+          {% assign icon_size_class = 'h-40 w-40' %}
+          {% assign icon_dim = '160' %}
+        {% endif %}
+
+        <div class="project-card__header flex items-start gap-4">
+          <picture class="{{ icon_size_class }} shrink-0">
             {% if app.icon_webp %}<source srcset="{{ app.icon_webp | relative_url }}" type="image/webp">{% endif %}
-            <img class="h-32 w-32 object-cover"
+            <img class="{{ icon_size_class }} object-cover"
               src="{{ app.icon | relative_url }}"
               alt="{{ app.name }} app icon"
               loading="lazy"
-              width="128"
-              height="128"
+              width="{{ icon_dim }}"
+              height="{{ icon_dim }}"
             >
           </picture>
           <div class="space-y-2">
             <p class="text-xs font-semibold uppercase tracking-[0.3em] text-aluminum-400">{{ app.platform }}{% if app.status %} · {{ app.status }}{% endif %}</p>
-            <h3 class="text-xl font-semibold leading-tight text-aluminum-100">{{ app.name }}</h3>
+            <h3 class="{% if app.featured %}text-2xl{% else %}text-xl{% endif %} font-semibold leading-tight text-aluminum-100">{{ app.name }}</h3>
             <p class="text-sm leading-relaxed text-aluminum-300">{{ app.audience }}</p>
           </div>
         </div>
 
         <p class="mt-6 text-sm leading-relaxed text-aluminum-300">{{ app.summary }}</p>
 
+        {% if app.featured %}
+        <div class="project-card__split mt-6">
+        {% endif %}
+
         {% if app.technologies %}
-        <div class="mt-6 space-y-3">
+        <div class="{% if app.featured %}space-y-3 project-card__split-item{% else %}mt-6 space-y-3{% endif %}">
           <p class="text-xs font-semibold uppercase tracking-[0.3em] text-aluminum-400">Core technologies</p>
           <ul class="flex flex-wrap gap-2">
             {% for technology in app.technologies %}
@@ -42,13 +60,17 @@
         {% endif %}
 
         {% if app.features %}
-        <div class="mt-6 space-y-3">
+        <div class="{% if app.featured %}space-y-3 project-card__split-item{% else %}mt-6 space-y-3{% endif %}">
           <p class="text-xs font-semibold uppercase tracking-[0.3em] text-aluminum-400">Key features</p>
           <ul class="list-disc space-y-2 pl-5 text-sm leading-relaxed text-aluminum-300 marker:text-ember-300">
             {% for feature in app.features %}
             <li>{{ feature }}</li>
             {% endfor %}
           </ul>
+        </div>
+        {% endif %}
+
+        {% if app.featured %}
         </div>
         {% endif %}
       </article>
