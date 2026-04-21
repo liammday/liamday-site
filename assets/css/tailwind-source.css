@@ -162,6 +162,61 @@
     --tw-prose-th-borders: rgb(var(--aluminum-500) / 0.3);
     --tw-prose-td-borders: rgb(var(--aluminum-500) / 0.2);
   }
+  /* ── Featured app card (surface-panel--featured) ─────────────────────────────
+     Promotes one entry in the #apps grid to a full-width card at lg+ and lays
+     out Core technologies / Key features side-by-side. Values rely on theme
+     tokens (--ember-*) so they adapt to light mode. */
+
+  .surface-panel--featured { position: relative; }
+
+  /* Consistent gutter between app icon and heading column across ALL app cards. */
+  #apps .project-card__header { gap: 1.5rem; }
+
+  /* Featured tag: stacks above the header on mobile (avoids overlap on narrow
+     viewports), floats to top-right at lg+. */
+  .featured-tag {
+    position: static;
+    align-self: flex-start;
+    margin-bottom: 1rem;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    border: 1px solid rgb(var(--ember-400) / 0.3);
+    background-color: rgb(var(--ember-500) / 0.1);
+    color: rgb(var(--ember-200));
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+  }
+
+  .featured-tag__dot {
+    display: inline-block;
+    width: 0.375rem;
+    height: 0.375rem;
+    border-radius: 9999px;
+    background-color: rgb(var(--ember-400));
+  }
+
+  @media (min-width: 1024px) {
+    #apps .surface-panel--featured { grid-column: span 2 / span 2; }
+    #apps .surface-panel--featured .project-card__header { padding-right: 11rem; }
+    #apps .project-card__split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+    .featured-tag {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      margin-bottom: 0;
+    }
+  }
+
 }
 
 @layer utilities {
