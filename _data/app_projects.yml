@@ -10,29 +10,8 @@
 #   features:
 #     - Key feature
 
-- name: Training
-  platform: iOS
-  status: Active development
-  audience: For athletes, coaches, and habit-focused users who want stronger training consistency.
-  icon: /assets/images/projects/TrainingAppIcon-256.png
-  icon_webp: /assets/images/projects/TrainingAppIcon-256.webp
-  summary: >
-    Training is a planning-and-accountability app that turns weekly intentions into measurable progress by comparing planned sessions with real workouts recorded in Apple Health.
-  technologies:
-    - SwiftUI
-    - SwiftData
-    - HealthKit
-    - EventKit
-    - UserNotifications
-    - AppIntents
-    - Foundation Models (iOS 26+)
-  features:
-    - Unified timeline for planned workouts, completed sessions, period goals, and rest days.
-    - Goal system for daily, weekly, monthly, and yearly targets, including nutrition and body metrics.
-    - Smart creation flow with natural-language workout parsing on supported devices.
-    - Calendar sync and notifications that keep plans visible and actionable.
-
 - name: Peaking
+  featured: true
   platform: iOS
   status: Active development
   audience: For hikers and mountaineers who track summits, routes, and collection progress.
@@ -55,6 +34,28 @@
     - Route imports from HealthKit, Strava, and GPX with automated summit matching.
     - Published and user-created collections (for example Munros and Wainwrights) with completion tracking.
     - Offline-first cache layers for map tiles and peak data with cloud-synced personal progress.
+
+- name: Training
+  platform: iOS
+  status: Active development
+  audience: For athletes, coaches, and habit-focused users who want stronger training consistency.
+  icon: /assets/images/projects/TrainingAppIcon-256.png
+  icon_webp: /assets/images/projects/TrainingAppIcon-256.webp
+  summary: >
+    Training is a planning-and-accountability app that turns weekly intentions into measurable progress by comparing planned sessions with real workouts recorded in Apple Health.
+  technologies:
+    - SwiftUI
+    - SwiftData
+    - HealthKit
+    - EventKit
+    - UserNotifications
+    - AppIntents
+    - Foundation Models (iOS 26+)
+  features:
+    - Unified timeline for planned workouts, completed sessions, period goals, and rest days.
+    - Goal system for daily, weekly, monthly, and yearly targets, including nutrition and body metrics.
+    - Smart creation flow with natural-language workout parsing on supported devices.
+    - Calendar sync and notifications that keep plans visible and actionable.
 
 - name: Squash Tracker
   platform: iOS & watchOS
