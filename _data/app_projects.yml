@@ -31,7 +31,7 @@
     - Charts
   features:
     - Interactive peak discovery map with clustering, filtering, and rich metadata.
-    - Route imports from HealthKit, Strava, and GPX with automated summit matching.
+    - Route imports from Apple HealthKit (Apple Watch primary, with bridge-app support for Garmin / Polar / Suunto via HealthFit or RunGap) and Strava, with automated summit matching and GPX export for portability.
     - Published and user-created collections (for example Munros and Wainwrights) with completion tracking.
     - Offline-first cache layers for map tiles and peak data with cloud-synced personal progress.
 
