@@ -10,6 +10,26 @@
 #   features:
 #     - Key feature
 
+- name: LifeOS
+  featured: true
+  platform: Personal Applied AI System
+  status: Daily personal use
+  audience: A personal exploration of Claude and MCP as the operating system for life administration.
+  summary: >
+    LifeOS is a personal Claude-and-MCP orchestration system that treats life administration as software. Ingests communications streams (email across multiple accounts, postal scans, downloads), extracts structured signal, cross-links against authoritative personal records, and proactively manages recurring real-world actions. Runs daily, powered by a self-authored job-application-tracking MCP, twelve-plus scheduled tasks, and broad orchestration of open-source MCPs across Obsidian, SQL, document OCR and CLI integrations.
+  technologies:
+    - Claude API
+    - Anthropic MCP
+    - Obsidian
+    - SQL
+    - Python (AI-paired)
+    - Custom MCP servers
+  features:
+    - Ingestion pipeline across email, postal scans and downloads with per-domain routing into structured knowledge bases.
+    - Twelve-plus scheduled tasks running daily ingestion, briefings, proactive monitoring and contextual actions.
+    - Self-authored job-application-tracking MCP that orchestrates the full lifecycle of an application from JD analysis through draft management.
+    - Self-improving skills: internal performance tracking informs external skill and tool research so the system iterates on its own deployment patterns over time.
+
 - name: Peaking
   featured: true
   platform: iOS

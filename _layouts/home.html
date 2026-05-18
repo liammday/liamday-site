@@ -16,20 +16,12 @@ layout: default
   {% assign experience_years_text = experience_years_text | append: '+' %}
 {% endif %}
 
-{% comment %} Resolve which variant to render — set by page front matter {% endcomment %}
-{% assign variant_key = page.variant | default: 'default' %}
-{% if variant_key == 'default' %}
-  {% assign vdata = cv %}
-{% else %}
-  {% assign vdata = cv.variants[variant_key] %}
-{% endif %}
-
-{% assign badge_text    = vdata.hero_badge    | default: cv.hero_badge %}
-{% assign profile_raw   = vdata.profile       | default: cv.profile %}
+{% assign badge_text    = cv.hero_badge %}
+{% assign profile_raw   = cv.profile %}
 {% assign profile_text  = profile_raw | replace: '[[experience_years]]', experience_years_text %}
-{% assign stats         = vdata.hero_stats    | default: cv.hero_stats %}
-{% assign competencies  = vdata.competencies  | default: cv.competencies %}
-{% assign roles         = vdata.employment    | default: cv.employment %}
+{% assign stats         = cv.hero_stats %}
+{% assign competencies  = cv.competencies %}
+{% assign roles         = cv.employment %}
 
 <!-- ═══════════════════════════════════════════════════════════
      HERO / PROFILE

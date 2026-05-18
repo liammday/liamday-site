@@ -23,6 +23,7 @@
         {% endif %}
 
         <div class="project-card__header flex items-start gap-4">
+          {% if app.icon %}
           <picture class="{{ icon_size_class }} shrink-0">
             {% if app.icon_webp %}<source srcset="{{ app.icon_webp | relative_url }}" type="image/webp">{% endif %}
             <img class="{{ icon_size_class }} object-cover"
@@ -33,6 +34,11 @@
               height="{{ icon_dim }}"
             >
           </picture>
+          {% else %}
+          <div class="{{ icon_size_class }} shrink-0 flex items-center justify-center rounded-2xl border border-ember-400/30 bg-ember-500/10 texture-noise">
+            <span aria-hidden="true" class="text-3xl text-ember-200">✦</span>
+          </div>
+          {% endif %}
           <div class="space-y-2">
             <p class="text-xs font-semibold uppercase tracking-[0.3em] text-aluminum-400">{{ app.platform }}{% if app.status %} · {{ app.status }}{% endif %}</p>
             <h3 class="{% if app.featured %}text-2xl{% else %}text-xl{% endif %} font-semibold leading-tight text-aluminum-100">{{ app.name }}</h3>
