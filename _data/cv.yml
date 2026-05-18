@@ -4,6 +4,9 @@
 # Variants stripped 2026-05-18 to remove URL-controlled message
 # divergence; site now presents one coherent persona aligned
 # with current applications and LinkedIn.
+# PUBLIC-DOMAIN SECURITY RULE (2026-05-18): never name specific
+# clearance levels, named operations, or deployed countries on
+# this site. Use "Security cleared" generic only.
 # ─────────────────────────────────────────────────────────────
 
 hero_badge: "Technical Product Builder · Applied AI"
@@ -14,8 +17,7 @@ profile: >-
   AI building with Claude and MCP. My career sits at the intersection of product
   thinking, complex stakeholder environments, and frontier technology, spanning
   defence, government, consumer tech and independent software. Completing an MBA
-  in Technology Management. Previously held Developed Vetting (DV), currently SC
-  cleared.
+  in Technology Management. UK security cleared.
 
 hero_stats:
   - label: Experience
@@ -29,13 +31,13 @@ hero_stats:
     detail: Technology Management, Open University (2026 expected).
   - label: Based in
     value: Winchester, UK
-    detail: UK citizen, SC cleared, available across UK and Europe.
+    detail: UK citizen, security cleared, available across UK and Europe.
 
 competencies:
   - title: Customer-Embedded Technical Advisory
     description: Embedded with five government and defence customer organisations at the British Army Combat CIS School, partner-facing technical product work at Outdooractive, and a track record of earning trust from sceptical technical specialists.
   - title: Stakeholder Management (Analyst to Director Level)
-    description: Brief senior decision-makers in operational and commercial contexts. Briefed at brigadier and coalition general level during operational deployment, and at Director level across UK Defence programmes.
+    description: Brief senior decision-makers in operational and commercial contexts. Track record of briefing senior military commanders and civilian leadership at Director level across UK Defence and commercial programmes.
   - title: Applied AI Building (Claude + MCP)
     description: Daily Claude and MCP development including a personal orchestration system, self-authored MCP, agent skills, and AI-paired iOS engineering through Claude Code.
   - title: Product Strategy & Delivery
@@ -72,23 +74,12 @@ employment:
       - Led a cross-functional team of 12 and a wider community of 32 senior NCOs, running weekly stand-ups, sprint reviews and retrospectives aligned to agile principles in a regulated, security-sensitive environment.
       - Produced business cases, roadmaps and risk registers to secure Director-level investment approval; managed programme budget and resource allocation throughout delivery.
 
-  - title: SO3 Operations and Deployments (Op SHADER 9)
-    company: British Army (operational deployment from RSO role)
-    location: Taji, Iraq
-    period: 6-month operational deployment, 2019
-    highlights:
-      - Coordinated movement, deployment and handover of approximately 600 UK personnel across all active Middle Eastern theatres, countries, bases and coalition embeddings.
-      - Inherited fragmented personnel tracking spread across multiple security classifications and coalition nations; built a unified single source of truth using the secure tools available, codifying data structures and reconciling competing versions from UK strategic headquarters, deployed UK HQs, formed unit HQs, owning units and coalition partners.
-      - Created operational intelligence tools to visualise deployment risk, surfacing compounding overlap risk that had previously been invisible in disconnected data sources.
-      - Briefed the UK brigadier daily and the coalition general weekly on the full deployment picture; convinced UK strategic headquarters to adopt the ground-level single source of truth.
-      - System and processes established were adopted as the standard for subsequent operational deployments.
-
   - title: Regimental Signals Officer (Technical Coordinator)
     company: British Army — 1st Bn Duke of Lancaster's Regiment
     location: Chester, UK
     period: Jul 2018 – Jul 2020
     highlights:
-      - Coordinated secure communications infrastructure across a regiment of 500+ personnel, ensuring connectivity during exercises and international deployments including Kenya.
+      - Coordinated secure communications infrastructure across a regiment of 500+ personnel, ensuring connectivity during exercises and international training deployments.
       - Translated deeply technical communications planning (RF propagation, power settings, electromagnetic penetration values) into accessible, actionable outputs for non-technical commanders using plain language, map overlays and conceptual diagrams.
       - Increased trained communication specialists from 2 to 8 per 30-person team, significantly enhancing unit operational capability and readiness.
       - Maintained 100% compliance with cryptographic material security protocols, achieving an incident-free reporting period across both years of responsibility.
@@ -98,8 +89,8 @@ employment:
     location: Cyprus
     period: Jul 2016 – Jul 2018
     highlights:
-      - Ensured the training readiness of 130 personnel for consecutive international deployments to the USA, Kenya and Jordan, managing compliance with critical safety certifications.
-      - Managed and maintained full accountability for £3M of serialised equipment across complex international deployments, achieving 100% operational readiness throughout.
+      - Ensured the training readiness of 130 personnel for consecutive international training deployments, managing compliance with critical safety certifications.
+      - Managed and maintained full accountability for £3M of serialised equipment across complex international training deployments, achieving 100% operational readiness throughout.
 
   - title: Team Leader
     company: British Army — 1st Bn Duke of Lancaster's Regiment
