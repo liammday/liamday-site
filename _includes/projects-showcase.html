@@ -1,8 +1,8 @@
 {% assign app_projects = site.data.app_projects %}
-<section id="apps" class="scroll-mt-32 flex min-h-screen flex-col justify-center border-b border-aluminum-500/20 bg-charcoal-900">
+<section id="projects" class="scroll-mt-32 flex min-h-screen flex-col justify-center border-b border-aluminum-500/20 bg-charcoal-900">
   <div class="mx-auto w-full max-w-5xl px-6 py-16">
     <div class="max-w-3xl space-y-4" data-animate="section-heading">
-      <h2 class="text-3xl font-semibold text-aluminum-100">App projects</h2>
+      <h2 class="text-3xl font-semibold text-aluminum-100">Projects</h2>
     </div>
     {% if app_projects != empty %}
     <div class="mt-12 grid gap-6 lg:grid-cols-2">
@@ -17,10 +17,6 @@
 
         {% assign icon_size_class = 'h-32 w-32' %}
         {% assign icon_dim = '128' %}
-        {% if app.featured %}
-          {% assign icon_size_class = 'h-40 w-40' %}
-          {% assign icon_dim = '160' %}
-        {% endif %}
 
         <div class="project-card__header flex items-start gap-4">
           {% if app.icon %}
@@ -41,19 +37,15 @@
           {% endif %}
           <div class="space-y-2">
             <p class="text-xs font-semibold uppercase tracking-[0.3em] text-aluminum-400">{{ app.platform }}{% if app.status %} · {{ app.status }}{% endif %}</p>
-            <h3 class="{% if app.featured %}text-2xl{% else %}text-xl{% endif %} font-semibold leading-tight text-aluminum-100">{{ app.name }}</h3>
+            <h3 class="text-xl font-semibold leading-tight text-aluminum-100">{{ app.name }}</h3>
             <p class="text-sm leading-relaxed text-aluminum-300">{{ app.audience }}</p>
           </div>
         </div>
 
         <p class="mt-6 text-sm leading-relaxed text-aluminum-300">{{ app.summary }}</p>
 
-        {% if app.featured %}
-        <div class="project-card__split mt-6">
-        {% endif %}
-
         {% if app.technologies %}
-        <div class="{% if app.featured %}space-y-3 project-card__split-item{% else %}mt-6 space-y-3{% endif %}">
+        <div class="mt-6 space-y-3">
           <p class="text-xs font-semibold uppercase tracking-[0.3em] text-aluminum-400">Core technologies</p>
           <ul class="flex flex-wrap gap-2">
             {% for technology in app.technologies %}
@@ -66,7 +58,7 @@
         {% endif %}
 
         {% if app.features %}
-        <div class="{% if app.featured %}space-y-3 project-card__split-item{% else %}mt-6 space-y-3{% endif %}">
+        <div class="mt-6 space-y-3">
           <p class="text-xs font-semibold uppercase tracking-[0.3em] text-aluminum-400">Key features</p>
           <ul class="list-disc space-y-2 pl-5 text-sm leading-relaxed text-aluminum-300 marker:text-ember-300">
             {% for feature in app.features %}
@@ -76,17 +68,25 @@
         </div>
         {% endif %}
 
-        {% if app.featured %}
-        </div>
-        {% endif %}
-
         {% if app.link %}
         <div class="mt-6">
+          {% if app.link contains "://" %}
+          <a class="inline-flex items-center gap-2 rounded-full border border-ember-400/40 bg-ember-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-ember-200 transition texture-noise hover:bg-ember-500/20 hover:text-ember-100"
+            href="{{ app.link }}"
+            target="_blank" rel="noopener noreferrer">
+            {{ app.link_label | default: 'View case study' }}
+            <svg aria-hidden="true" viewBox="0 0 20 20" fill="currentColor" class="h-3 w-3">
+              <path d="M11 3a1 1 0 1 0 0 2h2.586l-6.293 6.293a1 1 0 1 0 1.414 1.414L15 6.414V9a1 1 0 1 0 2 0V4a1 1 0 0 0-1-1h-5z" />
+              <path d="M5 5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-3a1 1 0 1 0-2 0v3H5V7h3a1 1 0 1 0 0-2H5z" />
+            </svg>
+          </a>
+          {% else %}
           <a class="inline-flex items-center gap-2 rounded-full border border-ember-400/40 bg-ember-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-ember-200 transition texture-noise hover:bg-ember-500/20 hover:text-ember-100"
             href="{{ app.link | relative_url }}">
             {{ app.link_label | default: 'View case study' }}
             <span aria-hidden="true">→</span>
           </a>
+          {% endif %}
         </div>
         {% endif %}
       </article>

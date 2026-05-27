@@ -169,11 +169,12 @@
 
   .surface-panel--featured { position: relative; }
 
-  /* Consistent gutter between app icon and heading column across ALL app cards. */
-  #apps .project-card__header { gap: 1.5rem; }
+  /* Consistent gutter between app icon and heading column across all project cards. */
+  #projects .project-card__header { gap: 1.5rem; }
 
-  /* Featured tag: stacks above the header on mobile (avoids overlap on narrow
-     viewports), floats to top-right at lg+. */
+  /* Featured tag: always sits above the header content (icon + eyebrow + title)
+     in document flow, so it never collides with the wrapping pre-title at any
+     card width. */
   .featured-tag {
     position: static;
     align-self: flex-start;
@@ -201,22 +202,6 @@
     background-color: rgb(var(--ember-400));
   }
 
-  @media (min-width: 1024px) {
-    #apps .surface-panel--featured { grid-column: span 2 / span 2; }
-    #apps .surface-panel--featured .project-card__header { padding-right: 11rem; }
-    #apps .project-card__split {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-    }
-    .featured-tag {
-      position: absolute;
-      top: 1.5rem;
-      right: 1.5rem;
-      margin-bottom: 0;
-    }
-  }
-
   /* Case-study heading spacing: pull h2 sub-section titles closer to the content
      beneath them. Tailwind Typography's default prose h2 has 1em margin-bottom and
      the following block has 1.25em margin-top, collapsing to ~20px. The default reads
@@ -226,6 +211,154 @@
   }
   .detail-content :where(h2 + *):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
     margin-top: 0.5em;
+  }
+
+  /* Project-page content widths: prose defaults to max-width:65ch which pulls media
+     (figures, tables, asides, the architecture diagram) in to the text column. Lift
+     the constraint off the container so bounded media fills the full content column,
+     and re-apply the reading width only to text body elements. */
+  .detail-content {
+    max-width: none;
+  }
+  .detail-content :where(p, ul, ol, blockquote, dl):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+    max-width: 65ch;
+  }
+
+  /* Page-nav scroll bleed: the scroll viewport spans the full nav width so links can
+     spill into the gutters when overflowing, but dynamic padding aligns the first/last
+     pill with the content column edges (max-w-5xl = 64rem, gutter px-6 = 1.5rem). */
+  .page-nav-bleed {
+    padding-left: max(1.5rem, calc(50% - 30.5rem));
+    padding-right: max(1.5rem, calc(50% - 30.5rem));
+  }
+
+  /* Hide the horizontal scrollbar on the page sticky-nav scroll containers — the
+     scroll mechanism (wheel, touch, drag) still works, just no visible bar. */
+  [data-nav-scroll] {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  [data-nav-scroll]::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* ── Inline architecture diagram ─────────────────────────────────────────────
+     All colours route through role-based tokens that auto-swap across themes —
+     graphite-600 is brighter than the page bg in dark mode and darker than the
+     page bg in light mode, giving a consistent "elevated card" feel either way.
+     aluminum-100 is the primary text colour in any theme (light on dark, dark on
+     light), so reusing it as the orchestrator fill makes the orchestrator the
+     most visually dominant element in both themes. */
+  .lifeos-architecture {
+    --diagram-card-bg: rgb(var(--graphite-600));
+    --diagram-card-border: rgb(var(--aluminum-500) / 0.4);
+    --diagram-sensitive-bg: rgb(var(--graphite-700));
+    --diagram-text-strong: rgb(var(--aluminum-100));
+    --diagram-text-mid: rgb(var(--aluminum-300));
+    --diagram-text-muted: rgb(var(--aluminum-400));
+    --diagram-accent: rgb(var(--ember-400));
+    --diagram-on-accent: rgb(var(--charcoal-950));
+    --diagram-edge-soft: rgb(var(--aluminum-400));
+    --diagram-spine-bg: rgb(var(--graphite-600));
+    --diagram-spine-border: rgb(var(--ember-400));
+    --diagram-orchestrator-bg: rgb(var(--aluminum-100));
+    --diagram-orchestrator-text: rgb(var(--charcoal-900));
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .lifeos-architecture text {
+    font-family: "Styrene B", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+  .lifeos-architecture .mono {
+    font-family: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+  }
+  .lifeos-architecture .lane-label {
+    font-size: 13px;
+    font-weight: 500;
+    fill: var(--diagram-text-muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+  .lifeos-architecture .node-label {
+    font-size: 13px;
+    font-weight: 500;
+    fill: var(--diagram-text-strong);
+  }
+  .lifeos-architecture .card {
+    fill: var(--diagram-card-bg);
+    stroke: var(--diagram-card-border);
+    stroke-width: 1;
+  }
+  .lifeos-architecture .accent-dot { fill: var(--diagram-accent); }
+  .lifeos-architecture .accent-line {
+    stroke: var(--diagram-accent);
+    stroke-width: 2;
+    fill: none;
+  }
+  .lifeos-architecture .soft-line {
+    stroke: var(--diagram-edge-soft);
+    stroke-width: 1.5;
+  }
+  .lifeos-architecture .orchestrator {
+    fill: var(--diagram-orchestrator-bg);
+    stroke: var(--diagram-orchestrator-bg);
+  }
+  .lifeos-architecture .orchestrator-label {
+    font-size: 13px;
+    font-weight: 600;
+    fill: var(--diagram-orchestrator-text);
+    letter-spacing: 0.5px;
+  }
+  .lifeos-architecture .orchestrator-sublabel {
+    font-size: 11px;
+    fill: var(--diagram-orchestrator-text);
+    opacity: 0.7;
+  }
+  .lifeos-architecture .primitive {
+    fill: var(--diagram-accent);
+    stroke: var(--diagram-accent);
+  }
+  .lifeos-architecture .primitive-label {
+    font-size: 13px;
+    font-weight: 600;
+    fill: var(--diagram-on-accent);
+    letter-spacing: 0.5px;
+  }
+  .lifeos-architecture .primitive-sublabel {
+    font-size: 11px;
+    fill: var(--diagram-on-accent);
+    opacity: 0.85;
+  }
+  .lifeos-architecture .spine {
+    fill: var(--diagram-spine-bg);
+    stroke: var(--diagram-spine-border);
+    stroke-width: 2.5;
+  }
+  .lifeos-architecture .spine-label {
+    font-size: 13px;
+    font-weight: 600;
+    fill: var(--diagram-text-strong);
+    letter-spacing: 0.5px;
+  }
+  .lifeos-architecture .spine-sublabel {
+    font-size: 11px;
+    fill: var(--diagram-text-muted);
+  }
+  .lifeos-architecture .domain {
+    fill: var(--diagram-card-bg);
+    stroke: var(--diagram-card-border);
+    stroke-width: 1.5;
+  }
+  .lifeos-architecture .domain--sensitive {
+    fill: var(--diagram-sensitive-bg);
+    stroke-dasharray: 3 3;
+  }
+  .lifeos-architecture .spine-connector line {
+    stroke: var(--diagram-accent);
+    stroke-width: 1;
+    stroke-opacity: 0.5;
   }
 
 }

@@ -14,6 +14,14 @@
     }
 
     const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const SECTION_BREATHING_ROOM = 32;
+
+    /* Headings (H1-H6) are inline text targets — give them breathing room below the nav.
+       Section/article/aside targets carry their own visual top edge (border, divider, hero)
+       and should snap flush against the nav so dividers align with the nav bottom. */
+    function breathingRoomFor(section) {
+      return /^H[1-6]$/.test(section.tagName) ? SECTION_BREATHING_ROOM : 0;
+    }
 
     function scrollLinkIntoView(container, link) {
       if (!container || !link) return;
@@ -85,31 +93,31 @@
 
       function updateSectionOffsets() {
         const navHeight = nav.offsetHeight;
-        const minHeight = Math.max(window.innerHeight - navHeight, 0);
         linkItems.forEach(({ section }) => {
-          section.style.scrollMarginTop = `${navHeight}px`;
-          section.style.minHeight = `${minHeight}px`;
-        });
-      }
-
-      function getVisibleItems() {
-        const navBottom = nav.getBoundingClientRect().bottom;
-        return linkItems.filter((item) => {
-          const { section } = item;
-          const rect = section.getBoundingClientRect();
-          return rect.bottom > navBottom;
+          section.style.scrollMarginTop = `${navHeight + breathingRoomFor(section)}px`;
         });
       }
 
       function handleScroll({ fromHash = false } = {}) {
-        const visibleItems = getVisibleItems();
-        if (visibleItems.length) {
-          setActive(visibleItems[0].section.id, { fromHash });
-        } else if (linkItems.length) {
+        const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+        if (atBottom && linkItems.length) {
           setActive(linkItems[linkItems.length - 1].section.id, { fromHash });
-        } else {
-          setActive(null, { fromHash });
+          return;
         }
+        const navBottom = nav.getBoundingClientRect().bottom;
+        let activeId = null;
+        for (const { section } of linkItems) {
+          const rect = section.getBoundingClientRect();
+          if (rect.top <= navBottom + breathingRoomFor(section) + 1) {
+            activeId = section.id;
+          } else {
+            break;
+          }
+        }
+        if (!activeId && linkItems.length) {
+          activeId = linkItems[0].section.id;
+        }
+        setActive(activeId, { fromHash });
       }
 
       function scrollToSection(section, { behavior } = {}) {
@@ -117,7 +125,7 @@
           return;
         }
         const navHeight = nav.offsetHeight;
-        const targetTop = window.pageYOffset + section.getBoundingClientRect().top - navHeight;
+        const targetTop = window.pageYOffset + section.getBoundingClientRect().top - navHeight - breathingRoomFor(section);
         window.scrollTo({
           top: targetTop,
           behavior: behavior || (reduceMotionQuery.matches ? 'auto' : 'smooth'),

@@ -8,12 +8,10 @@ client: Personal applied-AI build
 order: 1
 type: Case study
 image: /assets/images/projects/lifeos-og-card.png
-hero_image: /assets/images/projects/lifeos-case-study-hero.png
-hero_image_webp: /assets/images/projects/lifeos-case-study-hero.webp
+hero_image: /assets/images/projects/lifeos-hero.svg
 hero_image_width: 1600
 hero_image_height: 800
-hero_image_alt: "LifeOS architecture: four ingestion sources flow into a daily orchestrator and per-item primitive, which write into a central spine surrounded by eight domain nodes."
-hero_image_caption: "One orchestrator, one primitive, one spine. Lazy-loaded domains. Sensitive domains carry metadata-only audit rows."
+hero_image_alt: "LifeOS mark: a central ember-orange spine surrounded by eight constellation nodes."
 nav:
   - id: lede
     label: What changed
@@ -59,6 +57,11 @@ LifeOS was the rebuild. One project, three tiers, eight domains, one ingestion p
 
 ## System overview
 {: #overview .scroll-mt-32 }
+
+<figure class="not-prose my-10">
+{% include lifeos-architecture.svg %}
+<figcaption class="mt-3 text-xs text-aluminum-400">One orchestrator, one primitive, one spine. Lazy-loaded domains. Sensitive domains carry metadata-only audit rows.</figcaption>
+</figure>
 
 The filesystem is organised so the amount of content loaded into a conversation scales with the task, not with the size of the knowledge base.
 
