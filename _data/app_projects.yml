@@ -14,6 +14,10 @@
   featured: true
   platform: Personal Applied AI System
   status: Daily personal use
+  icon: /assets/images/projects/LifeOSAppIcon-256.png
+  icon_webp: /assets/images/projects/LifeOSAppIcon-256.webp
+  link: /projects/lifeos/
+  link_label: Read the case study
   audience: A personal exploration of Claude and MCP as the operating system for life administration.
   summary: >
     LifeOS is a personal Claude-and-MCP orchestration system that treats life administration as software. Ingests communications streams (email across multiple accounts, postal scans, downloads), extracts structured signal, cross-links against authoritative personal records, and proactively manages recurring real-world actions. Runs daily, powered by a self-authored job-application-tracking MCP, twelve-plus scheduled tasks, and broad orchestration of open-source MCPs across Obsidian, SQL, document OCR and CLI integrations.

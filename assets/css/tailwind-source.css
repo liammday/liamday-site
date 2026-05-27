@@ -217,6 +217,17 @@
     }
   }
 
+  /* Case-study heading spacing: pull h2 sub-section titles closer to the content
+     beneath them. Tailwind Typography's default prose h2 has 1em margin-bottom and
+     the following block has 1.25em margin-top, collapsing to ~20px. The default reads
+     too airy at our type scale; we tighten both ends so the visible gap is ~8px. */
+  .detail-content :where(h2):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+    margin-bottom: 0.5em;
+  }
+  .detail-content :where(h2 + *):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+    margin-top: 0.5em;
+  }
+
 }
 
 @layer utilities {

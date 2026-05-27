@@ -79,6 +79,16 @@
         {% if app.featured %}
         </div>
         {% endif %}
+
+        {% if app.link %}
+        <div class="mt-6">
+          <a class="inline-flex items-center gap-2 rounded-full border border-ember-400/40 bg-ember-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-ember-200 transition texture-noise hover:bg-ember-500/20 hover:text-ember-100"
+            href="{{ app.link | relative_url }}">
+            {{ app.link_label | default: 'View case study' }}
+            <span aria-hidden="true">→</span>
+          </a>
+        </div>
+        {% endif %}
       </article>
       {% endfor %}
     </div>
