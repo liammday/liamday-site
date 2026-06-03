@@ -5,15 +5,9 @@
       <h2 class="text-3xl font-semibold text-aluminum-100">Projects</h2>
     </div>
     {% if app_projects != empty %}
-    <div class="mt-12 grid gap-6 lg:grid-cols-2">
+    <div class="mt-12 grid gap-6">
       {% for app in app_projects %}
-      <article class="surface-panel h-full p-6 lg:p-8{% if app.featured %} surface-panel--featured{% endif %}" data-animate="project-card">
-        {% if app.featured %}
-        <span class="featured-tag texture-noise">
-          <span class="featured-tag__dot"></span>
-          Featured project
-        </span>
-        {% endif %}
+      <article class="surface-panel h-full p-6 lg:p-8" data-animate="project-card">
 
         {% assign icon_size_class = 'h-32 w-32' %}
         {% assign icon_dim = '128' %}
