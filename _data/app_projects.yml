@@ -9,33 +9,10 @@
 #     - Core technology
 #   features:
 #     - Key feature
-
-- name: LifeOS
-  featured: true
-  platform: Personal Applied AI System
-  status: Daily personal use
-  icon: /assets/images/projects/LifeOSAppIcon-256.png
-  icon_webp: /assets/images/projects/LifeOSAppIcon-256.webp
-  link: /projects/lifeos/
-  link_label: Read the case study
-  audience: A personal exploration of Claude and MCP as the operating system for life administration.
-  summary: >
-    LifeOS is a personal Claude-and-MCP orchestration system that treats life administration as software. Ingests communications streams (email across multiple accounts, postal scans, downloads), extracts structured signal, cross-links against authoritative personal records, and proactively manages recurring real-world actions. Runs daily, powered by a self-authored job-application-tracking MCP, twelve-plus scheduled tasks, and broad orchestration of open-source MCPs across Obsidian, SQL, document OCR and CLI integrations.
-  technologies:
-    - Claude API
-    - Anthropic MCP
-    - Obsidian
-    - SQL
-    - Python (AI-paired)
-    - Custom MCP servers
-  features:
-    - Ingestion pipeline across email, postal scans and downloads with per-domain routing into structured knowledge bases.
-    - Twelve-plus scheduled tasks running daily ingestion, briefings, proactive monitoring and contextual actions.
-    - Self-authored job-application-tracking MCP that orchestrates the full lifecycle of an application from JD analysis through draft management.
-    - Self-improving skills: internal performance tracking informs external skill and tool research so the system iterates on its own deployment patterns over time.
+#     # NB: if a feature value contains a colon, wrap the whole line in quotes —
+#     #     "Label: detail" — or YAML parses it as a map and it renders as {"Label"=>"detail"}.
 
 - name: open-defence-radar
-  featured: true
   platform: Applied AI · Grounded RAG
   status: v1.0.0, open source
   icon: /assets/images/projects/open-defence-radar-icon.png
@@ -57,11 +34,33 @@
     - Grounded synthesis where every claim carries a citation to a fetched, licensed source, and an unsupported question returns an honest "no support" rather than a guess.
     - CI-gated evaluation harness scoring retrieval hit-rate, recall and MRR plus LLM-judged groundedness, with floors that fail the build on regression.
     - Hybrid retrieval, semantic plus keyword fused with Reciprocal Rank Fusion, over a single SQLite store holding vectors, a keyword index, and full provenance.
-    - Exposed four ways from one core: a read-only MCP query tool, a CLI, a web console with a trust dashboard, and an agent that decomposes broad questions into one cited brief.
-    - Clearance-safe by design: open sources only, analytic not operational, region-level only, with recorded provenance and no secrets in the repository.
+    - "Exposed four ways from one core: a read-only MCP query tool, a CLI, a web console with a trust dashboard, and an agent that decomposes broad questions into one cited brief."
+    - "Clearance-safe by design: open sources only, analytic not operational, region-level only, with recorded provenance and no secrets in the repository."
+
+- name: LifeOS
+  platform: Personal Applied AI System
+  status: Daily personal use
+  icon: /assets/images/projects/LifeOSAppIcon-256.png
+  icon_webp: /assets/images/projects/LifeOSAppIcon-256.webp
+  link: /projects/lifeos/
+  link_label: Read the case study
+  audience: A personal exploration of Claude and MCP as the operating system for life administration.
+  summary: >
+    LifeOS is a personal Claude-and-MCP orchestration system that treats life administration as software. Ingests communications streams (email across multiple accounts, postal scans, downloads), extracts structured signal, cross-links against authoritative personal records, and proactively manages recurring real-world actions. Runs daily, powered by a self-authored job-application-tracking MCP, twelve-plus scheduled tasks, and broad orchestration of open-source MCPs across Obsidian, SQL, document OCR and CLI integrations.
+  technologies:
+    - Claude API
+    - Anthropic MCP
+    - Obsidian
+    - SQL
+    - Python (AI-paired)
+    - Custom MCP servers
+  features:
+    - Ingestion pipeline across email, postal scans and downloads with per-domain routing into structured knowledge bases.
+    - Twelve-plus scheduled tasks running daily ingestion, briefings, proactive monitoring and contextual actions.
+    - Self-authored job-application-tracking MCP that orchestrates the full lifecycle of an application from JD analysis through draft management.
+    - "Self-improving skills: internal performance tracking informs external skill and tool research so the system iterates on its own deployment patterns over time."
 
 - name: Peaking
-  featured: true
   platform: iOS
   status: Active development
   audience: For hikers and mountaineers who track summits, routes, and collection progress.
