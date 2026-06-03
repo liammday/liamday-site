@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 540" role="img" aria-labelledby="odr-arch-title odr-arch-desc" class="odr-arch">
+  <title id="odr-arch-title">open-defence-radar architecture</title>
+  <desc id="odr-arch-desc">Three open sources (UK Contracts Finder, Find a Tender, GOV.UK and MoD news) flow into an ingest pipeline (fetch, normalise, dedupe, chunk, embed) and then into one SQLite store holding vectors, a keyword index, and provenance. A CI-gated evaluation harness reads the store. Four surfaces — the CLI, the MCP tool, the web console, and the agent — issue a query that drives hybrid retrieval, then grounded synthesis, producing an answer whose every claim carries a citation and a groundedness read.</desc>
+
+  <defs>
+    <style>
+      .odr-arch{
+        --d-card-bg: rgb(var(--graphite-600, 38 41 46));
+        --d-card-border: rgb(var(--aluminum-500, 90 94 101) / 0.4);
+        --d-text: rgb(var(--aluminum-100, 228 231 236));
+        --d-mid: rgb(var(--aluminum-300, 157 161 169));
+        --d-muted: rgb(var(--aluminum-400, 131 135 143));
+        --d-accent: rgb(var(--ember-400, 240 139 74));
+        --d-on-accent: rgb(var(--charcoal-950, 7 8 10));
+        --d-soft: rgb(var(--aluminum-400, 131 135 143));
+        --d-store-bg: rgb(var(--graphite-600, 38 41 46));
+        --d-store-border: rgb(var(--ember-400, 240 139 74));
+        display:block; width:100%; height:auto;
+      }
+      .odr-arch text{ font-family:"Styrene B","Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+      .odr-arch .mono{ font-family:"JetBrains Mono","SF Mono",Menlo,Consolas,monospace; }
+      .odr-arch .lane{ font-size:13px; font-weight:500; fill:var(--d-muted); letter-spacing:1.5px; text-transform:uppercase; }
+      .odr-arch .nl{ font-size:13px; font-weight:500; fill:var(--d-text); }
+      .odr-arch .sl{ font-size:11px; fill:var(--d-mid); }
+      .odr-arch .edge{ font-size:11px; fill:var(--d-muted); }
+      .odr-arch .card{ fill:var(--d-card-bg); stroke:var(--d-card-border); stroke-width:1; }
+      .odr-arch .dot{ fill:var(--d-accent); }
+      .odr-arch .acc{ stroke:var(--d-accent); stroke-width:2; fill:none; }
+      .odr-arch .soft{ stroke:var(--d-soft); stroke-width:1.5; fill:none; stroke-opacity:0.7; }
+      .odr-arch .store{ fill:var(--d-store-bg); stroke:var(--d-store-border); stroke-width:2.5; }
+      .odr-arch .prim{ fill:var(--d-accent); stroke:var(--d-accent); }
+      .odr-arch .prim-nl{ font-size:13px; font-weight:600; fill:var(--d-on-accent); }
+      .odr-arch .prim-sl{ font-size:11px; fill:var(--d-on-accent); opacity:0.85; }
+    </style>
+    <marker id="odr-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--d-accent)"/></marker>
+    <marker id="odr-arrow-soft" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--d-soft)"/></marker>
+  </defs>
+
+  <!-- Lane labels -->
+  <text x="170" y="60" class="lane" text-anchor="middle">Open sources</text>
+  <text x="425" y="60" class="lane" text-anchor="middle">Ingest</text>
+  <text x="680" y="60" class="lane" text-anchor="middle">Store</text>
+  <text x="960" y="60" class="lane" text-anchor="middle">Evaluation</text>
+  <text x="170" y="320" class="lane" text-anchor="middle">Grounded query</text>
+  <text x="680" y="320" class="lane" text-anchor="middle">Retrieve · synthesise</text>
+  <text x="955" y="320" class="lane" text-anchor="middle">Answer</text>
+
+  <!-- ===== Row A: sources -> ingest -> store ===== -->
+  <!-- Sources -->
+  <g>
+    <rect x="60" y="110" width="200" height="42" rx="8" class="card"/>
+    <circle cx="80" cy="131" r="5" class="dot"/><text x="98" y="135" class="nl">UK Contracts Finder</text>
+    <rect x="60" y="160" width="200" height="42" rx="8" class="card"/>
+    <circle cx="80" cy="181" r="5" class="dot"/><text x="98" y="185" class="nl">Find a Tender</text>
+    <rect x="60" y="210" width="200" height="42" rx="8" class="card"/>
+    <circle cx="80" cy="231" r="5" class="dot"/><text x="98" y="235" class="nl">GOV.UK · MoD news</text>
+  </g>
+
+  <!-- Ingest -->
+  <rect x="340" y="140" width="170" height="92" rx="12" class="card"/>
+  <text x="425" y="172" class="nl" text-anchor="middle">ingest</text>
+  <text x="425" y="192" class="sl" text-anchor="middle">fetch · normalise · dedupe</text>
+  <text x="425" y="210" class="sl" text-anchor="middle">chunk · embed (local BGE)</text>
+
+  <!-- Store -->
+  <rect x="590" y="120" width="180" height="132" rx="14" class="store"/>
+  <text x="680" y="156" class="nl" text-anchor="middle">SQLite store</text>
+  <text x="680" y="180" class="sl" text-anchor="middle">sqlite-vec vectors</text>
+  <text x="680" y="200" class="sl" text-anchor="middle">FTS5 keyword index</text>
+  <text x="680" y="220" class="sl" text-anchor="middle">provenance + metadata</text>
+
+  <!-- Eval -->
+  <rect x="860" y="122" width="200" height="80" rx="12" class="card"/>
+  <text x="960" y="152" class="nl" text-anchor="middle">eval — CI-gated</text>
+  <text x="960" y="170" class="sl" text-anchor="middle">hit-rate · groundedness</text>
+  <text x="960" y="186" class="sl" text-anchor="middle">unsupported-claim rate</text>
+  <text x="960" y="224" class="edge" text-anchor="middle">→ trust dashboard</text>
+
+  <!-- Source -> ingest arrows -->
+  <path d="M260 131 Q305 131 340 162" class="soft" marker-end="url(#odr-arrow-soft)"/>
+  <path d="M260 181 L340 186" class="soft" marker-end="url(#odr-arrow-soft)"/>
+  <path d="M260 231 Q305 231 340 210" class="soft" marker-end="url(#odr-arrow-soft)"/>
+  <!-- Ingest -> store -->
+  <line x1="510" y1="186" x2="588" y2="186" class="acc" marker-end="url(#odr-arrow)"/>
+  <text x="549" y="176" class="edge" text-anchor="middle">embed</text>
+  <!-- Store -> eval -->
+  <line x1="770" y1="170" x2="858" y2="162" class="soft" marker-end="url(#odr-arrow-soft)"/>
+  <text x="815" y="150" class="edge" text-anchor="middle">reads</text>
+
+  <!-- ===== Row B: surfaces -> retrieve -> synthesise -> answer ===== -->
+  <!-- Surfaces -->
+  <g>
+    <rect x="60" y="352" width="190" height="34" rx="8" class="card"/><text x="155" y="373" class="nl" text-anchor="middle">odr query — CLI</text>
+    <rect x="60" y="392" width="190" height="34" rx="8" class="card"/><text x="155" y="413" class="nl" text-anchor="middle">MCP query tool</text>
+    <rect x="60" y="432" width="190" height="34" rx="8" class="card"/><text x="155" y="453" class="nl" text-anchor="middle">web console</text>
+    <rect x="60" y="472" width="190" height="34" rx="8" class="card"/><text x="155" y="493" class="nl" text-anchor="middle">odr agent</text>
+  </g>
+
+  <!-- Retrieve -->
+  <rect x="340" y="388" width="170" height="82" rx="12" class="card"/>
+  <text x="425" y="418" class="nl" text-anchor="middle">hybrid retrieval</text>
+  <text x="425" y="437" class="sl" text-anchor="middle">semantic + BM25</text>
+  <text x="425" y="454" class="sl" text-anchor="middle">RRF · filters</text>
+
+  <!-- Synthesise (accent) -->
+  <rect x="590" y="388" width="170" height="82" rx="12" class="prim"/>
+  <text x="675" y="421" class="prim-nl" text-anchor="middle">grounded synthesis</text>
+  <text x="675" y="442" class="prim-sl" text-anchor="middle">every claim cited</text>
+
+  <!-- Answer -->
+  <rect x="850" y="384" width="210" height="90" rx="12" class="card"/>
+  <text x="955" y="418" class="nl" text-anchor="middle">Answer</text>
+  <text x="955" y="438" class="sl" text-anchor="middle">citations + groundedness</text>
+  <text x="955" y="456" class="sl" text-anchor="middle">read, or an honest "no support"</text>
+
+  <!-- Surfaces -> retrieve -->
+  <path d="M250 369 Q305 369 340 405" class="soft" marker-end="url(#odr-arrow-soft)"/>
+  <path d="M250 409 L340 423" class="soft" marker-end="url(#odr-arrow-soft)"/>
+  <path d="M250 449 Q305 449 340 440" class="soft" marker-end="url(#odr-arrow-soft)"/>
+  <path d="M250 489 Q310 489 340 455" class="soft" marker-end="url(#odr-arrow-soft)"/>
+  <text x="297" y="352" class="edge" text-anchor="middle">query(topic, filters)</text>
+  <!-- Retrieve -> synthesise -->
+  <line x1="510" y1="429" x2="588" y2="429" class="acc" marker-end="url(#odr-arrow)"/>
+  <!-- Synthesise -> answer -->
+  <line x1="760" y1="429" x2="848" y2="429" class="acc" marker-end="url(#odr-arrow)"/>
+
+  <!-- Store -> retrieve (passages) -->
+  <path d="M650 252 C610 300 470 348 425 386" class="acc" marker-end="url(#odr-arrow)"/>
+  <text x="470" y="318" class="edge" text-anchor="middle">passages</text>
+</svg>

@@ -34,6 +34,32 @@
     - Self-authored job-application-tracking MCP that orchestrates the full lifecycle of an application from JD analysis through draft management.
     - Self-improving skills: internal performance tracking informs external skill and tool research so the system iterates on its own deployment patterns over time.
 
+- name: open-defence-radar
+  featured: true
+  platform: Applied AI · Grounded RAG
+  status: v1.0.0, open source
+  icon: /assets/images/projects/open-defence-radar-icon.png
+  icon_webp: /assets/images/projects/open-defence-radar-icon.webp
+  link: /projects/open-defence-radar/
+  link_label: Read the case study
+  audience: A grounded retrieval engine over open UK defence-and-security data, where every answer cites its sources and quality is measured in CI.
+  summary: >
+    open-defence-radar is a clearance-safe RAG system over open government data: public procurement notices, tenders, and GOV.UK and MoD news, all openly licensed. It retrieves with a hybrid of semantic and keyword search, synthesises an answer where every claim traces to a fetched, licensed source, and exposes the whole thing as an MCP tool, a CLI, and a web console with a trust dashboard. A CI-gated evaluation harness holds retrieval hit-rate and answer groundedness to a floor on every commit, so quality is measured, not asserted.
+  technologies:
+    - Python
+    - Anthropic / Gemini APIs
+    - Model Context Protocol (MCP)
+    - FastAPI
+    - SQLite · sqlite-vec · FTS5
+    - Local embeddings (BGE)
+    - LLM-as-judge evaluation
+  features:
+    - Grounded synthesis where every claim carries a citation to a fetched, licensed source, and an unsupported question returns an honest "no support" rather than a guess.
+    - CI-gated evaluation harness scoring retrieval hit-rate, recall and MRR plus LLM-judged groundedness, with floors that fail the build on regression.
+    - Hybrid retrieval, semantic plus keyword fused with Reciprocal Rank Fusion, over a single SQLite store holding vectors, a keyword index, and full provenance.
+    - Exposed four ways from one core: a read-only MCP query tool, a CLI, a web console with a trust dashboard, and an agent that decomposes broad questions into one cited brief.
+    - Clearance-safe by design: open sources only, analytic not operational, region-level only, with recorded provenance and no secrets in the repository.
+
 - name: Peaking
   featured: true
   platform: iOS
