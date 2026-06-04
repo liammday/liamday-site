@@ -61,6 +61,30 @@
     - "Exposed four ways from one core: a read-only MCP query tool, a CLI, a web console with a trust dashboard, and an agent that decomposes broad questions into one cited brief."
     - "Clearance-safe by design: open sources only, analytic not operational, region-level only, with recorded provenance and no secrets in the repository."
 
+- name: PodForge
+  platform: Personal Applied AI · Self-hosted
+  status: Live, multi-feed
+  icon: /assets/images/projects/podforge-icon.png
+  icon_webp: /assets/images/projects/podforge-icon.webp
+  link: /projects/podforge/
+  link_label: Read the case study
+  audience: A self-hosted, multi-feed podcast generator where Claude writes the script, a Mac renders it with a local voice, and a Raspberry Pi publishes the RSS — a Claude-first alternative to NotebookLM that needs no ElevenLabs subscription and costs nothing per episode.
+  summary: >
+    PodForge turns a topic into a finished, published podcast episode with no studio, no cloud bill and no per-episode cost. Claude writes a real transcript to the brief of whichever feed is being published; a background service on a Mac renders it with Kokoro, a local text-to-speech voice, then mixes jingles and sound effects and normalises loudness; a Raspberry Pi writes the MP3 and rebuilds the RSS feed, and the episode lands in an ordinary podcast app seconds later. One command wraps the whole run and the same toolchain is exposed as an MCP server. A measured calibration loop sets each script's length target from the real duration of the last episode, per feed, so the estimate sharpens with use.
+  technologies:
+    - Claude (Skill-orchestrated)
+    - Model Context Protocol (MCP)
+    - Kokoro local TTS
+    - Python (AI-paired)
+    - Raspberry Pi · RSS
+    - Cloudflare Tunnel
+  features:
+    - "Claude-first alternative to NotebookLM: the writing stays in a conversation, the voice renders locally on Apple Silicon, and no hosted text-to-speech subscription is required."
+    - "Dual-purpose, multi-feed engine: a focused two-host study feed for MBA revision and a gentler children's feed that answers an eight-year-old's silly questions, each with its own cast, tone, jingles and rules."
+    - "Zero marginal cost by design: local rendering keeps every voice and script on owned hardware, works offline, and a swappable voice seam lets a paid model be measured against the calibration loop rather than assumed."
+    - "Honest by design: a fixed, registered cast of fictional hosts, a hard no-impersonation rule on the children's feed, British English, and per-feed reading levels enforced before anything renders."
+    - "Delivered as ordinary podcast RSS: the children's show inherits the Apple ecosystem's native Screen Time and parental controls — a personalised counterpart to a Toniebox."
+
 - name: LifeOS
   platform: Personal Applied AI System
   status: Daily personal use

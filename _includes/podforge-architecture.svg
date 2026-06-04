@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 372" role="img" aria-labelledby="pf-arch-title pf-arch-desc" class="pf-arch">
+  <title id="pf-arch-title">PodForge architecture</title>
+  <desc id="pf-arch-desc">A topic, a document or a conversation flows into Claude, guided by a Skill, which loads the per-feed configuration and feedback log and writes the transcript. The transcript passes to a background Mac service that renders it with the local Kokoro voice, mixes sound effects and jingles, and normalises loudness; then to a Raspberry Pi that writes the MP3 and rebuilds the RSS feed.xml; then to delivery over a Cloudflare Tunnel, with the admin surface behind Access and a signed URL per listener, arriving in an ordinary podcast app. One command, also exposed as an MCP server, wraps render through deliver, and a calibration loop feeds each episode's measured duration back to set the next script's length target.</desc>
+
+  <defs>
+    <style>
+      .pf-arch{
+        --d-card-bg: rgb(var(--graphite-600, 38 41 46));
+        --d-card-border: rgb(var(--aluminum-500, 90 94 101) / 0.4);
+        --d-text: rgb(var(--aluminum-100, 228 231 236));
+        --d-mid: rgb(var(--aluminum-300, 157 161 169));
+        --d-muted: rgb(var(--aluminum-400, 131 135 143));
+        --d-accent: rgb(var(--ember-400, 240 139 74));
+        --d-on-accent: rgb(var(--charcoal-950, 7 8 10));
+        --d-soft: rgb(var(--aluminum-400, 131 135 143));
+        display:block; width:100%; height:auto;
+      }
+      .pf-arch text{ font-family:"Styrene B","Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+      .pf-arch .lane{ font-size:13px; font-weight:500; fill:var(--d-muted); letter-spacing:1.5px; text-transform:uppercase; }
+      .pf-arch .nl{ font-size:14px; font-weight:600; fill:var(--d-text); }
+      .pf-arch .sl{ font-size:11.5px; fill:var(--d-mid); }
+      .pf-arch .edge{ font-size:11px; fill:var(--d-muted); }
+      .pf-arch .card{ fill:var(--d-card-bg); stroke:var(--d-card-border); stroke-width:1; }
+      .pf-arch .dot{ fill:var(--d-accent); }
+      .pf-arch .acc{ stroke:var(--d-accent); stroke-width:2; fill:none; }
+      .pf-arch .soft{ stroke:var(--d-soft); stroke-width:1.5; fill:none; stroke-opacity:0.65; }
+      .pf-arch .loop{ stroke:var(--d-accent); stroke-width:1.75; fill:none; stroke-opacity:0.7; stroke-dasharray:5 5; }
+      .pf-arch .band{ fill:none; stroke:var(--d-accent); stroke-width:1.5; stroke-dasharray:4 5; stroke-opacity:0.85; }
+      .pf-arch .tether{ stroke:var(--d-accent); stroke-width:1; stroke-opacity:0.4; stroke-dasharray:3 4; }
+      .pf-arch .prim{ fill:var(--d-accent); stroke:var(--d-accent); }
+      .pf-arch .prim-nl{ font-size:15px; font-weight:600; fill:var(--d-on-accent); }
+      .pf-arch .prim-sl{ font-size:11.5px; fill:var(--d-on-accent); opacity:0.9; }
+    </style>
+    <marker id="pf-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--d-accent)"/></marker>
+    <marker id="pf-arrow-soft" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--d-soft)"/></marker>
+  </defs>
+
+  <!-- Lane labels -->
+  <text x="114" y="44" class="lane" text-anchor="middle">Source</text>
+  <text x="334" y="44" class="lane" text-anchor="middle">Reason · Claude</text>
+  <text x="592" y="44" class="lane" text-anchor="middle">Render · Mac</text>
+  <text x="850" y="44" class="lane" text-anchor="middle">Publish · Pi</text>
+  <text x="1118" y="44" class="lane" text-anchor="middle">Deliver</text>
+
+  <!-- Calibration loop: Pi measured duration -> Claude length target -->
+  <path d="M850 120 C 772 76, 412 76, 334 118" class="loop" marker-end="url(#pf-arrow)"/>
+  <text x="592" y="68" class="edge" text-anchor="middle">calibration loop · measured duration → next length target</text>
+
+  <!-- Source inputs -->
+  <g>
+    <rect x="44" y="120" width="140" height="34" rx="8" class="card"/><circle cx="61" cy="137" r="4" class="dot"/><text x="75" y="141" class="nl">a topic</text>
+    <rect x="44" y="162" width="140" height="34" rx="8" class="card"/><circle cx="61" cy="179" r="4" class="dot"/><text x="75" y="183" class="nl">a document</text>
+    <rect x="44" y="204" width="140" height="34" rx="8" class="card"/><circle cx="61" cy="221" r="4" class="dot"/><text x="75" y="225" class="nl">a conversation</text>
+  </g>
+  <!-- Inputs -> Claude -->
+  <path d="M184 137 Q210 137 234 158" class="soft" marker-end="url(#pf-arrow-soft)"/>
+  <path d="M184 179 L232 180" class="soft" marker-end="url(#pf-arrow-soft)"/>
+  <path d="M184 221 Q210 221 234 202" class="soft" marker-end="url(#pf-arrow-soft)"/>
+
+  <!-- Claude + Skill (the reasoning seam) -->
+  <rect x="236" y="120" width="196" height="120" rx="14" class="prim"/>
+  <text x="334" y="154" class="prim-nl" text-anchor="middle">Claude + Skill</text>
+  <text x="334" y="180" class="prim-sl" text-anchor="middle">reads feed config + log</text>
+  <text x="334" y="200" class="prim-sl" text-anchor="middle">writes the transcript</text>
+  <text x="334" y="220" class="prim-sl" text-anchor="middle">to the feed's brief</text>
+
+  <!-- Per-feed config feeder -->
+  <rect x="236" y="300" width="196" height="46" rx="10" class="card"/>
+  <text x="334" y="322" class="nl" text-anchor="middle">per-feed config</text>
+  <text x="334" y="339" class="sl" text-anchor="middle">tone · cast · jingles · feedback log</text>
+  <path d="M334 300 L334 242" class="acc" marker-end="url(#pf-arrow)"/>
+
+  <!-- Claude -> Mac -->
+  <line x1="432" y1="180" x2="482" y2="180" class="acc" marker-end="url(#pf-arrow)"/>
+  <text x="458" y="170" class="edge" text-anchor="middle">transcript</text>
+
+  <!-- Mac render -->
+  <rect x="484" y="120" width="216" height="120" rx="14" class="card"/>
+  <text x="592" y="152" class="nl" text-anchor="middle">Mac service · agent</text>
+  <text x="592" y="176" class="sl" text-anchor="middle">Kokoro local TTS · on GPU</text>
+  <text x="592" y="196" class="sl" text-anchor="middle">mix SFX · wrap jingles</text>
+  <text x="592" y="216" class="sl" text-anchor="middle">normalise loudness</text>
+
+  <!-- Mac -> Pi -->
+  <line x1="700" y1="180" x2="750" y2="180" class="acc" marker-end="url(#pf-arrow)"/>
+  <text x="726" y="170" class="edge" text-anchor="middle">MP3</text>
+
+  <!-- Pi publish -->
+  <rect x="752" y="120" width="196" height="120" rx="14" class="card"/>
+  <text x="850" y="160" class="nl" text-anchor="middle">Raspberry Pi</text>
+  <text x="850" y="184" class="sl" text-anchor="middle">store the MP3</text>
+  <text x="850" y="204" class="sl" text-anchor="middle">rebuild feed.xml</text>
+
+  <!-- Pi -> Deliver -->
+  <line x1="948" y1="180" x2="998" y2="180" class="acc" marker-end="url(#pf-arrow)"/>
+  <text x="974" y="170" class="edge" text-anchor="middle">RSS</text>
+
+  <!-- Deliver -->
+  <rect x="1000" y="120" width="236" height="120" rx="14" class="card"/>
+  <text x="1118" y="152" class="nl" text-anchor="middle">Cloudflare Tunnel</text>
+  <text x="1118" y="176" class="sl" text-anchor="middle">Access · admin surface</text>
+  <text x="1118" y="196" class="sl" text-anchor="middle">signed URL · per listener</text>
+  <text x="1118" y="216" class="sl" text-anchor="middle">→ an ordinary podcast app</text>
+
+  <!-- One command / MCP wrapper band under render -> publish -> deliver -->
+  <line x1="592" y1="240" x2="592" y2="300" class="tether"/>
+  <line x1="850" y1="240" x2="850" y2="300" class="tether"/>
+  <line x1="1118" y1="240" x2="1118" y2="300" class="tether"/>
+  <rect x="484" y="300" width="752" height="46" rx="14" class="band"/>
+  <text x="860" y="322" class="nl" text-anchor="middle" fill="var(--d-accent)">podcast publish</text>
+  <text x="860" y="339" class="sl" text-anchor="middle">one command, also exposed as an MCP server — wraps render → publish → deliver</text>
+</svg>
