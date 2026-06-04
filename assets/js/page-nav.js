@@ -16,6 +16,41 @@
     const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     const SECTION_BREATHING_ROOM = 32;
 
+    // Mirror the scroll-animation opt-outs in gsap-animations.js so nav clicks jump
+    // instantly (no smooth scroll) whenever motion is reduced — via the OS setting, a
+    // data-motion="off" attribute, a ?motion=off (also ?reduce-motion / ?preview) query
+    // string for rendering previews, or a persisted localStorage choice.
+    function motionManuallyDisabled() {
+      const root = document.documentElement;
+      if ((root && root.dataset.motion === 'off') || (document.body && document.body.dataset.motion === 'off')) {
+        return true;
+      }
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const motion = (params.get('motion') || '').toLowerCase();
+        if (motion === 'off' || motion === 'reduce' || motion === 'none') {
+          return true;
+        }
+        if (params.has('reduce-motion') || params.has('reducemotion') || params.has('preview')) {
+          return true;
+        }
+      } catch (err) {
+        /* URLSearchParams unavailable — ignore */
+      }
+      try {
+        if (window.localStorage && window.localStorage.getItem('motion') === 'off') {
+          return true;
+        }
+      } catch (err) {
+        /* storage access blocked — ignore */
+      }
+      return false;
+    }
+
+    function prefersReducedMotion() {
+      return reduceMotionQuery.matches || motionManuallyDisabled();
+    }
+
     /* Headings (H1-H6) are inline text targets — give them breathing room below the nav.
        Section/article/aside targets carry their own visual top edge (border, divider, hero)
        and should snap flush against the nav so dividers align with the nav bottom. */
@@ -29,7 +64,7 @@
       const targetLeft = Math.max(link.offsetLeft - paddingLeft, 0);
       container.scrollTo({
         left: targetLeft,
-        behavior: reduceMotionQuery.matches ? 'auto' : 'smooth',
+        behavior: prefersReducedMotion() ? 'auto' : 'smooth',
       });
     }
 
@@ -128,7 +163,7 @@
         const targetTop = window.pageYOffset + section.getBoundingClientRect().top - navHeight - breathingRoomFor(section);
         window.scrollTo({
           top: targetTop,
-          behavior: behavior || (reduceMotionQuery.matches ? 'auto' : 'smooth'),
+          behavior: behavior || (prefersReducedMotion() ? 'auto' : 'smooth'),
         });
       }
 

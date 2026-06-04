@@ -82,6 +82,40 @@
     });
   }
 
+  // Scroll-driven reveal animations can be switched off without the OS-level
+  // "reduce motion" setting, which is both an accessibility affordance and a way to
+  // make the page render fully for screenshot / rendering-preview tools that load a
+  // URL but cannot trigger the scroll events these reveals wait on. Triggers:
+  //   1. <html data-motion="off"> / <body data-motion="off"> (markup or another script)
+  //   2. a ?motion=off (also ?motion=reduce|none, ?reduce-motion, ?preview) query string
+  //   3. a persisted localStorage 'motion' === 'off' choice
+  function motionManuallyDisabled() {
+    const root = document.documentElement;
+    if ((root && root.dataset.motion === 'off') || (document.body && document.body.dataset.motion === 'off')) {
+      return true;
+    }
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const motion = (params.get('motion') || '').toLowerCase();
+      if (motion === 'off' || motion === 'reduce' || motion === 'none') {
+        return true;
+      }
+      if (params.has('reduce-motion') || params.has('reducemotion') || params.has('preview')) {
+        return true;
+      }
+    } catch (err) {
+      /* URLSearchParams unavailable — ignore */
+    }
+    try {
+      if (window.localStorage && window.localStorage.getItem('motion') === 'off') {
+        return true;
+      }
+    } catch (err) {
+      /* storage access blocked — ignore */
+    }
+    return false;
+  }
+
   ready(function () {
     initCardSpotlight();
 
@@ -94,12 +128,14 @@
     gsapGlobal.registerPlugin(ScrollTrigger);
 
     const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const manualMotionDisabled = Boolean(
-      (document.documentElement && document.documentElement.dataset.motion === 'off') ||
-        (document.body && document.body.dataset.motion === 'off')
-    );
-    const shouldReduceMotion = reduceMotionQuery.matches || manualMotionDisabled;
+    const shouldReduceMotion = reduceMotionQuery.matches || motionManuallyDisabled();
     const allowMotion = !shouldReduceMotion;
+
+    // Reflect the resolved preference on <html> so CSS hooks, the page-nav script and
+    // rendering-preview tools share one source of truth for "motion is off".
+    if (shouldReduceMotion && document.documentElement) {
+      document.documentElement.setAttribute('data-motion', 'off');
+    }
 
     function initHero() {
       const hero = document.querySelector('#profile');
