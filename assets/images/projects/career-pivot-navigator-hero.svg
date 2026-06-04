@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 800" role="img" aria-labelledby="cpn-hero-title cpn-hero-desc" preserveAspectRatio="xMidYMid slice">
+  <title id="cpn-hero-title">Career Pivot Navigator</title>
+  <desc id="cpn-hero-desc">A wayfinding field on warm dark: faint topographic contours, an origin hub with a bearing ring, and routes fanning out to candidate destinations. One route is lit in ember and ends at a flagged, ranked destination — the recommended civilian occupation, every other route still a real option.</desc>
+
+  <defs>
+    <radialGradient id="cpn-hero-bg" cx="32%" cy="55%" r="80%">
+      <stop offset="0%" stop-color="#33251f"/>
+      <stop offset="60%" stop-color="#231b17"/>
+      <stop offset="100%" stop-color="#1a1410"/>
+    </radialGradient>
+    <radialGradient id="cpn-hero-glow" cx="30%" cy="55%" r="55%">
+      <stop offset="0%" stop-color="#cc785c" stop-opacity="0.30"/>
+      <stop offset="45%" stop-color="#cc785c" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#cc785c" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="cpn-hero-hub" cx="40%" cy="34%" r="70%">
+      <stop offset="0%" stop-color="#eda988"/>
+      <stop offset="55%" stop-color="#cc785c"/>
+      <stop offset="100%" stop-color="#a85c44"/>
+    </radialGradient>
+    <linearGradient id="cpn-hero-route" x1="470" y1="440" x2="1180" y2="250" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#cc785c" stop-opacity="0.25"/>
+      <stop offset="55%" stop-color="#f0b48c" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#f0b48c" stop-opacity="0.95"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Warm dark field + glow -->
+  <rect width="1600" height="800" fill="url(#cpn-hero-bg)"/>
+  <circle cx="470" cy="440" r="430" fill="url(#cpn-hero-glow)"/>
+
+  <!-- Faint topographic contours -->
+  <g fill="none" stroke="#9da1a9" stroke-opacity="0.08" stroke-width="1.5">
+    <path d="M-20 250 C 300 180, 700 300, 1000 210 S 1500 150, 1650 240"/>
+    <path d="M-20 360 C 320 300, 720 420, 1040 330 S 1520 280, 1650 360"/>
+    <path d="M-20 480 C 300 430, 760 560, 1080 470 S 1520 420, 1650 500"/>
+    <path d="M-20 600 C 340 560, 760 680, 1100 600 S 1520 560, 1650 630"/>
+  </g>
+
+  <!-- Bearing ring around origin -->
+  <g fill="none" stroke="#cc785c" stroke-opacity="0.18">
+    <circle cx="470" cy="440" r="64"/>
+    <circle cx="470" cy="440" r="96"/>
+  </g>
+  <g stroke="#9da1a9" stroke-opacity="0.18" stroke-width="1.5">
+    <line x1="470" y1="360" x2="470" y2="344"/>
+    <line x1="470" y1="520" x2="470" y2="536"/>
+    <line x1="390" y1="440" x2="374" y2="440"/>
+    <line x1="550" y1="440" x2="566" y2="440"/>
+  </g>
+
+  <!-- Soft routes to the other candidate destinations -->
+  <g fill="none" stroke="#cc785c" stroke-opacity="0.35" stroke-width="2" stroke-dasharray="2 9" stroke-linecap="round">
+    <path d="M470 440 C 760 420, 900 340, 1010 312"/>
+    <path d="M470 440 C 800 470, 1040 470, 1232 472"/>
+    <path d="M470 440 C 760 520, 940 600, 1066 640"/>
+    <path d="M470 440 C 800 500, 1000 540, 1128 552"/>
+  </g>
+
+  <!-- Lit route to the recommended destination -->
+  <path d="M470 440 C 780 380, 980 300, 1176 252" fill="none" stroke="url(#cpn-hero-route)" stroke-width="3.5" stroke-linecap="round"/>
+
+  <!-- Candidate destination waypoints -->
+  <g fill="#f3ebde" fill-opacity="0.85">
+    <circle cx="1010" cy="312" r="7"/>
+    <circle cx="1232" cy="472" r="7"/>
+    <circle cx="1066" cy="640" r="6.5"/>
+    <circle cx="1128" cy="552" r="6.5"/>
+  </g>
+
+  <!-- Recommended destination: flagged + ringed -->
+  <g>
+    <circle cx="1176" cy="252" r="9" fill="#f3ebde"/>
+    <circle cx="1176" cy="252" r="16" fill="none" stroke="#f0b48c" stroke-opacity="0.85" stroke-width="1.5"/>
+    <line x1="1176" y1="252" x2="1176" y2="206" stroke="#f0b48c" stroke-opacity="0.9" stroke-width="2"/>
+    <path d="M1176 208 L1212 216 L1176 226 Z" fill="#cc785c"/>
+  </g>
+
+  <!-- Origin hub -->
+  <circle cx="470" cy="440" r="30" fill="url(#cpn-hero-hub)"/>
+  <ellipse cx="461" cy="431" rx="10" ry="4" fill="#f6cdb8" opacity="0.5"/>
+</svg>

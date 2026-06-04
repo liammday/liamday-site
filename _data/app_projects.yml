@@ -12,6 +12,30 @@
 #     # NB: if a feature value contains a colon, wrap the whole line in quotes —
 #     #     "Label: detail" — or YAML parses it as a map and it renders as {"Label"=>"detail"}.
 
+- name: Career Pivot Navigator
+  platform: Applied AI · Grounded MCP
+  status: v0, open source
+  icon: /assets/images/projects/career-pivot-navigator-icon.png
+  icon_webp: /assets/images/projects/career-pivot-navigator-icon.webp
+  link: /projects/career-pivot-navigator/
+  link_label: Read the case study
+  audience: A governed career-transition tool for UK service leavers that translates a military role into realistic civilian occupations grounded in cited open data, and produces one transition plan that is guidance, never a determination.
+  summary: >
+    Career Pivot Navigator runs inside an ordinary person's own Claude, with no LLM API and no per-token cost. A deterministic connector translates a military role into candidate civilian occupations, grounds each in cited open labour-market data (ONS pay and employment, DfE 2035 projections, ESCO skills) and ranks them; a Claude Skill orchestrates the flow and enforces the responsible-spine guardrails; and a self-contained artifact presents one cited transition plan. Every figure carries its source, and benefits, medical and mental-health questions are refused and signposted.
+  technologies:
+    - Python
+    - Model Context Protocol (MCP)
+    - Claude Skill
+    - ONS · DfE · ESCO open data
+    - Open Government Licence · CC BY
+    - pytest · ruff
+  features:
+    - "Grounded by construction: every pay, demand, projection and skills figure carries its source and date, and a suppressed estimate is returned as unavailable rather than guessed."
+    - Military-to-civilian translation from a curated SOC map, with deterministic ranking on cited pay, current employment and 2035 outlook.
+    - "Responsible spine: guidance never determination, with principled refusal and signposting on benefits, legal, medical and mental-health questions, tested so it cannot quietly rot."
+    - "No LLM API: all reasoning runs in the user's own Claude across three Anthropic-native pieces, a connector, a Skill, and a publish-from-server artifact."
+    - "Open data only, public-domain safe: maintained ONS, DfE and ESCO sources, chosen after the originally-planned source was verified discontinued."
+
 - name: open-defence-radar
   platform: Applied AI · Grounded RAG
   status: v1.0.0, open source
