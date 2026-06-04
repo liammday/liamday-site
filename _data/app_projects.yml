@@ -36,7 +36,7 @@
     - "No LLM API: all reasoning runs in the user's own Claude across three Anthropic-native pieces, a connector, a Skill, and a publish-from-server artifact."
     - "Open data only, public-domain safe: maintained ONS, DfE and ESCO sources, chosen after the originally-planned source was verified discontinued."
 
-- name: open-defence-radar
+- name: Open Defence Radar
   platform: Applied AI · Grounded RAG
   status: v1.0.0, open source
   icon: /assets/images/projects/open-defence-radar-icon.png
@@ -45,7 +45,7 @@
   link_label: Read the case study
   audience: A grounded retrieval engine over open UK defence-and-security data, where every answer cites its sources and quality is measured in CI.
   summary: >
-    open-defence-radar is a clearance-safe RAG system over open government data: public procurement notices, tenders, and GOV.UK and MoD news, all openly licensed. It retrieves with a hybrid of semantic and keyword search, synthesises an answer where every claim traces to a fetched, licensed source, and exposes the whole thing as an MCP tool, a CLI, and a web console with a trust dashboard. A CI-gated evaluation harness holds retrieval hit-rate and answer groundedness to a floor on every commit, so quality is measured, not asserted.
+    Open Defence Radar is a clearance-safe RAG system over open government data: public procurement notices, tenders, and GOV.UK and MoD news, all openly licensed. It retrieves with a hybrid of semantic and keyword search, synthesises an answer where every claim traces to a fetched, licensed source, and exposes the whole thing as an MCP tool, a CLI, and a web console with a trust dashboard. A CI-gated evaluation harness holds retrieval hit-rate and answer groundedness to a floor on every commit, so quality is measured, not asserted.
   technologies:
     - Python
     - Anthropic / Gemini APIs
