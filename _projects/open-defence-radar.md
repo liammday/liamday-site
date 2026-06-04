@@ -1,6 +1,6 @@
 ---
-title: open-defence-radar
-description: An applied-AI case study on open-defence-radar, a grounded retrieval engine over open UK defence-and-security data. Every answer cites its sources, and quality is measured in CI rather than asserted. Documents the eval-gated decision to leave a reranker switched off.
+title: Open Defence Radar
+description: An applied-AI case study on Open Defence Radar, a grounded retrieval engine over open UK defence-and-security data. Every answer cites its sources, and quality is measured in CI rather than asserted. Documents the eval-gated decision to leave a reranker switched off.
 summary: A clearance-safe retrieval system over open government data, exposed as an MCP tool, a CLI, and a web console. Every claim traces to a fetched, licensed source, and a CI-gated evaluation harness holds retrieval and grounding to a floor on every commit.
 role: Architect and engineer (AI-paired)
 year: 2026
@@ -12,7 +12,7 @@ image: /assets/images/projects/open-defence-radar-og-card.png
 hero_image: /assets/images/projects/open-defence-radar-hero.svg
 hero_image_width: 1600
 hero_image_height: 800
-hero_image_alt: "open-defence-radar mark: a radar scope with range rings, an ember sweep, and two signal blips tethered to their source markers."
+hero_image_alt: "Open Defence Radar mark: a radar scope with range rings, an ember sweep, and two signal blips tethered to their source markers."
 nav:
   - id: lede
     label: What it does
@@ -38,7 +38,7 @@ links:
 ## What it does
 {: #lede .scroll-mt-32 }
 
-open-defence-radar answers questions about UK defence and security using only open, published data, and it shows its working.
+Open Defence Radar answers questions about UK defence and security using only open, published data, and it shows its working.
 
 You ask a question. It retrieves the relevant passages from public procurement notices, tenders, and government announcements, synthesises an answer, and attaches a citation to every claim. Each citation resolves to a fetched, licensed record: the source, the date, the title, the URL. If nothing in the ingested data supports an answer, it says so rather than inventing one.
 
@@ -61,7 +61,7 @@ Language models have quietly become the first draft of analysis. Ask one a quest
 
 For anything decision-shaped, a fluent answer with no source is worse than no answer. It invites a trust it has not earned, and the cost of acting on a confident hallucination is paid downstream, by whoever assumed the machine had done the reading. The bottleneck in applied AI is no longer generation. It is grounding: can you trust the output, and can you prove it.
 
-So the product question is narrow and unglamorous. Can you build a system that answers from a real corpus, shows its working on every claim, says so plainly when the evidence is not there, and keeps proving it does all of that on every change. open-defence-radar is that system, built end to end with the messy parts left in.
+So the product question is narrow and unglamorous. Can you build a system that answers from a real corpus, shows its working on every claim, says so plainly when the evidence is not there, and keeps proving it does all of that on every change. Open Defence Radar is that system, built end to end with the messy parts left in.
 
 One constraint shaped every decision: it had to be useful in a defence and security context and safe to build and share in the open. So, open sources only, analytic rather than operational, nothing that could resolve to a person, a site, or an operation. That reads like a limitation. It is the opposite. It forced provenance, honesty about what the data can and cannot say, and the kind of data-governance discipline any serious deployment has to do anyway.
 
@@ -133,4 +133,4 @@ The curated evaluation set is deliberately small. It proves the harness and gate
 
 Claim segmentation at synthesis time is a heuristic, not a real claim extractor. It catches the cheap failures honestly, and it is upgradeable.
 
-open-defence-radar is a deliberately small answer to a large and generic problem: how do you make an AI system you can actually trust over data where being wrong is expensive. The answer it argues for is the same one I would bring to that problem at scale. Ground every claim in a source. Measure quality continuously rather than asserting it. Refuse rather than guess. Resist the complexity the numbers do not justify. The domain here is open defence data; the discipline travels to anywhere the output has to be believed.
+Open Defence Radar is a deliberately small answer to a large and generic problem: how do you make an AI system you can actually trust over data where being wrong is expensive. The answer it argues for is the same one I would bring to that problem at scale. Ground every claim in a source. Measure quality continuously rather than asserting it. Refuse rather than guess. Resist the complexity the numbers do not justify. The domain here is open defence data; the discipline travels to anywhere the output has to be believed.

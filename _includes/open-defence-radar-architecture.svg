@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 540" role="img" aria-labelledby="odr-arch-title odr-arch-desc" class="odr-arch">
-  <title id="odr-arch-title">open-defence-radar architecture</title>
+  <title id="odr-arch-title">Open Defence Radar architecture</title>
   <desc id="odr-arch-desc">Three open sources (UK Contracts Finder, Find a Tender, GOV.UK and MoD news) flow into an ingest pipeline (fetch, normalise, dedupe, chunk, embed) and then into one SQLite store holding vectors, a keyword index, and provenance. A CI-gated evaluation harness reads the store. Four surfaces — the CLI, the MCP tool, the web console, and the agent — issue a query that drives hybrid retrieval, then grounded synthesis, producing an answer whose every claim carries a citation and a groundedness read.</desc>
 
   <defs>

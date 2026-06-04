@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="odr-og-title odr-og-desc">
-  <title id="odr-og-title">open-defence-radar — case study card</title>
-  <desc id="odr-og-desc">A wide social card: the wordmark open-defence-radar with the tagline grounded retrieval over open data, every claim cited, quality measured in CI, and a radar mark on the right.</desc>
+  <title id="odr-og-title">Open Defence Radar — case study card</title>
+  <desc id="odr-og-desc">A wide social card: the wordmark Open Defence Radar with the tagline grounded retrieval over open data, every claim cited, quality measured in CI, and a radar mark on the right.</desc>
 
   <defs>
     <linearGradient id="odr-og-bg" x1="0" y1="0" x2="1" y2="1">
@@ -32,7 +32,7 @@
 
   <!-- Left column: text -->
   <text x="80" y="120" class="sans eyebrow">APPLIED AI · CASE STUDY</text>
-  <text x="80" y="222" class="serif wordmark">open·defence·radar</text>
+  <text x="80" y="222" class="serif wordmark">Open Defence Radar</text>
   <line x1="80" y1="252" x2="160" y2="252" stroke="#CC785C" stroke-width="2.5" stroke-linecap="round"/>
   <text x="80" y="316" class="serif tagline" font-style="italic">Grounded retrieval over open data.</text>
   <text x="80" y="350" class="serif tagline" font-style="italic">Every claim cited.</text>
