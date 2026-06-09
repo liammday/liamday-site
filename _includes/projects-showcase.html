@@ -5,9 +5,60 @@
       <h2 class="text-3xl font-semibold text-aluminum-100">Projects</h2>
     </div>
     {% if app_projects != empty %}
-    <div class="mt-12 grid gap-6">
+
+    {%- comment -%}
+      Filter categories: display label mapped to the underlying tag slugs it matches.
+      A category pill only renders if at least one project carries one of its tags.
+    {%- endcomment -%}
+    {%- assign filter_categories = "Swift/iOS|swift,ios,watchos;Applied AI|applied-ai;MCP|mcp;Python|python;Defence|defence;Open Source|open-source;Personal|personal;Self-hosted|self-hosted" | split: ";" -%}
+    {%- assign all_tags = "" -%}
+    {%- for app in app_projects -%}
+      {%- if app.tags -%}{%- assign all_tags = all_tags | append: "," | append: app.tags | join: "," -%}{%- endif -%}
+    {%- endfor -%}
+
+    <div class="mt-10 space-y-6" data-projects-controls data-animate="section-heading">
+      <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+        <span class="text-xs font-semibold uppercase tracking-[0.3em] text-aluminum-400">Sort</span>
+        <div class="flex flex-wrap gap-x-4 gap-y-2" data-projects-sort>
+          <button type="button" data-sort="featured" aria-pressed="true"
+            class="text-xs font-semibold uppercase tracking-[0.25em] text-ember-200 transition hover:text-ember-100">Featured</button>
+          <button type="button" data-sort="newest" aria-pressed="false"
+            class="text-xs font-semibold uppercase tracking-[0.25em] text-aluminum-400 transition hover:text-aluminum-200">Newest</button>
+          <button type="button" data-sort="oldest" aria-pressed="false"
+            class="text-xs font-semibold uppercase tracking-[0.25em] text-aluminum-400 transition hover:text-aluminum-200">Oldest</button>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:gap-4">
+        <span class="mt-1 text-xs font-semibold uppercase tracking-[0.3em] text-aluminum-400">Filter</span>
+        <div class="flex flex-wrap gap-2" data-projects-filter>
+          <button type="button" data-filter="all" aria-pressed="true"
+            class="rounded-full border border-ember-400/50 bg-ember-500/10 px-3 py-2 text-xs font-medium text-ember-200 transition">All</button>
+          {%- for category in filter_categories -%}
+            {%- assign parts = category | split: "|" -%}
+            {%- assign label = parts[0] -%}
+            {%- assign cat_tags = parts[1] | split: "," -%}
+            {%- assign has_match = false -%}
+            {%- for t in cat_tags -%}
+              {%- if all_tags contains t -%}{%- assign has_match = true -%}{%- endif -%}
+            {%- endfor -%}
+            {%- if has_match -%}
+            <button type="button" data-filter="{{ parts[1] }}" aria-pressed="false"
+              class="rounded-full border border-aluminum-500/30 px-3 py-2 text-xs font-medium text-aluminum-300 transition hover:border-aluminum-400/50 hover:text-aluminum-100">{{ label }}</button>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-10 grid gap-6" data-projects-grid>
       {% for app in app_projects %}
-      <article class="surface-panel h-full p-6 lg:p-8" data-animate="project-card">
+      <article class="surface-panel h-full p-6 lg:p-8 transition-opacity duration-300 ease-in-out" data-animate="project-card"
+        data-project-card
+        data-tags="{{ app.tags | join: ',' }}"
+        data-started="{{ app.date_started }}"
+        data-finished="{{ app.date_finished }}"
+        data-order="{{ app.order }}">
 
         {% assign icon_size_class = 'h-32 w-32' %}
         {% assign icon_dim = '128' %}
@@ -31,6 +82,18 @@
           {% endif %}
           <div class="space-y-2">
             <p class="text-xs font-semibold uppercase tracking-[0.3em] text-aluminum-400">{{ app.platform }}{% if app.status %} · {{ app.status }}{% endif %}</p>
+            {% if app.date_started %}
+            {%- assign started_label = app.date_started | append: "-01" | date: "%b %Y" -%}
+            <p class="flex items-center gap-1.5 text-xs font-medium text-aluminum-400">
+              {% if app.date_finished and app.date_finished != "" %}
+              {%- assign finished_label = app.date_finished | append: "-01" | date: "%b %Y" -%}
+              <span>{{ started_label }} → {{ finished_label }}</span>
+              {% else %}
+              <span aria-hidden="true" class="inline-block h-1.5 w-1.5 rounded-full bg-ember-400"></span>
+              <span>{{ started_label }} → Present</span>
+              {% endif %}
+            </p>
+            {% endif %}
             <h3 class="text-xl font-semibold leading-tight text-aluminum-100">{{ app.name }}</h3>
             <p class="text-sm leading-relaxed text-aluminum-300">{{ app.audience }}</p>
           </div>
@@ -89,3 +152,137 @@
     {% endif %}
   </div>
 </section>
+
+<script>
+  (function () {
+    var grid = document.querySelector('[data-projects-grid]');
+    if (!grid) return;
+
+    var cards = Array.prototype.slice.call(grid.querySelectorAll('[data-project-card]'));
+    var sortRow = document.querySelector('[data-projects-sort]');
+    var filterRow = document.querySelector('[data-projects-filter]');
+
+    var activeSort = 'featured';
+    var activeFilters = []; // empty array == "All"
+
+    // ----- styling helpers -----
+    var SORT_ACTIVE = ['text-ember-200'];
+    var SORT_INACTIVE = ['text-aluminum-400'];
+
+    function styleSortButtons() {
+      sortRow.querySelectorAll('[data-sort]').forEach(function (btn) {
+        var isActive = btn.getAttribute('data-sort') === activeSort;
+        btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+        if (isActive) {
+          btn.classList.add('text-ember-200');
+          btn.classList.remove('text-aluminum-400');
+        } else {
+          btn.classList.add('text-aluminum-400');
+          btn.classList.remove('text-ember-200');
+        }
+      });
+    }
+
+    var PILL_ACTIVE = ['border-ember-400/50', 'bg-ember-500/10', 'text-ember-200'];
+    var PILL_INACTIVE = ['border-aluminum-500/30', 'text-aluminum-300'];
+
+    function setPillState(btn, isActive) {
+      btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      if (isActive) {
+        btn.classList.add('border-ember-400/50', 'bg-ember-500/10', 'text-ember-200');
+        btn.classList.remove('border-aluminum-500/30', 'text-aluminum-300');
+      } else {
+        btn.classList.add('border-aluminum-500/30', 'text-aluminum-300');
+        btn.classList.remove('border-ember-400/50', 'bg-ember-500/10', 'text-ember-200');
+      }
+    }
+
+    function styleFilterButtons() {
+      filterRow.querySelectorAll('[data-filter]').forEach(function (btn) {
+        var key = btn.getAttribute('data-filter');
+        var isActive = key === 'all' ? activeFilters.length === 0 : activeFilters.indexOf(key) !== -1;
+        setPillState(btn, isActive);
+      });
+    }
+
+    // ----- sorting -----
+    function monthValue(started) {
+      // "2026-05" -> 202605, "" -> 0
+      if (!started) return 0;
+      var parts = started.split('-');
+      return parseInt(parts[0], 10) * 100 + parseInt(parts[1] || '0', 10);
+    }
+
+    function applySort() {
+      var sorted = cards.slice();
+      sorted.sort(function (a, b) {
+        if (activeSort === 'featured') {
+          return parseInt(a.getAttribute('data-order'), 10) - parseInt(b.getAttribute('data-order'), 10);
+        }
+        var aStart = monthValue(a.getAttribute('data-started'));
+        var bStart = monthValue(b.getAttribute('data-started'));
+        if (activeSort === 'newest') {
+          // ongoing (no finished date) first, then most recent start
+          var aOngoing = a.getAttribute('data-finished') ? 0 : 1;
+          var bOngoing = b.getAttribute('data-finished') ? 0 : 1;
+          if (aOngoing !== bOngoing) return bOngoing - aOngoing;
+          return bStart - aStart;
+        }
+        // oldest
+        return aStart - bStart;
+      });
+      sorted.forEach(function (card) { grid.appendChild(card); });
+    }
+
+    // ----- filtering -----
+    function applyFilter() {
+      cards.forEach(function (card) {
+        var cardTags = (card.getAttribute('data-tags') || '').split(',');
+        var show = activeFilters.length === 0;
+        if (!show) {
+          // OR logic: visible if the card has ANY tag in ANY active category
+          for (var i = 0; i < activeFilters.length && !show; i++) {
+            var catTags = activeFilters[i].split(',');
+            for (var j = 0; j < catTags.length; j++) {
+              if (cardTags.indexOf(catTags[j]) !== -1) { show = true; break; }
+            }
+          }
+        }
+        if (show) {
+          card.classList.remove('hidden', 'opacity-0');
+        } else {
+          card.classList.add('opacity-0');
+          card.classList.add('hidden');
+        }
+      });
+    }
+
+    // ----- events -----
+    sortRow.addEventListener('click', function (e) {
+      var btn = e.target.closest('[data-sort]');
+      if (!btn) return;
+      activeSort = btn.getAttribute('data-sort');
+      styleSortButtons();
+      applySort();
+    });
+
+    filterRow.addEventListener('click', function (e) {
+      var btn = e.target.closest('[data-filter]');
+      if (!btn) return;
+      var key = btn.getAttribute('data-filter');
+      if (key === 'all') {
+        activeFilters = [];
+      } else {
+        var idx = activeFilters.indexOf(key);
+        if (idx === -1) activeFilters.push(key);
+        else activeFilters.splice(idx, 1);
+      }
+      styleFilterButtons();
+      applyFilter();
+    });
+
+    styleSortButtons();
+    styleFilterButtons();
+    applySort();
+  })();
+</script>
