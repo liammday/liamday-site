@@ -15,6 +15,9 @@
 - name: Career Pivot Navigator
   platform: Applied AI · Grounded MCP
   status: v0, open source
+  order: 1
+  date_started: "2026-05"
+  tags: [python, applied-ai, mcp, defence, open-source]
   icon: /assets/images/projects/career-pivot-navigator-icon.png
   icon_webp: /assets/images/projects/career-pivot-navigator-icon.webp
   link: /projects/career-pivot-navigator/
@@ -39,6 +42,9 @@
 - name: Open Defence Radar
   platform: Applied AI · Grounded RAG
   status: v1.0.0, open source
+  order: 2
+  date_started: "2026-04"
+  tags: [python, applied-ai, mcp, defence, open-source, rag]
   icon: /assets/images/projects/open-defence-radar-icon.png
   icon_webp: /assets/images/projects/open-defence-radar-icon.webp
   link: /projects/open-defence-radar/
@@ -64,6 +70,9 @@
 - name: PodForge
   platform: Personal Applied AI · Self-hosted
   status: Live, multi-feed
+  order: 3
+  date_started: "2026-03"
+  tags: [applied-ai, mcp, python, self-hosted, personal]
   icon: /assets/images/projects/podforge-icon.png
   icon_webp: /assets/images/projects/podforge-icon.webp
   link: /projects/podforge/
@@ -88,6 +97,9 @@
 - name: LifeOS
   platform: Personal Applied AI System
   status: Daily personal use
+  order: 4
+  date_started: "2026-02"
+  tags: [applied-ai, mcp, python, personal, obsidian]
   icon: /assets/images/projects/LifeOSAppIcon-256.png
   icon_webp: /assets/images/projects/LifeOSAppIcon-256.webp
   link: /projects/lifeos/
@@ -111,6 +123,9 @@
 - name: Peaking
   platform: iOS
   status: Active development
+  order: 5
+  date_started: "2024-06"
+  tags: [swift, ios, mapkit, cloudkit, personal]
   audience: For hikers and mountaineers who track summits, routes, and collection progress.
   icon: /assets/images/projects/PeakingAppIcon-256.png
   icon_webp: /assets/images/projects/PeakingAppIcon-256.webp
@@ -137,6 +152,9 @@
 - name: Training
   platform: iOS
   status: Active development
+  order: 6
+  date_started: "2025-01"
+  tags: [swift, ios, healthkit, personal]
   audience: For athletes, coaches, and habit-focused users who want stronger training consistency.
   icon: /assets/images/projects/TrainingAppIcon-256.png
   icon_webp: /assets/images/projects/TrainingAppIcon-256.webp
@@ -158,6 +176,9 @@
 
 - name: Squash Tracker
   platform: iOS & watchOS
+  order: 7
+  date_started: "2025-03"
+  tags: [swift, ios, watchos, healthkit, personal]
   audience: For squash players who want to record matches, track scores, and review performance over time.
   icon: /assets/images/projects/SquashTrackerAppIcon-256.png
   icon_webp: /assets/images/projects/SquashTrackerAppIcon-256.webp
