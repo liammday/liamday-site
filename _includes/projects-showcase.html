@@ -205,6 +205,24 @@
       });
     }
 
+    // Reveal animations are driven by GSAP ScrollTrigger (gsap-animations.js),
+    // which caches each card's pixel position at init. Reordering or hiding cards
+    // moves them without ScrollTrigger knowing, so a card that scrolls into view
+    // after a sort/filter would stay at its initial opacity:0 and never reveal.
+    // Recompute positions (and fire any pending onEnter) after we mutate the DOM.
+    // Guarded: ScrollTrigger loads via defer, so it is absent during the initial
+    // parse-time applySort() — that order is set before GSAP initialises anyway.
+    // Called synchronously after the DOM mutation: the reorder (appendChild) and
+    // visibility toggles are already applied, and ScrollTrigger.refresh() forces
+    // its own layout re-measure, so there is no need to wait a frame — and waiting
+    // on requestAnimationFrame would be unreliable if the tab is not painting.
+    function refreshReveal() {
+      var ST = window.ScrollTrigger;
+      if (ST && typeof ST.refresh === 'function') {
+        ST.refresh();
+      }
+    }
+
     // ----- sorting -----
     function monthValue(started) {
       // "2026-05" -> 202605, "" -> 0
@@ -232,6 +250,7 @@
         return aStart - bStart;
       });
       sorted.forEach(function (card) { grid.appendChild(card); });
+      refreshReveal();
     }
 
     // ----- filtering -----
@@ -255,6 +274,7 @@
           card.classList.add('hidden');
         }
       });
+      refreshReveal();
     }
 
     // ----- events -----
