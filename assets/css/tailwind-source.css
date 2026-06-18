@@ -324,6 +324,37 @@
     stroke-opacity: 0.5;
   }
 
+  /* ── Updates timeline (project case-study pages) ──────────────────────────────
+     A continuous accent rule down the left with a dot centered ON the rule and
+     vertically aligned to each entry's date. Replaces fragile arbitrary-value
+     utilities (-left-[7px], top-1.5, border-l, space-y-10) so the markup no longer
+     depends on those exact JIT classes being present. Colours route through the
+     ember/charcoal tokens so the timeline themes correctly in light and dark. */
+  .update-timeline {
+    border-left: 1px solid rgb(var(--ember-400) / 0.3);
+    padding-left: 1.75rem;
+  }
+  @media (min-width: 640px) {
+    .update-timeline { padding-left: 2.25rem; }
+  }
+  .update-timeline > li { position: relative; }
+  .update-timeline > li + li { margin-top: 2.5rem; }
+  .update-timeline__marker {
+    position: absolute;
+    top: 0.3rem;
+    left: 0;
+    margin-left: -1.75rem;
+    transform: translateX(-50%);
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 9999px;
+    border: 1px solid rgb(var(--ember-400) / 0.6);
+    background-color: rgb(var(--charcoal-900));
+  }
+  @media (min-width: 640px) {
+    .update-timeline__marker { margin-left: -2.25rem; }
+  }
+
 }
 
 @layer utilities {
