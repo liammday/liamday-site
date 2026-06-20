@@ -2,6 +2,7 @@
 dist/
 .astro/
 node_modules/
+storybook-static/
 
 # Jekyll (legacy — kept as migration reference until cutover)
 _site/
