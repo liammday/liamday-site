@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 800" role="img" aria-labelledby="odr-hero-title odr-hero-desc" preserveAspectRatio="xMidYMid slice">
+  <title id="odr-hero-title">Open Defence Radar</title>
+  <desc id="odr-hero-desc">A radar scope on a warm-dark field: concentric range rings, an ember sweep beam, scattered open-signal blips, and two blips tethered to small source markers — every signal traced to a cited source.</desc>
+
+  <defs>
+    <radialGradient id="odr-hero-bg" cx="50%" cy="50%" r="62%">
+      <stop offset="0%" stop-color="#33251f"/>
+      <stop offset="60%" stop-color="#231b17"/>
+      <stop offset="100%" stop-color="#1a1410"/>
+    </radialGradient>
+    <radialGradient id="odr-hero-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#cc785c" stop-opacity="0.34"/>
+      <stop offset="40%" stop-color="#cc785c" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#cc785c" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="odr-hero-sweep" x1="1157" y1="270" x2="950" y2="110" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#f0b48c" stop-opacity="0.55"/>
+      <stop offset="45%" stop-color="#cc785c" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#cc785c" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="odr-hero-hub" cx="40%" cy="34%" r="70%">
+      <stop offset="0%" stop-color="#eda988"/>
+      <stop offset="55%" stop-color="#cc785c"/>
+      <stop offset="100%" stop-color="#a85c44"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Warm dark field -->
+  <rect width="1600" height="800" fill="url(#odr-hero-bg)"/>
+  <circle cx="800" cy="400" r="360" fill="url(#odr-hero-glow)"/>
+
+  <!-- Range rings -->
+  <g fill="none" stroke="#cc785c" stroke-opacity="0.16">
+    <circle cx="800" cy="400" r="120"/>
+    <circle cx="800" cy="400" r="210"/>
+    <circle cx="800" cy="400" r="300"/>
+  </g>
+  <circle cx="800" cy="400" r="380" fill="none" stroke="#9da1a9" stroke-opacity="0.12"/>
+
+  <!-- Crosshairs -->
+  <g stroke="#9da1a9" stroke-opacity="0.10" stroke-width="1">
+    <line x1="800" y1="20" x2="800" y2="780"/>
+    <line x1="420" y1="400" x2="1180" y2="400"/>
+  </g>
+
+  <!-- Sweep beam -->
+  <path d="M800 400 L990 71 A380 380 0 0 1 1157 270 Z" fill="url(#odr-hero-sweep)"/>
+  <line x1="800" y1="400" x2="1157" y2="270" stroke="#f0b48c" stroke-opacity="0.5" stroke-width="1.5"/>
+
+  <!-- Tethers: blip -> source marker -->
+  <g stroke="#cc785c" stroke-opacity="0.5" stroke-width="1.5">
+    <line x1="1010" y1="330" x2="1141" y2="286"/>
+    <line x1="640" y1="250" x2="537" y2="154"/>
+  </g>
+  <g fill="none" stroke="#f0b48c" stroke-opacity="0.8" stroke-width="1.5">
+    <rect x="1131" y="276" width="20" height="20" rx="3"/>
+    <rect x="527" y="144" width="20" height="20" rx="3"/>
+  </g>
+
+  <!-- Open-signal blips -->
+  <g fill="#f3ebde">
+    <circle cx="800" cy="180" r="7"/>
+    <circle cx="560" cy="470" r="7"/>
+    <circle cx="940" cy="540" r="7"/>
+    <circle cx="1090" cy="460" r="6"/>
+    <circle cx="690" cy="560" r="6"/>
+  </g>
+
+  <!-- Tethered (cited) blips -->
+  <g>
+    <circle cx="1010" cy="330" r="8" fill="#f3ebde"/>
+    <circle cx="1010" cy="330" r="14" fill="none" stroke="#f0b48c" stroke-opacity="0.8" stroke-width="1.5"/>
+    <circle cx="640" cy="250" r="8" fill="#f3ebde"/>
+    <circle cx="640" cy="250" r="14" fill="none" stroke="#f0b48c" stroke-opacity="0.8" stroke-width="1.5"/>
+  </g>
+
+  <!-- Centre hub -->
+  <circle cx="800" cy="400" r="26" fill="url(#odr-hero-hub)"/>
+  <ellipse cx="792" cy="392" rx="9" ry="3.5" fill="#f6cdb8" opacity="0.5"/>
+</svg>

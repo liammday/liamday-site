@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="odr-icon-title">
+  <title id="odr-icon-title">Open Defence Radar app icon</title>
+  <defs>
+    <radialGradient id="odr-icon-bg" cx="50%" cy="42%" r="75%">
+      <stop offset="0%" stop-color="#33251f"/>
+      <stop offset="65%" stop-color="#221a16"/>
+      <stop offset="100%" stop-color="#181210"/>
+    </radialGradient>
+    <radialGradient id="odr-icon-hub" cx="40%" cy="34%" r="70%">
+      <stop offset="0%" stop-color="#eda988"/>
+      <stop offset="55%" stop-color="#cc785c"/>
+      <stop offset="100%" stop-color="#a85c44"/>
+    </radialGradient>
+    <linearGradient id="odr-icon-sweep" x1="225" y1="111" x2="180" y2="58" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#f0b48c" stop-opacity="0.6"/>
+      <stop offset="50%" stop-color="#cc785c" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#cc785c" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="256" height="256" rx="56" fill="url(#odr-icon-bg)"/>
+
+  <g fill="none" stroke="#cc785c" stroke-opacity="0.18">
+    <circle cx="128" cy="128" r="42"/>
+    <circle cx="128" cy="128" r="72"/>
+  </g>
+  <circle cx="128" cy="128" r="98" fill="none" stroke="#9da1a9" stroke-opacity="0.14"/>
+
+  <path d="M128 128 L184 48 A98 98 0 0 1 225 111 Z" fill="url(#odr-icon-sweep)"/>
+  <line x1="128" y1="128" x2="225" y2="111" stroke="#f0b48c" stroke-opacity="0.55" stroke-width="1.5"/>
+
+  <g fill="#f3ebde">
+    <circle cx="92" cy="78" r="5"/>
+    <circle cx="170" cy="176" r="5"/>
+    <circle cx="74" cy="150" r="4.5"/>
+  </g>
+  <circle cx="176" cy="92" r="5.5" fill="#f3ebde"/>
+  <circle cx="176" cy="92" r="10" fill="none" stroke="#f0b48c" stroke-opacity="0.85" stroke-width="1.5"/>
+
+  <circle cx="128" cy="128" r="15" fill="url(#odr-icon-hub)"/>
+  <ellipse cx="123" cy="123" rx="5" ry="2" fill="#f6cdb8" opacity="0.5"/>
+</svg>

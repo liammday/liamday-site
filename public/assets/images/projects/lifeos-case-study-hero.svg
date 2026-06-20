@@ -1,0 +1,208 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 800" role="img" aria-labelledby="title desc">
+  <title id="title">LifeOS, case study hero</title>
+  <desc id="desc">A stylised architecture diagram with a prominent LifeOS wordmark. Three ingestion sources flow into an orchestrator that delegates to a per-item primitive, which writes into a central spine surrounded by eight domain nodes.</desc>
+
+  <defs>
+    <!-- Palette: cream, warm brown, Claude coral, warm grey -->
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F2EDE3"/>
+      <stop offset="100%" stop-color="#ECE5D6"/>
+    </linearGradient>
+
+    <radialGradient id="spineGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#CC785C" stop-opacity="0.18"/>
+      <stop offset="60%" stop-color="#CC785C" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#CC785C" stop-opacity="0"/>
+    </radialGradient>
+
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#CC785C"/>
+    </marker>
+
+    <marker id="arrowSoft" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8B7E6F"/>
+    </marker>
+
+    <style>
+      .serif { font-family: "Tiempos Headline", "Iowan Old Style", Georgia, "Times New Roman", serif; }
+      .sans { font-family: "Styrene B", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+      .mono { font-family: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace; }
+      .wordmark { font-size: 168px; font-weight: 500; fill: #2D2A26; letter-spacing: -4px; }
+      .tagline { font-size: 24px; font-weight: 400; fill: #6B5F52; letter-spacing: 0.5px; }
+      .tag-eyebrow { font-size: 14px; font-weight: 500; fill: #8B7E6F; letter-spacing: 4px; text-transform: uppercase; }
+      .lane-label { font-size: 13px; font-weight: 500; fill: #8B7E6F; letter-spacing: 1.5px; text-transform: uppercase; }
+      .node-label { font-size: 13px; font-weight: 500; fill: #3D3929; }
+      .node-label-secondary { font-size: 12px; font-weight: 400; fill: #6B5F52; }
+      .corner-tag { font-size: 12px; font-weight: 500; fill: #8B7E6F; letter-spacing: 1.5px; }
+      .center-label { font-size: 13px; font-weight: 600; fill: #FFFFFF; letter-spacing: 0.5px; }
+      .spine-label { font-size: 13px; font-weight: 600; fill: #2D2A26; letter-spacing: 0.5px; }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1600" height="800" fill="url(#bg)"/>
+
+  <!-- Subtle corner grain -->
+  <g opacity="0.4">
+    <circle cx="80" cy="80" r="1.5" fill="#CC785C" opacity="0.3"/>
+    <circle cx="1520" cy="80" r="1.5" fill="#CC785C" opacity="0.3"/>
+    <circle cx="80" cy="720" r="1.5" fill="#CC785C" opacity="0.3"/>
+    <circle cx="1520" cy="720" r="1.5" fill="#CC785C" opacity="0.3"/>
+  </g>
+
+  <!-- Eyebrow -->
+  <text x="800" y="105" class="sans tag-eyebrow" text-anchor="middle">P1, case study, liamday.co.uk</text>
+
+  <!-- Wordmark -->
+  <text x="800" y="240" class="serif wordmark" text-anchor="middle">LifeOS</text>
+
+  <!-- Accent rule under wordmark -->
+  <line x1="760" y1="270" x2="840" y2="270" stroke="#CC785C" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- Tagline -->
+  <text x="800" y="312" class="serif tagline" text-anchor="middle" font-style="italic">Eight domains. One spine. One ingestion path.</text>
+
+  <!-- Corner tag, bottom right -->
+  <text x="1520" y="760" class="sans corner-tag" text-anchor="end">v1, 2026</text>
+
+  <!-- ============== Architecture band ============== -->
+  <!-- A horizontal flow: sources, orchestrator, primitive, spine, domains -->
+
+  <!-- Glow behind spine -->
+  <circle cx="1000" cy="560" r="240" fill="url(#spineGlow)"/>
+
+  <!-- Lane labels: aligned at y=340 baseline, above the constellation top (y=356) and above source/pipeline content -->
+  <text x="250" y="340" class="sans lane-label" text-anchor="middle">Sources</text>
+  <text x="550" y="340" class="sans lane-label" text-anchor="middle">Pipeline</text>
+  <text x="1000" y="340" class="sans lane-label" text-anchor="middle">Spine and Domains</text>
+
+  <!-- ============== Sources cluster ============== -->
+  <g transform="translate(130, 480)">
+    <!-- Source: email -->
+    <g transform="translate(0, 0)">
+      <rect x="0" y="0" width="240" height="44" rx="8" fill="#FFFFFF" stroke="#CFC4B2" stroke-width="1"/>
+      <circle cx="22" cy="22" r="5" fill="#CC785C"/>
+      <text x="40" y="27" class="sans node-label">Apple Mail, 3 accounts</text>
+    </g>
+    <!-- Source: scans -->
+    <g transform="translate(0, 58)">
+      <rect x="0" y="0" width="240" height="44" rx="8" fill="#FFFFFF" stroke="#CFC4B2" stroke-width="1"/>
+      <circle cx="22" cy="22" r="5" fill="#CC785C"/>
+      <text x="40" y="27" class="sans node-label">Preview iCloud scans</text>
+    </g>
+    <!-- Source: downloads -->
+    <g transform="translate(0, 116)">
+      <rect x="0" y="0" width="240" height="44" rx="8" fill="#FFFFFF" stroke="#CFC4B2" stroke-width="1"/>
+      <circle cx="22" cy="22" r="5" fill="#CC785C"/>
+      <text x="40" y="27" class="sans node-label">Downloads, local + iCloud</text>
+    </g>
+    <!-- Source: manual drop -->
+    <g transform="translate(0, 174)">
+      <rect x="0" y="0" width="240" height="44" rx="8" fill="#FFFFFF" stroke="#CFC4B2" stroke-width="1"/>
+      <circle cx="22" cy="22" r="5" fill="#CC785C"/>
+      <text x="40" y="27" class="sans node-label">inbox/raw/, manual drop</text>
+    </g>
+  </g>
+
+  <!-- ============== Pipeline cluster: orchestrator + primitive ============== -->
+  <g transform="translate(440, 500)">
+    <!-- Orchestrator -->
+    <rect x="0" y="0" width="220" height="80" rx="12" fill="#2D2A26" stroke="#2D2A26"/>
+    <text x="110" y="32" class="sans center-label" text-anchor="middle">daily-ingestion</text>
+    <text x="110" y="54" class="mono center-label" font-size="11" text-anchor="middle" opacity="0.75">orchestrator, 05:30</text>
+
+    <!-- Arrow orchestrator → primitive -->
+    <line x1="110" y1="90" x2="110" y2="120" stroke="#CC785C" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- Primitive -->
+    <rect x="0" y="130" width="220" height="80" rx="12" fill="#CC785C" stroke="#CC785C"/>
+    <text x="110" y="162" class="sans center-label" text-anchor="middle">ingest-triage</text>
+    <text x="110" y="184" class="mono center-label" font-size="11" text-anchor="middle" opacity="0.85">per-item primitive</text>
+  </g>
+
+  <!-- Source → orchestrator arrows -->
+  <path d="M 370 501 Q 405 501 440 540" fill="none" stroke="#8B7E6F" stroke-width="1.5" marker-end="url(#arrowSoft)"/>
+  <path d="M 370 559 Q 405 559 440 545" fill="none" stroke="#8B7E6F" stroke-width="1.5" marker-end="url(#arrowSoft)"/>
+  <path d="M 370 617 Q 405 617 440 555" fill="none" stroke="#8B7E6F" stroke-width="1.5" marker-end="url(#arrowSoft)"/>
+  <path d="M 370 675 Q 405 675 440 560" fill="none" stroke="#8B7E6F" stroke-width="1.5" marker-end="url(#arrowSoft)"/>
+
+  <!-- ============== Spine + Domains constellation ============== -->
+  <!-- Spine, central -->
+  <g transform="translate(1000, 560)">
+    <circle r="60" fill="#FFFFFF" stroke="#CC785C" stroke-width="2.5"/>
+    <text x="0" y="-4" class="sans spine-label" text-anchor="middle">Spine</text>
+    <text x="0" y="14" class="sans" font-size="11" fill="#8B7E6F" text-anchor="middle">Tier 1</text>
+  </g>
+
+  <!-- Eight domain nodes in a ring around the spine -->
+  <!-- Ring radius 170 from spine center (1000, 560). r=34 so longer labels fit. -->
+
+  <!-- Domain 1: top -->
+  <g transform="translate(1000, 390)">
+    <circle r="34" fill="#FFFFFF" stroke="#3D3929" stroke-width="1.5"/>
+    <text x="0" y="4" class="sans node-label" text-anchor="middle">finances</text>
+  </g>
+
+  <!-- Domain 2: top-right -->
+  <g transform="translate(1120, 440)">
+    <circle r="34" fill="#FFFFFF" stroke="#3D3929" stroke-width="1.5"/>
+    <text x="0" y="4" class="sans node-label" text-anchor="middle">pensions</text>
+  </g>
+
+  <!-- Domain 3: right -->
+  <g transform="translate(1170, 560)">
+    <circle r="34" fill="#FFFFFF" stroke="#3D3929" stroke-width="1.5"/>
+    <text x="0" y="4" class="sans node-label" text-anchor="middle">car</text>
+  </g>
+
+  <!-- Domain 4: bottom-right -->
+  <g transform="translate(1120, 680)">
+    <circle r="34" fill="#FFFFFF" stroke="#3D3929" stroke-width="1.5"/>
+    <text x="0" y="4" class="sans node-label" text-anchor="middle">insurance</text>
+  </g>
+
+  <!-- Domain 5: bottom (sensitive, dashed) -->
+  <g transform="translate(1000, 730)">
+    <circle r="34" fill="#FBF6EC" stroke="#3D3929" stroke-width="1.5" stroke-dasharray="3 3"/>
+    <text x="0" y="4" class="sans node-label" text-anchor="middle">sensitive</text>
+  </g>
+
+  <!-- Domain 6: bottom-left (sensitive, dashed) -->
+  <g transform="translate(880, 680)">
+    <circle r="34" fill="#FBF6EC" stroke="#3D3929" stroke-width="1.5" stroke-dasharray="3 3"/>
+    <text x="0" y="4" class="sans node-label" text-anchor="middle">sensitive</text>
+  </g>
+
+  <!-- Domain 7: left -->
+  <g transform="translate(830, 560)">
+    <circle r="34" fill="#FFFFFF" stroke="#3D3929" stroke-width="1.5"/>
+    <text x="0" y="-1" class="sans node-label" text-anchor="middle">dentist-</text>
+    <text x="0" y="11" class="sans node-label" text-anchor="middle">search</text>
+  </g>
+
+  <!-- Domain 8: top-left (sensitive, dashed) -->
+  <g transform="translate(880, 440)">
+    <circle r="34" fill="#FBF6EC" stroke="#3D3929" stroke-width="1.5" stroke-dasharray="3 3"/>
+    <text x="0" y="4" class="sans node-label" text-anchor="middle">sensitive</text>
+  </g>
+
+  <!-- Connecting lines from spine outer edge (r=60) to domain near-edge (r=34) -->
+  <g stroke="#CC785C" stroke-width="1" stroke-opacity="0.5" fill="none">
+    <line x1="1000" y1="500" x2="1000" y2="424"/>
+    <line x1="1042" y1="518" x2="1096" y2="464"/>
+    <line x1="1060" y1="560" x2="1136" y2="560"/>
+    <line x1="1042" y1="602" x2="1096" y2="656"/>
+    <line x1="1000" y1="620" x2="1000" y2="696"/>
+    <line x1="958" y1="602" x2="904" y2="656"/>
+    <line x1="940" y1="560" x2="864" y2="560"/>
+    <line x1="958" y1="518" x2="904" y2="464"/>
+  </g>
+
+  <!-- Arrow from primitive → spine -->
+  <path d="M 660 600 Q 800 600 940 560" fill="none" stroke="#CC785C" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Caption under the diagram -->
+  <text x="800" y="775" class="sans" font-size="13" fill="#8B7E6F" text-anchor="middle">
+    One orchestrator, one primitive, one spine. Lazy-loaded domains. Sensitive domains carry metadata-only audit rows.
+  </text>
+</svg>

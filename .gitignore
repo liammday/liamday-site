@@ -1,7 +1,15 @@
+# Astro / Node
+dist/
+.astro/
+node_modules/
+
+# Jekyll (legacy — kept as migration reference until cutover)
 _site/
 .sass-cache/
 .jekyll-cache/
 .jekyll-metadata
 vendor/
-node_modules/
+
 .DS_Store
+.env
+.env.production

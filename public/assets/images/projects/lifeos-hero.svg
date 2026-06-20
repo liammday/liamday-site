@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 800" role="img" aria-labelledby="lifeos-hero-title lifeos-hero-desc" preserveAspectRatio="xMidYMid slice">
+  <title id="lifeos-hero-title">LifeOS</title>
+  <desc id="lifeos-hero-desc">A central ember-orange spine surrounded by eight light constellation nodes connected by radial lines — the LifeOS architecture as a single mark.</desc>
+
+  <defs>
+    <radialGradient id="lifeos-hero-bg" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#332520"/>
+      <stop offset="60%" stop-color="#231b17"/>
+      <stop offset="100%" stop-color="#1a1410"/>
+    </radialGradient>
+    <radialGradient id="lifeos-hero-spine-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#cc785c" stop-opacity="0.42"/>
+      <stop offset="35%" stop-color="#cc785c" stop-opacity="0.14"/>
+      <stop offset="70%" stop-color="#cc785c" stop-opacity="0.03"/>
+      <stop offset="100%" stop-color="#cc785c" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="lifeos-hero-spine-fill" cx="38%" cy="32%" r="70%">
+      <stop offset="0%" stop-color="#eda988"/>
+      <stop offset="55%" stop-color="#cc785c"/>
+      <stop offset="100%" stop-color="#a85c44"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Warm dark background -->
+  <rect width="1600" height="800" fill="url(#lifeos-hero-bg)"/>
+
+  <!-- Warm spine halo -->
+  <circle cx="800" cy="400" r="360" fill="url(#lifeos-hero-spine-glow)"/>
+
+  <!-- Eight radial connectors from spine surface to dot inner edge -->
+  <g stroke="#cc785c" stroke-opacity="0.4" stroke-width="1.5" stroke-linecap="round" fill="none">
+    <line x1="860" y1="400" x2="1011" y2="400"/>
+    <line x1="842.4" y1="357.6" x2="949.2" y2="250.8"/>
+    <line x1="800" y1="340" x2="800" y2="189"/>
+    <line x1="757.6" y1="357.6" x2="650.8" y2="250.8"/>
+    <line x1="740" y1="400" x2="589" y2="400"/>
+    <line x1="757.6" y1="442.4" x2="650.8" y2="549.2"/>
+    <line x1="800" y1="460" x2="800" y2="611"/>
+    <line x1="842.4" y1="442.4" x2="949.2" y2="549.2"/>
+  </g>
+
+  <!-- Eight cream constellation nodes -->
+  <g fill="#f3ebde">
+    <circle cx="1020" cy="400" r="9"/>
+    <circle cx="955.6" cy="244.4" r="9"/>
+    <circle cx="800" cy="180" r="9"/>
+    <circle cx="644.4" cy="244.4" r="9"/>
+    <circle cx="580" cy="400" r="9"/>
+    <circle cx="644.4" cy="555.6" r="9"/>
+    <circle cx="800" cy="620" r="9"/>
+    <circle cx="955.6" cy="555.6" r="9"/>
+  </g>
+
+  <!-- Central spine: ember oval with subtle highlight -->
+  <ellipse cx="800" cy="400" rx="55" ry="45" fill="url(#lifeos-hero-spine-fill)"/>
+  <ellipse cx="788" cy="384" rx="22" ry="7" fill="#f6cdb8" opacity="0.45"/>
+</svg>

@@ -1,0 +1,49 @@
+---
+// TEMPORARY smoke-test page to validate the Tailwind v4 token port in both
+// themes. Replaced by the real home page in P6.
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Smoke test">
+  <section class="bg-charcoal-900 py-20">
+    <div class="mx-auto flex max-w-5xl flex-col gap-10 px-6">
+      <span
+        class="inline-flex w-fit items-center rounded-full border border-ember-400/30 bg-ember-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.4em] text-ember-200 texture-noise"
+        >Token smoke test</span
+      >
+      <h1 class="text-4xl font-semibold text-aluminum-100 sm:text-5xl">Tailwind v4 port check</h1>
+      <p class="max-w-3xl text-lg leading-relaxed text-aluminum-300">
+        Charcoal surfaces, aluminum text, ember accent, the anodised texture, and the surface-panel
+        spotlight should all render here — and invert correctly when you switch the theme in the
+        footer.
+      </p>
+
+      <div class="flex flex-wrap gap-4">
+        <a class="inline-flex items-center justify-center rounded-full bg-ember-400 px-6 py-3 text-sm font-semibold text-charcoal-950 shadow-glow transition texture-noise hover:bg-ember-300" href="#">Primary action</a>
+        <a class="inline-flex items-center justify-center rounded-full border border-aluminum-500/25 px-6 py-3 text-sm font-semibold text-aluminum-100 transition hover:border-ember-400/40 hover:bg-ember-500/10" href="#">Secondary action</a>
+      </div>
+
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <article class="surface-panel p-6">
+          <p class="text-sm uppercase tracking-[0.3em] text-aluminum-400">Surface panel</p>
+          <p class="mt-3 text-2xl font-semibold text-aluminum-100">Hover me</p>
+          <p class="mt-2 text-sm text-aluminum-400">Spotlight glow + ember ring on hover.</p>
+        </article>
+        <article class="surface-panel p-6">
+          <p class="text-sm font-semibold text-aluminum-100">Tags</p>
+          <ul class="mt-4 flex flex-wrap gap-2">
+            <li class="rounded-full border border-aluminum-500/30 bg-graphite-700/70 px-3 py-1 text-xs font-medium text-aluminum-200">Astro</li>
+            <li class="rounded-full border border-aluminum-500/30 bg-graphite-700/70 px-3 py-1 text-xs font-medium text-aluminum-200">React</li>
+            <li class="rounded-full border border-aluminum-500/30 bg-graphite-700/70 px-3 py-1 text-xs font-medium text-aluminum-200">Tailwind v4</li>
+          </ul>
+        </article>
+        <article class="surface-panel p-6">
+          <p class="text-sm font-semibold text-aluminum-100">Prose</p>
+          <div class="prose prose-invert mt-4 max-w-none">
+            <p>Body copy via the typography plugin, themed for dark and light.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
