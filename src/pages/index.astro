@@ -1,0 +1,90 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { cv } from '../data/cv';
+import { appProjects } from '../data/projects';
+import { site } from '../data/site';
+import { withExperienceYears } from '../lib/experience';
+import { Hero } from '../components/ui/Hero';
+import { SectionHeading } from '../components/ui/SectionHeading';
+import { ExperienceCard } from '../components/ui/ExperienceCard';
+import { CapabilityCard } from '../components/ui/CapabilityCard';
+import { EducationPanel } from '../components/ui/EducationPanel';
+import { ProjectsShowcase } from '../components/ui/ProjectsShowcase';
+import { ContactSection } from '../components/ui/ContactSection';
+
+const profileText = withExperienceYears(cv.profile);
+const heroStats = cv.hero_stats.map((s) => ({ ...s, value: withExperienceYears(s.value) }));
+
+const navItems = ['experience', 'capabilities', 'education', 'projects', 'contact'];
+---
+
+<BaseLayout>
+  <Hero badge={cv.hero_badge} profileText={profileText} stats={heroStats} email={site.contact.email} />
+
+  <nav
+    class="sticky top-0 z-40 border-b border-aluminum-500/20 bg-charcoal-900/95 backdrop-blur"
+    aria-label="On this page"
+    data-sticky-nav>
+    <div class="mx-auto w-full max-w-5xl">
+      <div class="relative flex gap-3 overflow-x-auto px-6 py-4 text-sm" data-nav-scroll>
+        {
+          navItems.map((item) => (
+            <a
+              class="relative z-10 whitespace-nowrap rounded-full border border-transparent px-4 py-2 font-medium text-aluminum-300 transition hover:border-aluminum-500/40 hover:text-aluminum-100 aria-[current=page]:border-ember-400/50 aria-[current=page]:bg-ember-500/10 aria-[current=page]:text-ember-200 aria-[current=page]:texture-noise"
+              href={`#${item}`}
+              data-nav-link>
+              {item.charAt(0).toUpperCase() + item.slice(1)}
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </nav>
+
+  <section
+    id="experience"
+    class="scroll-mt-32 flex min-h-screen flex-col justify-center border-b border-aluminum-500/20 bg-charcoal-900">
+    <div class="mx-auto w-full max-w-5xl px-6 py-16">
+      <SectionHeading
+        title="Experience"
+        intro="A career spanning operational command and digital delivery — leading teams through change, scaling new practices, and keeping complex products moving."
+      />
+      <div class="mt-12 space-y-8">
+        {cv.employment.map((role) => <ExperienceCard {...role} />)}
+      </div>
+    </div>
+  </section>
+
+  <section
+    id="capabilities"
+    class="scroll-mt-32 flex min-h-screen flex-col justify-center border-b border-aluminum-500/20 bg-charcoal-900">
+    <div class="mx-auto w-full max-w-5xl px-6 py-16">
+      <SectionHeading
+        title="Core capabilities"
+        intro="A blend of operational discipline and modern product practice to move complex teams forward with clarity."
+      />
+      <div class="mt-12 grid gap-6 md:grid-cols-2">
+        {cv.competencies.map((c) => <CapabilityCard title={c.title} description={c.description} />)}
+      </div>
+    </div>
+  </section>
+
+  <section
+    id="education"
+    class="scroll-mt-32 flex min-h-screen flex-col justify-center border-b border-aluminum-500/20 bg-charcoal-900">
+    <div class="mx-auto w-full max-w-5xl px-6 py-16">
+      <SectionHeading
+        title="Education & Certifications"
+        intro="Continuous learning underpins how I introduce new practices. Formal study and targeted certifications keep my leadership grounded in current technology and governance standards."
+      />
+      <div class="mt-12 grid gap-8 lg:grid-cols-2">
+        <EducationPanel heading="Education" items={cv.education} />
+        <EducationPanel heading="Certifications" items={cv.certifications} />
+      </div>
+    </div>
+  </section>
+
+  <ProjectsShowcase client:visible projects={appProjects} />
+
+  <ContactSection email={site.contact.email} linkedin={site.social.linkedin} github={site.social.github} />
+</BaseLayout>

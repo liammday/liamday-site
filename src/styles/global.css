@@ -1,0 +1,391 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Runtime theme channels (space-separated RGB so utilities can apply opacity
+   via color-mix). Overridden under [data-theme="light"]; the @theme inline
+   block below references these so utilities re-resolve per active theme.
+   ────────────────────────────────────────────────────────────────────────── */
+:root {
+  /* ── Dark theme (default) ── */
+  --charcoal-900: 16 18 21;
+  --charcoal-950: 7 8 10;
+  --graphite-600: 38 41 46;
+  --graphite-700: 29 32 36;
+  --graphite-800: 21 24 27;
+  --aluminum-100: 228 231 236;
+  --aluminum-200: 197 200 208;
+  --aluminum-300: 157 161 169;
+  --aluminum-400: 131 135 143;
+  --aluminum-500: 90 94 101;
+  --ember-200: 249 185 139;
+  --ember-300: 246 162 104;
+  --ember-400: 240 139 74;
+  --ember-500: 216 116 53;
+  --ember-600: 183 92 41;
+
+  --spotlight-glow-center: rgba(255, 176, 122, 0.22);
+  --spotlight-glow-mid: rgba(255, 176, 122, 0.08);
+}
+
+/* ── Light theme ── */
+:root[data-theme="light"] {
+  --charcoal-900: 248 249 251;
+  --charcoal-950: 7 8 10;
+  --graphite-600: 226 229 234;
+  --graphite-700: 238 240 244;
+  --graphite-800: 244 245 248;
+  --aluminum-100: 26 29 35;
+  --aluminum-200: 45 48 56;
+  --aluminum-300: 74 78 88;
+  --aluminum-400: 104 109 125;
+  --aluminum-500: 176 181 192;
+  --ember-200: 160 68 0;
+  --ember-300: 179 77 9;
+  --ember-400: 240 139 74;
+  --ember-500: 216 116 53;
+  --ember-600: 183 92 41;
+
+  --spotlight-glow-center: rgba(255, 200, 150, 0.35);
+  --spotlight-glow-mid: rgba(255, 200, 150, 0.12);
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Tailwind theme tokens. `inline` so each utility emits the var() reference
+   directly, letting the [data-theme] overrides above swap colours at runtime.
+   ────────────────────────────────────────────────────────────────────────── */
+@theme inline {
+  --color-charcoal-900: rgb(var(--charcoal-900));
+  --color-charcoal-950: rgb(var(--charcoal-950));
+  --color-graphite-600: rgb(var(--graphite-600));
+  --color-graphite-700: rgb(var(--graphite-700));
+  --color-graphite-800: rgb(var(--graphite-800));
+  --color-aluminum-100: rgb(var(--aluminum-100));
+  --color-aluminum-200: rgb(var(--aluminum-200));
+  --color-aluminum-300: rgb(var(--aluminum-300));
+  --color-aluminum-400: rgb(var(--aluminum-400));
+  --color-aluminum-500: rgb(var(--aluminum-500));
+  --color-ember-200: rgb(var(--ember-200));
+  --color-ember-300: rgb(var(--ember-300));
+  --color-ember-400: rgb(var(--ember-400));
+  --color-ember-500: rgb(var(--ember-500));
+  --color-ember-600: rgb(var(--ember-600));
+
+  --shadow-glow: 0 20px 40px -20px rgba(0, 0, 0, 0.6);
+}
+
+@layer base {
+  body {
+    @apply bg-charcoal-900 text-aluminum-100 antialiased;
+    background-attachment: fixed;
+  }
+
+  a {
+    @apply text-ember-300 underline-offset-4 transition-colors duration-150 ease-in-out;
+  }
+
+  a:hover,
+  a:focus-visible {
+    @apply text-ember-200 underline;
+  }
+}
+
+@layer components {
+  .surface-panel {
+    @apply rounded-2xl border border-aluminum-500/20 bg-graphite-700/80 shadow-glow backdrop-blur;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    z-index: 0;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    --spotlight-opacity: 0;
+    --spotlight-x: 50%;
+    --spotlight-y: 50%;
+  }
+
+  .surface-panel:focus-visible {
+    outline: none;
+  }
+
+  .surface-panel:is(:hover, :focus-visible, :focus-within) {
+    @apply border-ember-300/50;
+  }
+
+  .surface-panel::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 0;
+    opacity: var(--spotlight-opacity);
+    transition: opacity 0.35s ease;
+    background: radial-gradient(
+      circle at var(--spotlight-x) var(--spotlight-y),
+      var(--spotlight-glow-center) 0%,
+      var(--spotlight-glow-mid) 35%,
+      transparent 70%
+    );
+    mix-blend-mode: screen;
+  }
+
+  :root[data-theme="light"] .surface-panel::after {
+    mix-blend-mode: screen;
+  }
+
+  .surface-panel > :where(*) {
+    position: relative;
+    z-index: 1;
+  }
+
+  .surface-ring {
+    @apply border border-aluminum-500/25 bg-graphite-700/60 backdrop-blur;
+  }
+
+  /* Theme picker segment — active state */
+  .theme-seg[aria-checked="true"] {
+    background-color: rgb(var(--aluminum-500) / 0.2);
+    color: rgb(var(--aluminum-100));
+  }
+
+  .theme-seg[aria-checked="false"] {
+    color: rgb(var(--aluminum-400));
+  }
+
+  .theme-seg[aria-checked="false"]:hover {
+    color: rgb(var(--aluminum-200));
+  }
+
+  /* Light-mode shadow override — heavy dark shadows look wrong on white.
+     (v4: set box-shadow directly rather than the old --tw-shadow internal.) */
+  :root[data-theme="light"] .surface-panel {
+    box-shadow: 0 20px 40px -20px rgba(0, 0, 0, 0.08);
+  }
+
+  :root[data-theme="light"] [data-animate="experience-card"] {
+    box-shadow: 0 20px 45px -30px rgba(0, 0, 0, 0.08) !important;
+  }
+
+  /* Light-mode CTA hover — ember-300 is darkened for link text, too dark as button bg */
+  :root[data-theme="light"] a.texture-noise:hover {
+    background-color: rgb(var(--ember-500));
+  }
+
+  /* Prose-invert overrides for light mode — adapts post/project pages automatically */
+  :root[data-theme="light"] .prose-invert {
+    --tw-prose-body: rgb(var(--aluminum-300));
+    --tw-prose-headings: rgb(var(--aluminum-100));
+    --tw-prose-links: rgb(var(--ember-300));
+    --tw-prose-bold: rgb(var(--aluminum-100));
+    --tw-prose-counters: rgb(var(--aluminum-400));
+    --tw-prose-bullets: rgb(var(--ember-300));
+    --tw-prose-hr: rgb(var(--aluminum-500) / 0.25);
+    --tw-prose-quotes: rgb(var(--aluminum-200));
+    --tw-prose-quote-borders: rgb(var(--ember-400) / 0.4);
+    --tw-prose-captions: rgb(var(--aluminum-400));
+    --tw-prose-code: rgb(var(--aluminum-200));
+    --tw-prose-pre-code: rgb(var(--aluminum-300));
+    --tw-prose-pre-bg: rgb(var(--graphite-700));
+    --tw-prose-th-borders: rgb(var(--aluminum-500) / 0.3);
+    --tw-prose-td-borders: rgb(var(--aluminum-500) / 0.2);
+  }
+
+  /* Consistent gutter between app icon and heading column across all project cards. */
+  #projects .project-card__header { gap: 1.5rem; }
+
+  /* Case-study heading spacing: tighten prose h2 sub-section titles against the
+     content beneath them (the default reads too airy at our type scale). */
+  .detail-content :where(h2):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+    margin-bottom: 0.5em;
+  }
+  .detail-content :where(h2 + *):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+    margin-top: 0.5em;
+  }
+
+  /* Project-page content widths: lift the 65ch prose cap off the container so
+     bounded media (figures, tables, the architecture diagram) fill the column,
+     and re-apply the reading width only to text body elements. */
+  .detail-content {
+    max-width: none;
+  }
+  .detail-content :where(p, ul, ol, blockquote, dl):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+    max-width: 65ch;
+  }
+
+  /* Page-nav scroll bleed: scroll viewport spans the full nav width, but dynamic
+     padding aligns the first/last pill with the content column edges
+     (max-w-5xl = 64rem, gutter px-6 = 1.5rem). */
+  .page-nav-bleed {
+    padding-left: max(1.5rem, calc(50% - 30.5rem));
+    padding-right: max(1.5rem, calc(50% - 30.5rem));
+  }
+
+  /* Hide the horizontal scrollbar on the sticky-nav scroll containers — the
+     scroll mechanism (wheel, touch, drag) still works, just no visible bar. */
+  [data-nav-scroll] {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  [data-nav-scroll]::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* ── Inline architecture diagram ─────────────────────────────────────────────
+     All colours route through role-based tokens that auto-swap across themes. */
+  .lifeos-architecture {
+    --diagram-card-bg: rgb(var(--graphite-600));
+    --diagram-card-border: rgb(var(--aluminum-500) / 0.4);
+    --diagram-sensitive-bg: rgb(var(--graphite-700));
+    --diagram-text-strong: rgb(var(--aluminum-100));
+    --diagram-text-mid: rgb(var(--aluminum-300));
+    --diagram-text-muted: rgb(var(--aluminum-400));
+    --diagram-accent: rgb(var(--ember-400));
+    --diagram-on-accent: rgb(var(--charcoal-950));
+    --diagram-edge-soft: rgb(var(--aluminum-400));
+    --diagram-spine-bg: rgb(var(--graphite-600));
+    --diagram-spine-border: rgb(var(--ember-400));
+    --diagram-orchestrator-bg: rgb(var(--aluminum-100));
+    --diagram-orchestrator-text: rgb(var(--charcoal-900));
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .lifeos-architecture text {
+    font-family: "Styrene B", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+  .lifeos-architecture .mono {
+    font-family: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+  }
+  .lifeos-architecture .lane-label {
+    font-size: 13px;
+    font-weight: 500;
+    fill: var(--diagram-text-muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+  .lifeos-architecture .node-label {
+    font-size: 13px;
+    font-weight: 500;
+    fill: var(--diagram-text-strong);
+  }
+  .lifeos-architecture .card {
+    fill: var(--diagram-card-bg);
+    stroke: var(--diagram-card-border);
+    stroke-width: 1;
+  }
+  .lifeos-architecture .accent-dot { fill: var(--diagram-accent); }
+  .lifeos-architecture .accent-line {
+    stroke: var(--diagram-accent);
+    stroke-width: 2;
+    fill: none;
+  }
+  .lifeos-architecture .soft-line {
+    stroke: var(--diagram-edge-soft);
+    stroke-width: 1.5;
+  }
+  .lifeos-architecture .orchestrator {
+    fill: var(--diagram-orchestrator-bg);
+    stroke: var(--diagram-orchestrator-bg);
+  }
+  .lifeos-architecture .orchestrator-label {
+    font-size: 13px;
+    font-weight: 600;
+    fill: var(--diagram-orchestrator-text);
+    letter-spacing: 0.5px;
+  }
+  .lifeos-architecture .orchestrator-sublabel {
+    font-size: 11px;
+    fill: var(--diagram-orchestrator-text);
+    opacity: 0.7;
+  }
+  .lifeos-architecture .primitive {
+    fill: var(--diagram-accent);
+    stroke: var(--diagram-accent);
+  }
+  .lifeos-architecture .primitive-label {
+    font-size: 13px;
+    font-weight: 600;
+    fill: var(--diagram-on-accent);
+    letter-spacing: 0.5px;
+  }
+  .lifeos-architecture .primitive-sublabel {
+    font-size: 11px;
+    fill: var(--diagram-on-accent);
+    opacity: 0.85;
+  }
+  .lifeos-architecture .spine {
+    fill: var(--diagram-spine-bg);
+    stroke: var(--diagram-spine-border);
+    stroke-width: 2.5;
+  }
+  .lifeos-architecture .spine-label {
+    font-size: 13px;
+    font-weight: 600;
+    fill: var(--diagram-text-strong);
+    letter-spacing: 0.5px;
+  }
+  .lifeos-architecture .spine-sublabel {
+    font-size: 11px;
+    fill: var(--diagram-text-muted);
+  }
+  .lifeos-architecture .domain {
+    fill: var(--diagram-card-bg);
+    stroke: var(--diagram-card-border);
+    stroke-width: 1.5;
+  }
+  .lifeos-architecture .domain--sensitive {
+    fill: var(--diagram-sensitive-bg);
+    stroke-dasharray: 3 3;
+  }
+  .lifeos-architecture .spine-connector line {
+    stroke: var(--diagram-accent);
+    stroke-width: 1;
+    stroke-opacity: 0.5;
+  }
+
+  /* ── Updates timeline (project case-study pages) ────────────────────────────── */
+  .update-timeline {
+    border-left: 1px solid rgb(var(--ember-400) / 0.3);
+    padding-left: 1.75rem;
+  }
+  @media (min-width: 640px) {
+    .update-timeline { padding-left: 2.25rem; }
+  }
+  .update-timeline > li { position: relative; }
+  .update-timeline > li + li { margin-top: 2.5rem; }
+  .update-timeline__marker {
+    position: absolute;
+    top: 0.3rem;
+    left: 0;
+    margin-left: -1.75rem;
+    transform: translateX(-50%);
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 9999px;
+    border: 1px solid rgb(var(--ember-400) / 0.6);
+    background-color: rgb(var(--charcoal-900));
+  }
+  @media (min-width: 640px) {
+    .update-timeline__marker { margin-left: -2.25rem; }
+  }
+}
+
+@layer utilities {
+  .texture-noise {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc4MCcgaGVpZ2h0PSc4MCcgdmlld0JveD0nMCAwIDgwIDgwJz4KICA8ZGVmcz4KICAgIDxmaWx0ZXIgaWQ9J2dyYWluJyB4PSctMjAlJyB5PSctMjAlJyB3aWR0aD0nMTQwJScgaGVpZ2h0PScxNDAlJz4KICAgICAgPGZlVHVyYnVsZW5jZSB0eXBlPSdmcmFjdGFsTm9pc2UnIGJhc2VGcmVxdWVuY3k9JzAuOScgbnVtT2N0YXZlcz0nMycgc2VlZD0nMTcnIHN0aXRjaFRpbGVzPSdzdGl0Y2gnLz4KICAgICAgPGZlQ29tcG9uZW50VHJhbnNmZXI+CiAgICAgICAgPGZlRnVuY0EgdHlwZT0nbGluZWFyJyBzbG9wZT0nMC4yJy8+CiAgICAgIDwvZmVDb21wb25lbnRUcmFuc2Zlcj4KICAgIDwvZmlsdGVyPgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0nODAnIGhlaWdodD0nODAnIGZpbGw9JyMxYTFjMWYnLz4KICA8cmVjdCB3aWR0aD0nODAnIGhlaWdodD0nODAnIGZpbGw9JyMxZjIxMjYnIGZpbHRlcj0ndXJsKCNncmFpbiknIG9wYWNpdHk9JzAuNDUnLz4KPC9zdmc+Cg==');
+    background-blend-mode: soft-light;
+  }
+
+  :root[data-theme="light"] .texture-noise {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc4MCcgaGVpZ2h0PSc4MCcgdmlld0JveD0nMCAwIDgwIDgwJz4KICA8ZGVmcz4KICAgIDxmaWx0ZXIgaWQ9J2dyYWluJyB4PSctMjAlJyB5PSctMjAlJyB3aWR0aD0nMTQwJScgaGVpZ2h0PScxNDAlJz4KICAgICAgPGZlVHVyYnVsZW5jZSB0eXBlPSdmcmFjdGFsTm9pc2UnIGJhc2VGcmVxdWVuY3k9JzAuOScgbnVtT2N0YXZlcz0nMycgc2VlZD0nMTcnIHN0aXRjaFRpbGVzPSdzdGl0Y2gnLz4KICAgICAgPGZlQ29tcG9uZW50VHJhbnNmZXI+CiAgICAgICAgPGZlRnVuY0EgdHlwZT0nbGluZWFyJyBzbG9wZT0nMC4yJy8+CiAgICAgIDwvZmVDb21wb25lbnRUcmFuc2Zlcj4KICAgIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0nODAnIGhlaWdodD0nODAnIGZpbGw9JyNlOGVhZWUnLz4KICA8cmVjdCB3aWR0aD0nODAnIGhlaWdodD0nODAnIGZpbGw9JyNkZmUyZTcnIGZpbHRlcj0ndXJsKCNncmFpbiknIG9wYWNpdHk9JzAuNDUnLz4KPC9zdmc+');
+    background-blend-mode: overlay;
+  }
+}
+
+/* Keep button-style and otherwise hover-styled links from inheriting the global
+   underline. Explicit hover:underline links are exempt. */
+a[class*='hover:']:not([class*='hover:underline']):hover,
+a[class*='hover:']:not([class*='hover:underline']):focus-visible {
+  text-decoration-line: none;
+}

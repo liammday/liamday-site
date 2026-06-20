@@ -1,0 +1,28 @@
+---
+// Inline an architecture SVG by file name (without extension) from this folder.
+// Uses Vite ?raw so the SVG's own <style> blocks (which contain {} braces that
+// would otherwise break .astro parsing) are injected verbatim. Diagrams either
+// self-style via their embedded <style> or, for lifeos-architecture, via the
+// global .lifeos-architecture rules in global.css.
+interface Props {
+  name: string;
+}
+const { name } = Astro.props;
+
+const svgs = import.meta.glob('./*.svg', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+}) as Record<string, string>;
+
+const svg = svgs[`./${name}.svg`];
+if (!svg) {
+  throw new Error(
+    `Diagram "${name}" not found. Available: ${Object.keys(svgs)
+      .map((k) => k.replace('./', '').replace('.svg', ''))
+      .join(', ')}`,
+  );
+}
+---
+
+<Fragment set:html={svg} />

@@ -1,0 +1,40 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+// Accepts either direct props (collection routes) or `frontmatter` (markdown pages).
+const data = (Astro.props.frontmatter ?? Astro.props) as {
+  title?: string;
+  description?: string;
+  date?: Date | string;
+};
+const { title, description, date } = data;
+
+function fmtFull(d?: Date | string): string {
+  if (!d) return '';
+  const dd = d instanceof Date ? d : new Date(d);
+  return Number.isNaN(dd.getTime())
+    ? ''
+    : dd.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
+}
+---
+
+<BaseLayout title={title} description={description} type="article">
+  <article class="bg-charcoal-900 py-16 text-aluminum-100">
+    <div class="mx-auto max-w-3xl px-6">
+      <header class="space-y-3">
+        {date && <p class="text-xs font-semibold uppercase text-aluminum-400">{fmtFull(date)}</p>}
+        <h1 class="text-3xl font-bold text-aluminum-100 md:text-4xl">{title}</h1>
+        {description && <p class="text-lg text-aluminum-300">{description}</p>}
+      </header>
+      <div class="prose prose-invert mt-8 max-w-none">
+        <slot />
+      </div>
+      <div class="mt-10">
+        <a
+          class="text-sm text-aluminum-300 underline-offset-4 transition hover:text-ember-300 hover:underline"
+          href="/">← Back to portfolio</a
+        >
+      </div>
+    </div>
+  </article>
+</BaseLayout>
