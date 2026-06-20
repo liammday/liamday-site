@@ -29,7 +29,10 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v6
       - name: Install dependencies
-        run: npm ci
+        # npm install (not ci) so the runner resolves platform-specific optional
+        # deps (Tailwind v4's native engine) regardless of which platform/npm
+        # version generated the committed lockfile.
+        run: npm install --no-audit --no-fund
       - name: Build with Astro
         run: npm run build
       - name: Upload artifact
