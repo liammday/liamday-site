@@ -87,7 +87,7 @@ const currentYear = new Date().getFullYear();
   </head>
   <body class="flex min-h-screen flex-col bg-charcoal-900 text-aluminum-100 antialiased">
     <a
-      class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:rounded-md focus:bg-aluminum-100 focus:px-4 focus:py-2 focus:text-charcoal-950"
+      class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:rounded-md focus:bg-aluminum-100 focus:px-4 focus:py-2 focus:text-charcoal-900"
       href="#main">Skip to content</a
     >
     <main id="main" class="flex-1">
@@ -101,23 +101,23 @@ const currentYear = new Date().getFullYear();
           <span aria-hidden="true">·</span>
           <p>
             Built with
-            <a href="https://astro.build/" class="transition hover:text-ember-300">Astro</a>,
-            <a href="https://react.dev/" class="transition hover:text-ember-300">React</a>,
-            <a href="https://tailwindcss.com/" class="transition hover:text-ember-300">Tailwind CSS</a>,
+            <a href="https://astro.build/" class="underline underline-offset-4 transition hover:text-ember-300 hover:underline">Astro</a>,
+            <a href="https://react.dev/" class="underline underline-offset-4 transition hover:text-ember-300 hover:underline">React</a>,
+            <a href="https://tailwindcss.com/" class="underline underline-offset-4 transition hover:text-ember-300 hover:underline">Tailwind CSS</a>,
             and
-            <a href="https://gsap.com/" class="transition hover:text-ember-300">GSAP</a>.
+            <a href="https://gsap.com/" class="underline underline-offset-4 transition hover:text-ember-300 hover:underline">GSAP</a>.
           </p>
         </div>
         <div class="flex flex-wrap items-center gap-4">
-          <a class="transition hover:text-ember-300" href={`mailto:${site.social.email}`}>{site.social.email}</a>
+          <a class="underline underline-offset-4 transition hover:text-ember-300 hover:underline" href={`mailto:${site.social.email}`}>{site.social.email}</a>
           {site.social.linkedin && (
-            <a class="transition hover:text-ember-300" href={site.social.linkedin}>LinkedIn</a>
+            <a class="underline underline-offset-4 transition hover:text-ember-300 hover:underline" href={site.social.linkedin}>LinkedIn</a>
           )}
           {site.social.github && (
-            <a class="transition hover:text-ember-300" href={site.social.github}>GitHub</a>
+            <a class="underline underline-offset-4 transition hover:text-ember-300 hover:underline" href={site.social.github}>GitHub</a>
           )}
           {site.social.medium && (
-            <a class="transition hover:text-ember-300" href={site.social.medium}>Medium</a>
+            <a class="underline underline-offset-4 transition hover:text-ember-300 hover:underline" href={site.social.medium}>Medium</a>
           )}
           <span aria-hidden="true">·</span>
           <div

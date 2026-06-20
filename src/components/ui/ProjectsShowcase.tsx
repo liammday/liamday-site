@@ -110,7 +110,7 @@ export function ProjectsShowcase({ projects }: ProjectsShowcaseProps) {
                   aria-pressed={sort === s}
                   onClick={() => setSort(s)}
                   className={`text-xs font-semibold uppercase tracking-[0.25em] transition ${
-                    sort === s ? 'text-ember-200 hover:text-ember-100' : 'text-aluminum-400 hover:text-aluminum-200'
+                    sort === s ? 'text-ember-200 underline underline-offset-4' : 'text-aluminum-400 hover:text-aluminum-200'
                   }`}>
                   {s.charAt(0).toUpperCase() + s.slice(1)}
                 </button>

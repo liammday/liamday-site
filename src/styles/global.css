@@ -166,29 +166,11 @@
     box-shadow: 0 20px 45px -30px rgba(0, 0, 0, 0.08) !important;
   }
 
-  /* Light-mode CTA hover — ember-300 is darkened for link text, too dark as button bg */
-  :root[data-theme="light"] a.texture-noise:hover {
-    background-color: rgb(var(--ember-500));
-  }
-
-  /* Prose-invert overrides for light mode — adapts post/project pages automatically */
-  :root[data-theme="light"] .prose-invert {
-    --tw-prose-body: rgb(var(--aluminum-300));
-    --tw-prose-headings: rgb(var(--aluminum-100));
-    --tw-prose-links: rgb(var(--ember-300));
-    --tw-prose-bold: rgb(var(--aluminum-100));
-    --tw-prose-counters: rgb(var(--aluminum-400));
-    --tw-prose-bullets: rgb(var(--ember-300));
-    --tw-prose-hr: rgb(var(--aluminum-500) / 0.25);
-    --tw-prose-quotes: rgb(var(--aluminum-200));
-    --tw-prose-quote-borders: rgb(var(--ember-400) / 0.4);
-    --tw-prose-captions: rgb(var(--aluminum-400));
-    --tw-prose-code: rgb(var(--aluminum-200));
-    --tw-prose-pre-code: rgb(var(--aluminum-300));
-    --tw-prose-pre-bg: rgb(var(--graphite-700));
-    --tw-prose-th-borders: rgb(var(--aluminum-500) / 0.3);
-    --tw-prose-td-borders: rgb(var(--aluminum-500) / 0.2);
-  }
+  /* NOTE: the light-mode prose-invert and CTA-hover overrides live UNLAYERED
+     below this @layer block — see "Light-mode cascade-layer overrides". They
+     must beat @tailwindcss/typography and the hover:bg-* utilities, which
+     compile into the `utilities` layer (last in the cascade), so a rule inside
+     @layer components can never win regardless of specificity. */
 
   /* Consistent gutter between app icon and heading column across all project cards. */
   #projects .project-card__header { gap: 1.5rem; }
@@ -238,7 +220,9 @@
     --diagram-sensitive-bg: rgb(var(--graphite-700));
     --diagram-text-strong: rgb(var(--aluminum-100));
     --diagram-text-mid: rgb(var(--aluminum-300));
-    --diagram-text-muted: rgb(var(--aluminum-400));
+    /* aluminum-400 muted text falls to 4.0:1 on the graphite-600 spine cards;
+       aluminum-300 clears AA (5.6–6.6:1) for the small spine/lane sublabels. */
+    --diagram-text-muted: rgb(var(--aluminum-300));
     --diagram-accent: rgb(var(--ember-400));
     --diagram-on-accent: rgb(var(--charcoal-950));
     --diagram-edge-soft: rgb(var(--aluminum-400));
@@ -369,6 +353,48 @@
   @media (min-width: 640px) {
     .update-timeline__marker { margin-left: -2.25rem; }
   }
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Light-mode cascade-layer overrides (UNLAYERED — intentional).
+
+   @tailwindcss/typography (.prose / .prose-invert) and Tailwind's hover:bg-*
+   utilities compile into the `utilities` layer, which is LAST in the layer
+   order (theme, base, components, utilities). A layered rule — even one with
+   higher specificity — can never beat a later layer. These overrides therefore
+   sit outside any @layer so they win, since unlayered normal declarations
+   outrank every layered one. (Previously these lived in @layer components and
+   silently lost, leaving light-mode prose as the plugin's dark-on-dark invert
+   greys — ~1.4:1 body text on the near-white background.)
+   ────────────────────────────────────────────────────────────────────────── */
+
+/* Project / post case-study body copy in light mode. Drives the typography
+   plugin's prose variables from our runtime tokens; every pairing clears
+   WCAG 2.1 AA (body 7.9:1, headings 16:1, links 5:1) against charcoal-900. */
+:root[data-theme="light"] .prose-invert {
+  --tw-prose-body: rgb(var(--aluminum-300));
+  --tw-prose-headings: rgb(var(--aluminum-100));
+  --tw-prose-links: rgb(var(--ember-300));
+  --tw-prose-bold: rgb(var(--aluminum-100));
+  --tw-prose-counters: rgb(var(--aluminum-400));
+  --tw-prose-bullets: rgb(var(--ember-300));
+  --tw-prose-hr: rgb(var(--aluminum-500) / 0.25);
+  --tw-prose-quotes: rgb(var(--aluminum-200));
+  --tw-prose-quote-borders: rgb(var(--ember-400) / 0.4);
+  --tw-prose-captions: rgb(var(--aluminum-400));
+  --tw-prose-code: rgb(var(--aluminum-200));
+  --tw-prose-pre-code: rgb(var(--aluminum-300));
+  --tw-prose-pre-bg: rgb(var(--graphite-700));
+  --tw-prose-th-borders: rgb(var(--aluminum-500) / 0.3);
+  --tw-prose-td-borders: rgb(var(--aluminum-500) / 0.2);
+}
+
+/* Primary CTA hover in light mode. The hover:bg-ember-300 utility yields a
+   near-black label on a dark-orange fill (3.8:1). Land on ember-500 instead
+   (6.2:1). Scoped to .text-charcoal-950 (the solid-fill CTAs) so the ember-text
+   pill keeps its translucent ember-500/20 hover rather than a solid fill. */
+:root[data-theme="light"] a.texture-noise.text-charcoal-950:hover {
+  background-color: rgb(var(--ember-500));
 }
 
 @layer utilities {

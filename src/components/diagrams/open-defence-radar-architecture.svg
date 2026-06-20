@@ -9,7 +9,7 @@
         --d-card-border: rgb(var(--aluminum-500, 90 94 101) / 0.4);
         --d-text: rgb(var(--aluminum-100, 228 231 236));
         --d-mid: rgb(var(--aluminum-300, 157 161 169));
-        --d-muted: rgb(var(--aluminum-400, 131 135 143));
+        --d-muted: rgb(var(--aluminum-300, 157 161 169));
         --d-accent: rgb(var(--ember-400, 240 139 74));
         --d-on-accent: rgb(var(--charcoal-950, 7 8 10));
         --d-soft: rgb(var(--aluminum-400, 131 135 143));
