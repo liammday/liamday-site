@@ -1,6 +1,7 @@
 {
   "pkg": "liamday-site",
   "globalName": "LiamDayUI",
+  "projectId": "de0f331f-dbfa-4c66-99b2-25dacfeab279",
   "shape": "storybook",
   "storybookConfigDir": ".storybook",
   "storybookStatic": ".design-sync/sb-reference",
