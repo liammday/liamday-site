@@ -10,12 +10,15 @@
         --d-card-border: rgb(var(--aluminum-500, 90 94 101) / 0.4);
         --d-text: rgb(var(--aluminum-100, 228 231 236));
         --d-mid: rgb(var(--aluminum-300, 157 161 169));
-        --d-muted: rgb(var(--aluminum-400, 131 135 143));
+        --d-muted: rgb(var(--aluminum-300, 157 161 169));
         --d-accent: rgb(var(--ember-400, 240 139 74));
         --d-accent-soft: rgb(var(--ember-400, 240 139 74) / 0.32);
         --d-on-accent: rgb(var(--charcoal-950, 7 8 10));
         display:block; width:100%; height:auto;
       }
+      /* Accent-coloured TEXT (ember-400) is ~2:1 on the light card/page; darken it
+         to ember-200 in light mode only (the vivid dark-theme accent is untouched). */
+      :root[data-theme="light"] .pf-out :is(.pill-t, .cue-lbl, .tc-now){ fill: rgb(var(--ember-200, 160 68 0)); }
       .pf-out text{ font-family:"Styrene B","Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
       .pf-out .mono{ font-family:"JetBrains Mono","SF Mono",Menlo,Consolas,monospace; }
       .pf-out .panel{ fill:var(--d-bg); stroke:var(--d-card-border); stroke-width:1; }
