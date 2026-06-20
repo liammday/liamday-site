@@ -1,8 +1,15 @@
 // Scroll-driven reveal animations + surface-panel spotlight glow.
 // Ported from assets/js/gsap-animations.js; GSAP now comes from the npm package
 // instead of a CDN global. Honours prefers-reduced-motion and the data-motion
-// opt-outs. Listens for `projects:changed` (dispatched by the React showcase) so
-// ScrollTrigger re-measures after a sort/filter reorders the grid.
+// opt-outs.
+//
+// Reveal model: elements start hidden (gsap.set opacity 0) and reveal on enter.
+// Reveals are ONE-WAY — no element is ever re-hidden on scroll-out or on a
+// ScrollTrigger.refresh(). This is deliberate: the projects showcase is a React
+// island whose hydration/sort/filter can fire ScrollTrigger.refresh() at any
+// time, and a re-hide callback firing during that refresh would strand a section
+// invisible with no scroll event to recover it. With reveal-only triggers a
+// refresh can, at worst, re-reveal something already visible.
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -154,16 +161,12 @@ ready(function () {
       }
 
       gsap.set(items, { y: 32, opacity: 0 });
-      ScrollTrigger.create({
-        trigger: block,
-        start: 'top 80%',
-        end: 'bottom 40%',
-        onEnter: () => gsap.to(items, { y: 0, opacity: 1, duration: 0.6, ease: 'power1.out', stagger: 0.1 }),
-        onLeaveBack: () => gsap.to(items, { y: 32, opacity: 0, duration: 0.4, ease: 'power1.in', stagger: 0.08 }),
-      });
+      const reveal = () => gsap.to(items, { y: 0, opacity: 1, duration: 0.6, ease: 'power1.out', stagger: 0.1 });
+      ScrollTrigger.create({ trigger: block, start: 'top 80%', onEnter: reveal, onEnterBack: reveal });
     });
   }
 
+  // Simple vertical reveal (experience cards).
   function initSimpleCards(selector: string) {
     const cards = gsap.utils.toArray<HTMLElement>(selector);
     if (!cards.length) return;
@@ -175,16 +178,12 @@ ready(function () {
 
     cards.forEach((card) => {
       gsap.set(card, { y: 48, opacity: 0 });
-      ScrollTrigger.create({
-        trigger: card,
-        start: 'top 80%',
-        end: 'bottom 20%',
-        onEnter: () => gsap.to(card, { y: 0, opacity: 1, duration: 0.6, ease: 'power1.out' }),
-        onLeaveBack: () => gsap.to(card, { y: 48, opacity: 0, duration: 0.45, ease: 'power1.in' }),
-      });
+      const reveal = () => gsap.to(card, { y: 0, opacity: 1, duration: 0.6, ease: 'power1.out' });
+      ScrollTrigger.create({ trigger: card, start: 'top 85%', onEnter: reveal, onEnterBack: reveal });
     });
   }
 
+  // Alternating horizontal slide reveal (capability cards, education panels).
   function initSlideCards(selector: string, scope?: Element) {
     const cards = scope
       ? gsap.utils.toArray<HTMLElement>(selector, scope)
@@ -199,13 +198,8 @@ ready(function () {
     cards.forEach((card, index) => {
       const fromX = index % 2 === 0 ? -32 : 32;
       gsap.set(card, { x: fromX, opacity: 0, transformOrigin: '50% 50%' });
-      ScrollTrigger.create({
-        trigger: card,
-        start: 'top 85%',
-        end: 'bottom 30%',
-        onEnter: () => gsap.to(card, { x: 0, opacity: 1, duration: 0.6, ease: 'power1.out' }),
-        onLeaveBack: () => gsap.to(card, { x: fromX, opacity: 0, duration: 0.45, ease: 'power1.in' }),
-      });
+      const reveal = () => gsap.to(card, { x: 0, opacity: 1, duration: 0.6, ease: 'power1.out' });
+      ScrollTrigger.create({ trigger: card, start: 'top 85%', onEnter: reveal, onEnterBack: reveal });
     });
   }
 
@@ -226,24 +220,12 @@ ready(function () {
         .timeline({ paused: true, defaults: { ease: 'power2.out' } })
         .to(card, { y: -12, scale: 1.02, boxShadow: '0 28px 55px -30px rgba(255, 176, 122, 0.6)', duration: 0.35 }, 0);
 
-      const animateIn = () => {
+      const reveal = () => {
         hoverTimeline.progress(0).pause();
         gsap.to(card, { x: 0, opacity: 1, duration: 0.6, ease: 'power1.out' });
       };
-      const resetState = () => {
-        hoverTimeline.progress(0).pause();
-        gsap.to(card, { x: fromX, opacity: 0, duration: 0.45, ease: 'power1.in' });
-      };
 
-      ScrollTrigger.create({
-        trigger: card,
-        start: 'top 85%',
-        end: 'bottom 30%',
-        onEnter: animateIn,
-        onEnterBack: animateIn,
-        onLeave: resetState,
-        onLeaveBack: resetState,
-      });
+      ScrollTrigger.create({ trigger: card, start: 'top 85%', onEnter: reveal, onEnterBack: reveal });
 
       card.addEventListener('mouseenter', () => hoverTimeline.play());
       card.addEventListener('mouseleave', () => hoverTimeline.reverse());
@@ -276,9 +258,11 @@ ready(function () {
     if (copy) gsap.set(copy, { y: 32, opacity: 0 });
     if (actionItems.length) gsap.set(actionItems, { y: 28, opacity: 0 });
 
+    // play-once: never reverse (a reverse on a refresh-driven backward toggle
+    // would strand the contact section invisible).
     const contactTimeline = gsap.timeline({
       defaults: { ease: 'power1.out' },
-      scrollTrigger: { trigger: section, start: 'top 80%', end: 'bottom 20%', toggleActions: 'play none none reverse' },
+      scrollTrigger: { trigger: section, start: 'top 80%', toggleActions: 'play none none none' },
     });
 
     if (glow) contactTimeline.to(glow, { opacity: 1, scale: 1.05, duration: 0.8 }, 0);
@@ -296,13 +280,10 @@ ready(function () {
         .to(cta, { scale: 1.05, boxShadow: '0 24px 55px -28px rgba(255, 176, 122, 0.55)', duration: 0.25 }, 0)
         .to(cta, { scale: 1.02, duration: 0.3, ease: 'power1.inOut' }, '>-0.05');
 
-      const resetHoverInstant = () => ctaHoverTimeline.progress(0).pause();
       cta.addEventListener('mouseenter', () => ctaHoverTimeline.play());
       cta.addEventListener('mouseleave', () => ctaHoverTimeline.reverse());
       cta.addEventListener('focusin', () => ctaHoverTimeline.play());
       cta.addEventListener('focusout', () => ctaHoverTimeline.reverse());
-      contactTimeline.eventCallback('onStart', resetHoverInstant);
-      contactTimeline.eventCallback('onReverseComplete', resetHoverInstant);
     }
   }
 
@@ -316,8 +297,14 @@ ready(function () {
 
   if (allowMotion) {
     ScrollTrigger.refresh();
-    // Re-measure after the React showcase sorts/filters (mirrors the original
-    // inline refreshReveal()).
+    // Re-measure once layout-affecting content settles (fonts, late images) so
+    // the initial trigger positions aren't taken mid-reflow.
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => ScrollTrigger.refresh());
+    }
+    window.addEventListener('load', () => ScrollTrigger.refresh(), { once: true });
+    // The showcase island dispatches this on a user sort/filter (not on mount);
+    // re-measure card positions. Reveal-only triggers make this safe.
     window.addEventListener('projects:changed', () => ScrollTrigger.refresh());
   }
 });

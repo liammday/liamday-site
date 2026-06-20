@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { AppProject } from '../../data/projects';
 import { ProjectCard } from './ProjectCard';
 
@@ -73,7 +73,16 @@ export function ProjectsShowcase({ projects }: ProjectsShowcaseProps) {
 
   // Let the global GSAP ScrollTrigger re-measure after a sort/filter reorders or
   // hides cards (mirrors the refreshReveal() in the original inline script).
+  // IMPORTANT: skip the initial mount. This island is client:visible, so it
+  // hydrates when scrolled into view; dispatching on mount would fire
+  // ScrollTrigger.refresh() mid-scroll and could strand nearby sections at
+  // opacity 0. Only re-measure on a genuine user sort/filter change.
+  const mountedRef = useRef(false);
   useEffect(() => {
+    if (!mountedRef.current) {
+      mountedRef.current = true;
+      return;
+    }
     window.dispatchEvent(new CustomEvent('projects:changed'));
   }, [visible]);
 
