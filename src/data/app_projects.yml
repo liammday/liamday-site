@@ -1,0 +1,198 @@
+# Template for future entries:
+# - name: App name
+#   platform: Platform (for example iOS)
+#   status: Lifecycle status
+#   audience: Primary audience
+#   icon: /assets/images/projects/your-icon.png
+#   summary: One-sentence public-facing description
+#   technologies:
+#     - Core technology
+#   features:
+#     - Key feature
+#     # NB: if a feature value contains a colon, wrap the whole line in quotes —
+#     #     "Label: detail" — or YAML parses it as a map and it renders as {"Label"=>"detail"}.
+
+- name: Career Pivot Navigator
+  platform: Applied AI · Grounded MCP
+  status: v0, open source
+  order: 1
+  date_started: "2026-05"
+  tags: [python, applied-ai, mcp, defence, open-source]
+  icon: /assets/images/projects/career-pivot-navigator-icon.png
+  icon_webp: /assets/images/projects/career-pivot-navigator-icon.webp
+  link: /projects/career-pivot-navigator/
+  link_label: Read the case study
+  audience: A governed career-transition tool for UK service leavers that translates a military role into realistic civilian occupations grounded in cited open data, and produces one transition plan that is guidance, never a determination.
+  summary: >
+    Career Pivot Navigator runs inside an ordinary person's own Claude, with no LLM API and no per-token cost. A deterministic connector translates a military role into candidate civilian occupations, grounds each in cited open labour-market data (ONS pay and employment, DfE 2035 projections, ESCO skills) and ranks them; a Claude Skill orchestrates the flow and enforces the responsible-spine guardrails; and a self-contained artifact presents one cited transition plan. Every figure carries its source, and benefits, medical and mental-health questions are refused and signposted.
+  technologies:
+    - Python
+    - Model Context Protocol (MCP)
+    - Claude Skill
+    - ONS · DfE · ESCO open data
+    - Open Government Licence · CC BY
+    - pytest · ruff
+  features:
+    - "Grounded by construction: every pay, demand, projection and skills figure carries its source and date, and a suppressed estimate is returned as unavailable rather than guessed."
+    - Military-to-civilian translation from a curated SOC map, with deterministic ranking on cited pay, current employment and 2035 outlook.
+    - "Responsible spine: guidance never determination, with principled refusal and signposting on benefits, legal, medical and mental-health questions, tested so it cannot quietly rot."
+    - "No LLM API: all reasoning runs in the user's own Claude across three Anthropic-native pieces, a connector, a Skill, and a publish-from-server artifact."
+    - "Open data only, public-domain safe: maintained ONS, DfE and ESCO sources, chosen after the originally-planned source was verified discontinued."
+
+- name: Open Defence Radar
+  platform: Applied AI · Grounded RAG
+  status: v1.0.0, open source
+  order: 2
+  date_started: "2026-04"
+  tags: [python, applied-ai, mcp, defence, open-source, rag]
+  icon: /assets/images/projects/open-defence-radar-icon.png
+  icon_webp: /assets/images/projects/open-defence-radar-icon.webp
+  link: /projects/open-defence-radar/
+  link_label: Read the case study
+  audience: A grounded retrieval engine over open UK defence-and-security data, where every answer cites its sources and quality is measured in CI.
+  summary: >
+    Open Defence Radar is a clearance-safe RAG system over open government data: public procurement notices, tenders, and GOV.UK and MoD news, all openly licensed. It retrieves with a hybrid of semantic and keyword search, synthesises an answer where every claim traces to a fetched, licensed source, and exposes the whole thing as an MCP tool, a CLI, and a web console with a trust dashboard. A CI-gated evaluation harness holds retrieval hit-rate and answer groundedness to a floor on every commit, so quality is measured, not asserted.
+  technologies:
+    - Python
+    - Anthropic / Gemini APIs
+    - Model Context Protocol (MCP)
+    - FastAPI
+    - SQLite · sqlite-vec · FTS5
+    - Local embeddings (BGE)
+    - LLM-as-judge evaluation
+  features:
+    - Grounded synthesis where every claim carries a citation to a fetched, licensed source, and an unsupported question returns an honest "no support" rather than a guess.
+    - CI-gated evaluation harness scoring retrieval hit-rate, recall and MRR plus LLM-judged groundedness, with floors that fail the build on regression.
+    - Hybrid retrieval, semantic plus keyword fused with Reciprocal Rank Fusion, over a single SQLite store holding vectors, a keyword index, and full provenance.
+    - "Exposed four ways from one core: a read-only MCP query tool, a CLI, a web console with a trust dashboard, and an agent that decomposes broad questions into one cited brief."
+    - "Clearance-safe by design: open sources only, analytic not operational, region-level only, with recorded provenance and no secrets in the repository."
+
+- name: PodForge
+  platform: Personal Applied AI · Self-hosted
+  status: Live, multi-feed
+  order: 3
+  date_started: "2026-03"
+  tags: [applied-ai, mcp, python, self-hosted, personal]
+  icon: /assets/images/projects/podforge-icon.png
+  icon_webp: /assets/images/projects/podforge-icon.webp
+  link: /projects/podforge/
+  link_label: Read the case study
+  audience: A self-hosted, multi-feed podcast generator where Claude writes the script, a Mac renders it with a local voice, and a Raspberry Pi publishes the RSS — a Claude-first alternative to NotebookLM that needs no ElevenLabs subscription and costs nothing per episode.
+  summary: >
+    PodForge turns a topic into a finished, published podcast episode with no studio, no cloud bill and no per-episode cost. Claude writes a real transcript to the brief of whichever feed is being published; a background service on a Mac renders it with Kokoro, a local text-to-speech voice, then mixes jingles and sound effects and normalises loudness; a Raspberry Pi writes the MP3 and rebuilds the RSS feed, and the episode lands in an ordinary podcast app seconds later. One command wraps the whole run and the same toolchain is exposed as an MCP server. A measured calibration loop sets each script's length target from the real duration of the last episode, per feed, so the estimate sharpens with use.
+  technologies:
+    - Claude (Skill-orchestrated)
+    - Model Context Protocol (MCP)
+    - Kokoro local TTS
+    - Python (AI-paired)
+    - Raspberry Pi · RSS
+    - Cloudflare Tunnel
+  features:
+    - "Claude-first alternative to NotebookLM: the writing stays in a conversation, the voice renders locally on Apple Silicon, and no hosted text-to-speech subscription is required."
+    - "Dual-purpose, multi-feed engine: a focused two-host study feed for MBA revision and a gentler children's feed that answers an eight-year-old's silly questions, each with its own cast, tone, jingles and rules."
+    - "Zero marginal cost by design: local rendering keeps every voice and script on owned hardware, works offline, and a swappable voice seam lets a paid model be measured against the calibration loop rather than assumed."
+    - "Honest by design: a fixed, registered cast of fictional hosts, a hard no-impersonation rule on the children's feed, British English, and per-feed reading levels enforced before anything renders."
+    - "Delivered as ordinary podcast RSS: the children's show inherits the Apple ecosystem's native Screen Time and parental controls — a personalised counterpart to a Toniebox."
+
+- name: LifeOS
+  platform: Personal Applied AI System
+  status: Daily personal use
+  order: 4
+  date_started: "2026-02"
+  tags: [applied-ai, mcp, python, personal, obsidian]
+  icon: /assets/images/projects/LifeOSAppIcon-256.png
+  icon_webp: /assets/images/projects/LifeOSAppIcon-256.webp
+  link: /projects/lifeos/
+  link_label: Read the case study
+  audience: A personal exploration of Claude and MCP as the operating system for life administration.
+  summary: >
+    LifeOS is a personal Claude-and-MCP orchestration system that treats life administration as software. Ingests communications streams (email across multiple accounts, postal scans, downloads), extracts structured signal, cross-links against authoritative personal records, and proactively manages recurring real-world actions. Runs daily, powered by a self-authored job-application-tracking MCP, twelve-plus scheduled tasks, and broad orchestration of open-source MCPs across Obsidian, SQL, document OCR and CLI integrations.
+  technologies:
+    - Claude API
+    - Anthropic MCP
+    - Obsidian
+    - SQL
+    - Python (AI-paired)
+    - Custom MCP servers
+  features:
+    - Ingestion pipeline across email, postal scans and downloads with per-domain routing into structured knowledge bases.
+    - Twelve-plus scheduled tasks running daily ingestion, briefings, proactive monitoring and contextual actions.
+    - Self-authored job-application-tracking MCP that orchestrates the full lifecycle of an application from JD analysis through draft management.
+    - "Self-improving skills: internal performance tracking informs external skill and tool research so the system iterates on its own deployment patterns over time."
+
+- name: Peaking
+  platform: iOS
+  status: Active development
+  order: 5
+  date_started: "2024-06"
+  tags: [swift, ios, mapkit, cloudkit, personal]
+  audience: For hikers and mountaineers who track summits, routes, and collection progress.
+  icon: /assets/images/projects/PeakingAppIcon-256.png
+  icon_webp: /assets/images/projects/PeakingAppIcon-256.webp
+  link: https://testflight.apple.com/join/2T6FwyZF
+  link_label: Beta test this app
+  summary: >
+    Peaking is a mountain companion app for discovering peaks, verifying summits from route data, and tracking progress across iconic hiking lists even with patchy connectivity.
+  technologies:
+    - SwiftUI
+    - SwiftData
+    - CloudKit
+    - MapKit
+    - Overpass API (OpenStreetMap)
+    - HealthKit
+    - Strava API
+    - PhotosUI
+    - Charts
+  features:
+    - Interactive peak discovery map with clustering, filtering, and rich metadata.
+    - Route imports from Apple HealthKit (Apple Watch primary, with bridge-app support for Garmin / Polar / Suunto via HealthFit or RunGap) and Strava, with automated summit matching and GPX export for portability.
+    - Published and user-created collections (for example Munros and Wainwrights) with completion tracking.
+    - Offline-first cache layers for map tiles and peak data with cloud-synced personal progress.
+
+- name: Training
+  platform: iOS
+  status: Active development
+  order: 6
+  date_started: "2025-01"
+  tags: [swift, ios, healthkit, personal]
+  audience: For athletes, coaches, and habit-focused users who want stronger training consistency.
+  icon: /assets/images/projects/TrainingAppIcon-256.png
+  icon_webp: /assets/images/projects/TrainingAppIcon-256.webp
+  summary: >
+    Training is a planning-and-accountability app that turns weekly intentions into measurable progress by comparing planned sessions with real workouts recorded in Apple Health.
+  technologies:
+    - SwiftUI
+    - SwiftData
+    - HealthKit
+    - EventKit
+    - UserNotifications
+    - AppIntents
+    - Foundation Models (iOS 26+)
+  features:
+    - Unified timeline for planned workouts, completed sessions, period goals, and rest days.
+    - Goal system for daily, weekly, monthly, and yearly targets, including nutrition and body metrics.
+    - Smart creation flow with natural-language workout parsing on supported devices.
+    - Calendar sync and notifications that keep plans visible and actionable.
+
+- name: Squash Tracker
+  platform: iOS & watchOS
+  order: 7
+  date_started: "2025-03"
+  tags: [swift, ios, watchos, healthkit, personal]
+  audience: For squash players who want to record matches, track scores, and review performance over time.
+  icon: /assets/images/projects/SquashTrackerAppIcon-256.png
+  icon_webp: /assets/images/projects/SquashTrackerAppIcon-256.webp
+  summary: >
+    Squash Tracker is a match companion app for recording live squash games on Apple Watch, capturing rally-by-rally scores and health metrics, and reviewing detailed match statistics across your playing history.
+  technologies:
+    - SwiftUI
+    - SwiftData
+    - HealthKit
+    - WatchKit
+    - CloudKit
+    - MapKit
+  features:
+    - Live match recording on Apple Watch with rally input, service tracking, and score announcements.
+    - Heart rate and active energy capture via HealthKit workout sessions during play.
+    - Player and court management with location mapping and match history.
+    - Detailed match statistics including win-loss records, game breakdowns, and milestone tracking.

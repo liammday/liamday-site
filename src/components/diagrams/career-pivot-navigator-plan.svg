@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-labelledby="cpn-plan-title cpn-plan-desc" class="cpn-plan">
+  <title id="cpn-plan-title">Example output: a cited civilian shortlist</title>
+  <desc id="cpn-plan-desc">A transition-plan panel for a Royal Signals sergeant. A "guidance, not a determination" pill sits in the header. Three ranked civilian occupations follow, each with its pay, employment and 2035 outlook and the source and date behind every figure: Cyber security professionals (SOC 2135), the recommended stretch with median pay £42,803 a year from ONS ASHE 2021, about 83,500 in post from ONS APS 2025, and growth of 16.9 percent to 2035 from the DfE; IT network professionals (SOC 2137) at £39,012; and Telecoms installers (SOC 5242) at £32,973 with a declining outlook. A footer notes that benefits, medical and mental-health questions are refused and signposted, never answered.</desc>
+
+  <defs>
+    <style>
+      .cpn-plan{
+        --d-bg: rgb(var(--charcoal-900, 26 28 31));
+        --d-card-bg: rgb(var(--graphite-600, 38 41 46));
+        --d-card-border: rgb(var(--aluminum-500, 90 94 101) / 0.4);
+        --d-text: rgb(var(--aluminum-100, 228 231 236));
+        --d-mid: rgb(var(--aluminum-300, 157 161 169));
+        --d-muted: rgb(var(--aluminum-400, 131 135 143));
+        --d-accent: rgb(var(--ember-400, 240 139 74));
+        --d-on-accent: rgb(var(--charcoal-950, 7 8 10));
+        display:block; width:100%; height:auto;
+      }
+      .cpn-plan text{ font-family:"Styrene B","Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+      .cpn-plan .h1{ font-size:23px; font-weight:600; fill:var(--d-text); }
+      .cpn-plan .sub{ font-size:14px; fill:var(--d-mid); }
+      .cpn-plan .lane{ font-size:11px; font-weight:600; fill:var(--d-muted); letter-spacing:1.5px; text-transform:uppercase; }
+      .cpn-plan .occ{ font-size:17px; font-weight:600; fill:var(--d-text); }
+      .cpn-plan .metric{ font-size:15px; fill:var(--d-text); }
+      .cpn-plan .src{ font-size:12px; fill:var(--d-muted); }
+      .cpn-plan .panel{ fill:var(--d-bg); stroke:var(--d-card-border); stroke-width:1; }
+      .cpn-plan .row{ fill:var(--d-card-bg); stroke:var(--d-card-border); stroke-width:1; }
+      .cpn-plan .rowtop{ fill:var(--d-card-bg); stroke:var(--d-accent); stroke-width:2; }
+      .cpn-plan .pill{ fill:none; stroke:var(--d-accent); stroke-width:1.5; }
+      .cpn-plan .pilltext{ font-size:13px; font-weight:600; fill:var(--d-accent); }
+      .cpn-plan .badge{ fill:var(--d-accent); }
+      .cpn-plan .badge-soft{ fill:none; stroke:var(--d-muted); stroke-width:1.5; }
+      .cpn-plan .badge-n{ font-size:15px; font-weight:700; fill:var(--d-on-accent); }
+      .cpn-plan .badge-n-soft{ font-size:15px; font-weight:700; fill:var(--d-mid); }
+      .cpn-plan .fit{ font-size:11px; font-weight:600; letter-spacing:1px; text-transform:uppercase; fill:var(--d-muted); }
+    </style>
+  </defs>
+
+  <rect x="16" y="16" width="1168" height="688" rx="20" class="panel"/>
+
+  <!-- Header -->
+  <text x="48" y="74" class="h1">Transition plan</text>
+  <rect x="812" y="48" width="340" height="38" rx="19" class="pill"/>
+  <text x="982" y="73" class="pilltext" text-anchor="middle">guidance, not a determination</text>
+  <text x="48" y="104" class="sub">Royal Signals sergeant to civilian. Shortlist ranked on pay, demand and 2035 outlook.</text>
+  <line x1="48" y1="128" x2="1152" y2="128" stroke="var(--d-card-border)"/>
+
+  <!-- Row 1 (recommended) -->
+  <rect x="48" y="150" width="1104" height="150" rx="12" class="rowtop"/>
+  <circle cx="94" cy="196" r="21" class="badge"/>
+  <text x="94" y="201" class="badge-n" text-anchor="middle">1</text>
+  <text x="134" y="190" class="occ">Cyber security professionals</text>
+  <text x="134" y="214" class="src">SOC 2135 · the recommended stretch, best paid and growing</text>
+  <text x="1130" y="190" class="fit" text-anchor="end" fill="var(--d-accent)">recommended</text>
+  <text x="134" y="256" class="metric">£42,803 / yr   ·   ~83,500 in post   ·   growing +16.9% to 2035</text>
+  <text x="134" y="282" class="src">ONS ASHE 2021   ·   ONS APS via Nomis 2025   ·   DfE Skills Imperative 2035</text>
+
+  <!-- Row 2 -->
+  <rect x="48" y="316" width="1104" height="150" rx="12" class="row"/>
+  <circle cx="94" cy="362" r="21" class="badge-soft"/>
+  <text x="94" y="367" class="badge-n-soft" text-anchor="middle">2</text>
+  <text x="134" y="356" class="occ">IT network professionals</text>
+  <text x="134" y="380" class="src">SOC 2137 · the most direct fit, least retraining</text>
+  <text x="1130" y="356" class="fit" text-anchor="end">close fit</text>
+  <text x="134" y="422" class="metric">£39,012 / yr   ·   ~30,500 in post   ·   growing +16.9% to 2035</text>
+  <text x="134" y="448" class="src">ONS ASHE 2021   ·   ONS APS via Nomis 2025   ·   DfE Skills Imperative 2035</text>
+
+  <!-- Row 3 -->
+  <rect x="48" y="482" width="1104" height="150" rx="12" class="row"/>
+  <circle cx="94" cy="528" r="21" class="badge-soft"/>
+  <text x="94" y="533" class="badge-n-soft" text-anchor="middle">3</text>
+  <text x="134" y="522" class="occ">Telecoms installers and repairers</text>
+  <text x="134" y="546" class="src">SOC 5242 · direct on paper, but treat as a fallback</text>
+  <text x="1130" y="522" class="fit" text-anchor="end">declining</text>
+  <text x="134" y="588" class="metric">£32,973 / yr   ·   ~37,500 in post   ·   declining −6.9% to 2035</text>
+  <text x="134" y="614" class="src">ONS ASHE 2021   ·   ONS APS via Nomis 2025   ·   DfE Skills Imperative 2035</text>
+
+  <!-- Footer -->
+  <text x="48" y="672" class="src">Benefits, medical and mental-health questions are refused and signposted, never answered.</text>
+</svg>

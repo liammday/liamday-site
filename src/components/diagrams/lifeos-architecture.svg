@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 600" role="img" aria-labelledby="lifeos-arch-title lifeos-arch-desc" class="lifeos-architecture">
+  <title id="lifeos-arch-title">LifeOS architecture</title>
+  <desc id="lifeos-arch-desc">Four ingestion sources (Apple Mail, Preview iCloud scans, Downloads, and inbox/raw/) flow into a daily-ingestion orchestrator scheduled at 05:30, which delegates to a per-item ingest-triage primitive. The primitive writes into a central spine surrounded by eight domain nodes: finances, pensions, car, insurance, dentist-search, and three sensitive domains shown dashed.</desc>
+
+  <defs>
+    <radialGradient id="lifeos-arch-spine-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="var(--diagram-accent)" stop-opacity="0.22"/>
+      <stop offset="60%" stop-color="var(--diagram-accent)" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="var(--diagram-accent)" stop-opacity="0"/>
+    </radialGradient>
+
+    <marker id="lifeos-arch-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="var(--diagram-accent)"/>
+    </marker>
+
+    <marker id="lifeos-arch-arrow-soft" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="var(--diagram-edge-soft)"/>
+    </marker>
+  </defs>
+
+  <!-- Lane labels -->
+  <text x="250" y="100" class="lane-label" text-anchor="middle">Sources</text>
+  <text x="550" y="100" class="lane-label" text-anchor="middle">Pipeline</text>
+  <text x="1000" y="100" class="lane-label" text-anchor="middle">Spine and domains</text>
+
+  <!-- ============== Sources cluster ============== -->
+  <g transform="translate(130, 240)">
+    <g transform="translate(0, 0)">
+      <rect x="0" y="0" width="240" height="44" rx="8" class="card"/>
+      <circle cx="22" cy="22" r="5" class="accent-dot"/>
+      <text x="40" y="27" class="node-label">Apple Mail, 3 accounts</text>
+    </g>
+    <g transform="translate(0, 58)">
+      <rect x="0" y="0" width="240" height="44" rx="8" class="card"/>
+      <circle cx="22" cy="22" r="5" class="accent-dot"/>
+      <text x="40" y="27" class="node-label">Preview iCloud scans</text>
+    </g>
+    <g transform="translate(0, 116)">
+      <rect x="0" y="0" width="240" height="44" rx="8" class="card"/>
+      <circle cx="22" cy="22" r="5" class="accent-dot"/>
+      <text x="40" y="27" class="node-label">Downloads, local + iCloud</text>
+    </g>
+    <g transform="translate(0, 174)">
+      <rect x="0" y="0" width="240" height="44" rx="8" class="card"/>
+      <circle cx="22" cy="22" r="5" class="accent-dot"/>
+      <text x="40" y="27" class="node-label">inbox/raw/, manual drop</text>
+    </g>
+  </g>
+
+  <!-- ============== Pipeline cluster ============== -->
+  <g transform="translate(440, 260)">
+    <!-- Orchestrator -->
+    <rect x="0" y="0" width="220" height="80" rx="12" class="orchestrator"/>
+    <text x="110" y="32" class="orchestrator-label" text-anchor="middle">daily-ingestion</text>
+    <text x="110" y="54" class="orchestrator-sublabel mono" text-anchor="middle">orchestrator, 05:30</text>
+
+    <!-- Arrow orchestrator → primitive -->
+    <line x1="110" y1="90" x2="110" y2="120" class="accent-line" marker-end="url(#lifeos-arch-arrow)"/>
+
+    <!-- Primitive -->
+    <rect x="0" y="130" width="220" height="80" rx="12" class="primitive"/>
+    <text x="110" y="162" class="primitive-label" text-anchor="middle">ingest-triage</text>
+    <text x="110" y="184" class="primitive-sublabel mono" text-anchor="middle">per-item primitive</text>
+  </g>
+
+  <!-- Source → orchestrator arrows -->
+  <path d="M 370 261 Q 405 261 440 300" fill="none" class="soft-line" marker-end="url(#lifeos-arch-arrow-soft)"/>
+  <path d="M 370 319 Q 405 319 440 305" fill="none" class="soft-line" marker-end="url(#lifeos-arch-arrow-soft)"/>
+  <path d="M 370 377 Q 405 377 440 315" fill="none" class="soft-line" marker-end="url(#lifeos-arch-arrow-soft)"/>
+  <path d="M 370 435 Q 405 435 440 320" fill="none" class="soft-line" marker-end="url(#lifeos-arch-arrow-soft)"/>
+
+  <!-- ============== Spine + Domains constellation ============== -->
+  <!-- Glow behind spine -->
+  <circle cx="1000" cy="320" r="240" fill="url(#lifeos-arch-spine-glow)"/>
+
+  <!-- Spine, central -->
+  <g transform="translate(1000, 320)">
+    <circle r="60" class="spine"/>
+    <text x="0" y="-4" class="spine-label" text-anchor="middle">Spine</text>
+    <text x="0" y="14" class="spine-sublabel" text-anchor="middle">Tier 1</text>
+  </g>
+
+  <!-- Eight domain nodes in a ring around the spine -->
+  <g transform="translate(1000, 150)">
+    <circle r="34" class="domain"/>
+    <text x="0" y="4" class="node-label" text-anchor="middle">finances</text>
+  </g>
+  <g transform="translate(1120, 200)">
+    <circle r="34" class="domain"/>
+    <text x="0" y="4" class="node-label" text-anchor="middle">pensions</text>
+  </g>
+  <g transform="translate(1170, 320)">
+    <circle r="34" class="domain"/>
+    <text x="0" y="4" class="node-label" text-anchor="middle">car</text>
+  </g>
+  <g transform="translate(1120, 440)">
+    <circle r="34" class="domain"/>
+    <text x="0" y="4" class="node-label" text-anchor="middle">insurance</text>
+  </g>
+  <g transform="translate(1000, 490)">
+    <circle r="34" class="domain domain--sensitive"/>
+    <text x="0" y="4" class="node-label" text-anchor="middle">sensitive</text>
+  </g>
+  <g transform="translate(880, 440)">
+    <circle r="34" class="domain domain--sensitive"/>
+    <text x="0" y="4" class="node-label" text-anchor="middle">sensitive</text>
+  </g>
+  <g transform="translate(830, 320)">
+    <circle r="34" class="domain"/>
+    <text x="0" y="-1" class="node-label" text-anchor="middle">dentist-</text>
+    <text x="0" y="11" class="node-label" text-anchor="middle">search</text>
+  </g>
+  <g transform="translate(880, 200)">
+    <circle r="34" class="domain domain--sensitive"/>
+    <text x="0" y="4" class="node-label" text-anchor="middle">sensitive</text>
+  </g>
+
+  <!-- Spine → domain connectors -->
+  <g class="spine-connector">
+    <line x1="1000" y1="260" x2="1000" y2="184"/>
+    <line x1="1042" y1="278" x2="1096" y2="224"/>
+    <line x1="1060" y1="320" x2="1136" y2="320"/>
+    <line x1="1042" y1="362" x2="1096" y2="416"/>
+    <line x1="1000" y1="380" x2="1000" y2="456"/>
+    <line x1="958" y1="362" x2="904" y2="416"/>
+    <line x1="940" y1="320" x2="864" y2="320"/>
+    <line x1="958" y1="278" x2="904" y2="224"/>
+  </g>
+
+  <!-- Arrow from primitive → spine -->
+  <path d="M 660 360 Q 800 360 940 320" fill="none" class="accent-line" marker-end="url(#lifeos-arch-arrow)"/>
+</svg>

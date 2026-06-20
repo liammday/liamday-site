@@ -1,49 +1,90 @@
 ---
-// TEMPORARY smoke-test page to validate the Tailwind v4 token port in both
-// themes. Replaced by the real home page in P6.
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { cv } from '../data/cv';
+import { appProjects } from '../data/projects';
+import { site } from '../data/site';
+import { withExperienceYears } from '../lib/experience';
+import { Hero } from '../components/ui/Hero';
+import { SectionHeading } from '../components/ui/SectionHeading';
+import { ExperienceCard } from '../components/ui/ExperienceCard';
+import { CapabilityCard } from '../components/ui/CapabilityCard';
+import { EducationPanel } from '../components/ui/EducationPanel';
+import { ProjectsShowcase } from '../components/ui/ProjectsShowcase';
+import { ContactSection } from '../components/ui/ContactSection';
+
+const profileText = withExperienceYears(cv.profile);
+const heroStats = cv.hero_stats.map((s) => ({ ...s, value: withExperienceYears(s.value) }));
+
+const navItems = ['experience', 'capabilities', 'education', 'projects', 'contact'];
 ---
 
-<BaseLayout title="Smoke test">
-  <section class="bg-charcoal-900 py-20">
-    <div class="mx-auto flex max-w-5xl flex-col gap-10 px-6">
-      <span
-        class="inline-flex w-fit items-center rounded-full border border-ember-400/30 bg-ember-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.4em] text-ember-200 texture-noise"
-        >Token smoke test</span
-      >
-      <h1 class="text-4xl font-semibold text-aluminum-100 sm:text-5xl">Tailwind v4 port check</h1>
-      <p class="max-w-3xl text-lg leading-relaxed text-aluminum-300">
-        Charcoal surfaces, aluminum text, ember accent, the anodised texture, and the surface-panel
-        spotlight should all render here — and invert correctly when you switch the theme in the
-        footer.
-      </p>
+<BaseLayout>
+  <Hero badge={cv.hero_badge} profileText={profileText} stats={heroStats} email={site.contact.email} />
 
-      <div class="flex flex-wrap gap-4">
-        <a class="inline-flex items-center justify-center rounded-full bg-ember-400 px-6 py-3 text-sm font-semibold text-charcoal-950 shadow-glow transition texture-noise hover:bg-ember-300" href="#">Primary action</a>
-        <a class="inline-flex items-center justify-center rounded-full border border-aluminum-500/25 px-6 py-3 text-sm font-semibold text-aluminum-100 transition hover:border-ember-400/40 hover:bg-ember-500/10" href="#">Secondary action</a>
+  <nav
+    class="sticky top-0 z-40 border-b border-aluminum-500/20 bg-charcoal-900/95 backdrop-blur"
+    aria-label="On this page"
+    data-sticky-nav>
+    <div class="mx-auto w-full max-w-5xl">
+      <div class="relative flex gap-3 overflow-x-auto px-6 py-4 text-sm" data-nav-scroll>
+        {
+          navItems.map((item) => (
+            <a
+              class="relative z-10 whitespace-nowrap rounded-full border border-transparent px-4 py-2 font-medium text-aluminum-300 transition hover:border-aluminum-500/40 hover:text-aluminum-100 aria-[current=page]:border-ember-400/50 aria-[current=page]:bg-ember-500/10 aria-[current=page]:text-ember-200 aria-[current=page]:texture-noise"
+              href={`#${item}`}
+              data-nav-link>
+              {item.charAt(0).toUpperCase() + item.slice(1)}
+            </a>
+          ))
+        }
       </div>
+    </div>
+  </nav>
 
-      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        <article class="surface-panel p-6">
-          <p class="text-sm uppercase tracking-[0.3em] text-aluminum-400">Surface panel</p>
-          <p class="mt-3 text-2xl font-semibold text-aluminum-100">Hover me</p>
-          <p class="mt-2 text-sm text-aluminum-400">Spotlight glow + ember ring on hover.</p>
-        </article>
-        <article class="surface-panel p-6">
-          <p class="text-sm font-semibold text-aluminum-100">Tags</p>
-          <ul class="mt-4 flex flex-wrap gap-2">
-            <li class="rounded-full border border-aluminum-500/30 bg-graphite-700/70 px-3 py-1 text-xs font-medium text-aluminum-200">Astro</li>
-            <li class="rounded-full border border-aluminum-500/30 bg-graphite-700/70 px-3 py-1 text-xs font-medium text-aluminum-200">React</li>
-            <li class="rounded-full border border-aluminum-500/30 bg-graphite-700/70 px-3 py-1 text-xs font-medium text-aluminum-200">Tailwind v4</li>
-          </ul>
-        </article>
-        <article class="surface-panel p-6">
-          <p class="text-sm font-semibold text-aluminum-100">Prose</p>
-          <div class="prose prose-invert mt-4 max-w-none">
-            <p>Body copy via the typography plugin, themed for dark and light.</p>
-          </div>
-        </article>
+  <section
+    id="experience"
+    class="scroll-mt-32 flex min-h-screen flex-col justify-center border-b border-aluminum-500/20 bg-charcoal-900">
+    <div class="mx-auto w-full max-w-5xl px-6 py-16">
+      <SectionHeading
+        title="Experience"
+        intro="A career spanning operational command and digital delivery — leading teams through change, scaling new practices, and keeping complex products moving."
+      />
+      <div class="mt-12 space-y-8">
+        {cv.employment.map((role) => <ExperienceCard {...role} />)}
       </div>
     </div>
   </section>
+
+  <section
+    id="capabilities"
+    class="scroll-mt-32 flex min-h-screen flex-col justify-center border-b border-aluminum-500/20 bg-charcoal-900">
+    <div class="mx-auto w-full max-w-5xl px-6 py-16">
+      <SectionHeading
+        title="Core capabilities"
+        intro="A blend of operational discipline and modern product practice to move complex teams forward with clarity."
+      />
+      <div class="mt-12 grid gap-6 md:grid-cols-2">
+        {cv.competencies.map((c) => <CapabilityCard title={c.title} description={c.description} />)}
+      </div>
+    </div>
+  </section>
+
+  <section
+    id="education"
+    class="scroll-mt-32 flex min-h-screen flex-col justify-center border-b border-aluminum-500/20 bg-charcoal-900">
+    <div class="mx-auto w-full max-w-5xl px-6 py-16">
+      <SectionHeading
+        title="Education & Certifications"
+        intro="Continuous learning underpins how I introduce new practices. Formal study and targeted certifications keep my leadership grounded in current technology and governance standards."
+      />
+      <div class="mt-12 grid gap-8 lg:grid-cols-2">
+        <EducationPanel heading="Education" items={cv.education} />
+        <EducationPanel heading="Certifications" items={cv.certifications} />
+      </div>
+    </div>
+  </section>
+
+  <ProjectsShowcase client:visible projects={appProjects} />
+
+  <ContactSection email={site.contact.email} linkedin={site.social.linkedin} github={site.social.github} />
 </BaseLayout>
