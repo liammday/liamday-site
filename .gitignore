@@ -1,8 +1,17 @@
 # Astro / Node
 dist/
+dist-ui/
 .astro/
 node_modules/
 storybook-static/
+
+# design-sync (transient build/verify state; config + conventions + previews are committed)
+.design-sync/sb-reference/
+.design-sync/learnings/
+.design-sync/.cache/
+.design-sync/node_modules
+.ds-sync/
+ds-bundle/
 
 # Jekyll (legacy — kept as migration reference until cutover)
 _site/

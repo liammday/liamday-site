@@ -1,0 +1,24 @@
+{
+  "pkg": "liamday-site",
+  "globalName": "LiamDayUI",
+  "shape": "storybook",
+  "storybookConfigDir": ".storybook",
+  "storybookStatic": ".design-sync/sb-reference",
+  "srcDir": "src/components/ui",
+  "entry": "dist-ui/index.js",
+  "buildCmd": "npm run build:lib && npx storybook build -c .storybook -o .design-sync/sb-reference",
+  "readmeHeader": ".design-sync/conventions.md",
+  "componentSrcMap": {
+    "ExternalLinkIcon": null,
+    "ThemeFrame": null
+  },
+  "provider": {
+    "component": "ThemeFrame"
+  },
+  "storyImports": {
+    "loaders": {
+      ".png": "dataurl",
+      ".webp": "dataurl"
+    }
+  }
+}
