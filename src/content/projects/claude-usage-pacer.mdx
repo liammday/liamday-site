@@ -1,0 +1,117 @@
+---
+title: Claude Usage Pacer
+description: A build case study on a macOS menu bar tool that paces a Claude Max subscription against both reset cycles, the rolling five-hour window and the weekly cap, aiming for near-full use while holding a reserve for routine work. Documents the failure that had silently killed the off-the-shelf tool it replaced, and one projection bug caught by a test.
+summary: A self-built menu bar app that reads the authoritative usage API, models burn-down against my working hours, harvests idle overnight capacity through scheduled work, and nudges my phone. It replaced a third-party tool that had quietly stopped working.
+role: Architect, operator, and engineer (AI-paired)
+year: 2026
+client: Personal applied-AI build
+order: 4
+type: Case study
+image: /assets/images/projects/claude-usage-pacer-og-card.png
+hero_image: /assets/images/projects/claude-usage-pacer-hero.svg
+hero_image_width: 1600
+hero_image_height: 800
+hero_image_alt: "A glowing dual-ring usage gauge on a warm-dark field, an outer weekly ring and an inner five-hour ring with a target tick, usage lines feeding in from the left and a rising curve of five-hour window markers fanning to the right, one of them lit and ringed."
+nav:
+  - id: lede
+    label: What it does
+  - id: problem
+    label: The problem
+  - id: data
+    label: Where the numbers come from
+  - id: brain
+    label: The pacing model
+  - id: harvest
+    label: Capacity and harvest
+  - id: failure
+    label: Failure and fix
+  - id: open
+    label: Open work
+---
+
+<h2 id="lede" class="scroll-mt-32">What it does</h2>
+
+Claude's Max plan meters usage two ways at once. There is a rolling five-hour window that starts on your first message and resets five hours later, and there is a weekly cap that resets every seven days across every surface you use. Paying for the plan and then leaving a third of the weekly allowance unused is the quiet, common waste. The Usage Pacer is a small macOS menu bar tool that exists to stop that happening.
+
+It shows both meters at a glance, a five-hour indicator and a weekly indicator, each with its own colour and percentage. Behind that glanceable read, it models how fast I am spending the weekly budget against how much of the week is left, and works out whether I am on track to use almost all of it while still holding back enough for the routine admin that has to happen later in the week. When I drift under pace it nudges my phone. When I am about to exhaust the week early it tells me to ease off.
+
+The first thing it did, before any of that, was tell me the tool I was replacing had been dead since breakfast.
+
+<h2 id="problem" class="scroll-mt-32">The problem</h2>
+
+Two reset cycles pulling in different directions is harder to manage by feel than it sounds. The five-hour window rewards bursts. The weekly cap rewards spreading the load. Aim only at the weekly number and you can hit the short-term wall mid-afternoon with plenty of weekly budget left. Aim only at the five-hour window and you drift toward the end of the week with a quarter of what you paid for unspent.
+
+The goal I wanted the tool to hold was specific: use close to one hundred percent of the weekly allowance, while always keeping a reserve in hand for the routine jobs that run later in the week, and never run dry by accident. Off-the-shelf monitors show you the current numbers, but a number is not a plan. None of them paced.
+
+And the one I was running had a deeper fault. It was showing me a comfortable two percent when I had in fact been working for hours. It had not crashed. It was simply reporting a figure that had frozen at dawn, which is the most dangerous failure a monitor can have, because you keep trusting it.
+
+<h2 id="data" class="scroll-mt-32">Where the numbers come from</h2>
+
+The right data turned out to exist, just not where a casual tool would look. The authoritative source is an undocumented endpoint, the OAuth usage API, authorised with the Claude Code token held in the macOS Keychain. It returns a structured list of limits: the five-hour session limit, the weekly all-models limit, and a model-scoped weekly limit, each with a utilisation percentage and a reset time. These are the same figures the official usage screen shows, so there is no page scraping and no guessing. The collector reads that list, tracks whichever weekly bucket is closest to its cap rather than assuming the all-models one always binds, and writes a small rolling state file with history.
+
+The reason the old tool had died was sitting one layer down. The access token expires roughly every eight hours, and only the refresh token can mint a new one. When I opened the bonnet, the Keychain's refresh token was empty, the token endpoint sits behind bot protection so a script cannot renew it directly, and the headless refresh had been returning an authentication error since 06:47 that morning. The fix was a single interactive re-login to repopulate the refresh token, after which the collector keeps it alive by letting the official client do its own refresh whenever the token nears expiry. The lesson I kept is the one the dead tool taught for free: a monitor that fails silently is worse than no monitor at all.
+
+<h2 id="brain" class="scroll-mt-32">The pacing model</h2>
+
+The core is a burn-down model. The weekly target is one hundred percent minus a reserve, fifteen percent by default. From there the tool draws the ideal spend line to the weekly reset, but weighted by my actual working hours rather than spread flat across the clock, so it expects consumption when I am at the keyboard and none while I sleep. It measures the recent burn rate, projects where the week will land, and classifies the moment as behind, on track, or over. The reserve is adaptive: protected early in the week, then relaxed toward zero in the final forty-eight hours if I am tracking under budget, so the advice flips from "hold some back" to "use it or lose it" at the point where that switch is actually correct.
+
+The five-hour window needed separate handling because it is not a fixed clock. It begins on first use and migrates: go idle for a while, and the next window does not start until you next pick up. So the model walks real windows forward from the live one, skips my sleeping hours, and counts how many windows I can still actually start before the weekly reset. It also separates a fresh window I could open right now from one I am already halfway through, because the right nudge is different in each case.
+
+<h2 id="harvest" class="scroll-mt-32">Capacity and harvest</h2>
+
+The insight that reshaped the model was that overnight is not dead time. A long unattended run, or a routine scheduled job, can consume the windows I would otherwise waste while asleep. So capacity splits in two: attended windows I run by hand during working hours, and harvestable windows that automation can run overnight. The tool counts both, and treats full weekly use as reachable through harvest even when my hands-on windows alone could never get there.
+
+That came with a scheduling discipline I had been getting wrong. Because the five-hour window is fixed from first use, a routine job firing at 04:03 opens a window that does not reset until 09:03, which means I sit down at 08:00 already mid-window, on capacity that job has been quietly eating. The fix is a clearance rule: any out-of-hours job must start by 03:00 so its window clears before my 08:00 start, leaving me a fresh one. I moved seven routine jobs into a single overnight clearing window and emptied the pre-work zone completely.
+
+<aside class="surface-panel my-8 p-6">
+  <p class="text-xs font-semibold uppercase tracking-[0.3em] text-aluminum-400">The morning, before and after</p>
+  <div class="mt-4 overflow-x-auto">
+    <table class="w-full min-w-[640px] text-left text-sm leading-relaxed text-aluminum-300">
+      <thead class="text-xs uppercase tracking-wider text-aluminum-400">
+        <tr>
+          <th class="pr-4 pb-3 font-semibold">Aspect</th>
+          <th class="pr-4 pb-3 font-semibold">Before</th>
+          <th class="pb-3 font-semibold">After</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-aluminum-500/15">
+        <tr>
+          <td class="py-3 pr-4 text-aluminum-200">Routine jobs</td>
+          <td class="py-3 pr-4">Scattered across 04:03 to 06:04</td>
+          <td class="py-3">Consolidated into a 01:00 to 02:49 clearing window</td>
+        </tr>
+        <tr>
+          <td class="py-3 pr-4 text-aluminum-200">First daily five-hour window</td>
+          <td class="py-3 pr-4">Opened by a 04:03 job, still running at 08:00</td>
+          <td class="py-3">Opens fresh when I start work</td>
+        </tr>
+        <tr>
+          <td class="py-3 pr-4 text-aluminum-200">Pre-work zone, 04:00 to 08:00</td>
+          <td class="py-3 pr-4">Loaded with overlapping scheduled work</td>
+          <td class="py-3">Clear</td>
+        </tr>
+        <tr>
+          <td class="py-3 pr-4 text-aluminum-200">Overnight allowance</td>
+          <td class="py-3 pr-4">Wasted while asleep</td>
+          <td class="py-3">Harvested by the cleared, retimed jobs</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</aside>
+
+<h2 id="failure" class="scroll-mt-32">Failure and fix</h2>
+
+The pacing brain shipped with a bug that a test caught before it ever reached the menu bar. On the first live runs the status flipped to "over", telling me to ease off when I had used eight percent of the week. The cause was the burn-rate estimate. With only minutes of history, a four-point climb over a quarter of an hour extrapolated to a wildly steep rate, which projected the week landing several hundred percent over. A scenario test with a fixed clock made it plain: short, steep history produces nonsense rates. The fix was to refuse to trust a rate until there is at least an hour of real spread behind it, and to fall back to the window-count heuristic until then. The false alarm disappeared, the legitimate behind, on-track and over cases still held, and the test stayed in the suite.
+
+The honest trade-off, in print: the tool depends on an undocumented endpoint and a token-refresh path that is not officially supported. If either changes, the data layer breaks. It will break loudly, with the menu bar showing a dash rather than a wrong number, because I would rather it go blank than lie. That is the same lesson the dead predecessor taught.
+
+<h2 id="open" class="scroll-mt-32">Open work</h2>
+
+The five-hour window has a cap of its own that the model does not yet enforce as a hard ceiling. Once a few weeks of history reveal how much weekly budget one full window actually consumes, the tool can tell me when one hundred percent is physically out of reach and give the realistic maximum instead of an unreachable target.
+
+Overnight harvest only fires while the desktop app is open. The always-on machine covers it, but it is a dependency worth naming rather than hiding.
+
+The surface is a Python menu bar app today. A native rewrite would buy lock-screen and Watch widgets, and the data and brain layers would carry over unchanged.
+
+I put this together in an afternoon, but the part worth keeping is not the speed. It is that I instrument the things I rely on, check the number against its source rather than trusting the dial, and write the failure mode down next to the feature. The pacer earns its place in the menu bar precisely because it would rather show nothing than show me something false. That is the standard I bring to systems other people depend on, not just my own.
