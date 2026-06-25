@@ -120,10 +120,45 @@
     - Self-authored job-application-tracking MCP that orchestrates the full lifecycle of an application from JD analysis through draft management.
     - "Self-improving skills: internal performance tracking informs external skill and tool research so the system iterates on its own deployment patterns over time."
 
+- name: Claude Usage Pacer
+  platform: Personal Applied AI · macOS menu bar
+  status: Live, daily use
+  order: 5
+  date_started: "2026-06"
+  tags: [applied-ai, python, personal, macos]
+  icon: /assets/images/projects/claude-usage-pacer-icon.svg
+  link: /projects/claude-usage-pacer/
+  link_label: Read the case study
+  audience: A macOS menu bar tool that paces a Claude Max subscription against both its reset cycles — the rolling five-hour window and the weekly cap — aiming for near-full use while holding a reserve, and telling me across my devices exactly when I am locked out and when I can resume.
+  summary: >
+    The Usage Pacer reads Claude's authoritative usage API — the same figures the
+    official screen shows, via the Claude Code token in the macOS Keychain — and
+    models burn-down against my actual working hours, so a Max plan gets used
+    nearly in full instead of leaving a third of the week unspent. Capacity splits
+    in two: attended windows I run by hand, and harvestable windows that scheduled
+    overnight work can soak up. A colour-coded two-clock menu bar readout shows
+    both limits at a glance, and when a window genuinely maxes out it drops a synced
+    iCloud calendar reminder and sends one quiet, de-duplicated message telling me
+    when usage resumes. It reads nothing it cannot cite, and shows a dash rather
+    than a wrong number when its undocumented data source breaks — the lesson the
+    off-the-shelf tool it replaced taught when it failed silently.
+  technologies:
+    - Python (AI-paired)
+    - Claude OAuth usage API
+    - macOS menu bar · Keychain
+    - Scheduled overnight harvest
+    - iCloud Calendar · cross-device alerts
+  features:
+    - "Reads the authoritative source, never a guess: the five-hour and weekly limits come straight from Claude's OAuth usage API via the Keychain token, so the numbers match the official screen with no scraping."
+    - "Paces against real working hours: a burn-down model splits the week into attended windows run by hand and harvestable windows that scheduled overnight work soaks up, so the plan gets used nearly in full without overshooting."
+    - "Closes the loop on lockout: when a window genuinely maxes, it drops a synced iCloud calendar reminder and sends one quiet, de-duplicated cross-device message saying exactly when usage resumes, and stays silent overnight."
+    - "Honest by design: a colour-coded two-clock menu bar readout, and a hard rule that it shows a dash rather than a wrong number when its undocumented data source breaks."
+    - "Caught by a test, not in production: a fixed-clock scenario test caught a burn-rate projection bug that flipped the status to over at eight percent of the week; the fix refuses to trust a rate until an hour of history backs it."
+
 - name: Peaking
   platform: iOS
   status: Active development
-  order: 5
+  order: 6
   date_started: "2024-06"
   tags: [swift, ios, mapkit, cloudkit, personal]
   audience: For hikers and mountaineers who track summits, routes, and collection progress.
@@ -152,7 +187,7 @@
 - name: Training
   platform: iOS
   status: Active development
-  order: 6
+  order: 7
   date_started: "2025-01"
   tags: [swift, ios, healthkit, personal]
   audience: For athletes, coaches, and habit-focused users who want stronger training consistency.
@@ -176,7 +211,7 @@
 
 - name: Squash Tracker
   platform: iOS & watchOS
-  order: 7
+  order: 8
   date_started: "2025-03"
   tags: [swift, ios, watchos, healthkit, personal]
   audience: For squash players who want to record matches, track scores, and review performance over time.

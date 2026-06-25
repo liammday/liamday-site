@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="up-icon-title">
+  <title id="up-icon-title">Claude Usage Pacer app icon</title>
+  <defs>
+    <radialGradient id="up-icon-bg" cx="42%" cy="40%" r="78%">
+      <stop offset="0%" stop-color="#33251f"/>
+      <stop offset="64%" stop-color="#221a16"/>
+      <stop offset="100%" stop-color="#181210"/>
+    </radialGradient>
+    <radialGradient id="up-icon-core" cx="38%" cy="34%" r="72%">
+      <stop offset="0%" stop-color="#fce3c8"/>
+      <stop offset="36%" stop-color="#f3b184"/>
+      <stop offset="66%" stop-color="#cc785c"/>
+      <stop offset="100%" stop-color="#9c5236"/>
+    </radialGradient>
+    <linearGradient id="up-icon-week" x1="46" y1="46" x2="172" y2="172" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#9c5236"/>
+      <stop offset="55%" stop-color="#cc785c"/>
+      <stop offset="100%" stop-color="#f0b48c"/>
+    </linearGradient>
+    <linearGradient id="up-icon-five" x1="70" y1="70" x2="175" y2="175" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#cc785c"/>
+      <stop offset="60%" stop-color="#f3b184"/>
+      <stop offset="100%" stop-color="#f9dcc3"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="256" height="256" rx="56" fill="url(#up-icon-bg)"/>
+
+  <!-- Outer ring: the weekly cap -->
+  <circle cx="128" cy="128" r="82" fill="none" stroke="#f3ebde" stroke-opacity="0.12" stroke-width="9"/>
+  <path d="M128 46 A82 82 0 1 1 58.8 172" fill="none" stroke="url(#up-icon-week)" stroke-width="9" stroke-linecap="round"/>
+
+  <!-- Inner ring: the rolling five-hour window -->
+  <circle cx="128" cy="128" r="58" fill="none" stroke="#f3ebde" stroke-opacity="0.12" stroke-width="9"/>
+  <path d="M128 70 A58 58 0 0 1 162.1 174.9" fill="none" stroke="url(#up-icon-five)" stroke-width="9" stroke-linecap="round"/>
+
+  <!-- Target tick on the weekly ring: the reserve we hold back to -->
+  <line x1="59.5" y1="105.8" x2="40.5" y2="99.6" stroke="#fbeede" stroke-opacity="0.9" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- Ember core -->
+  <circle cx="128" cy="128" r="34" fill="#cc785c" opacity="0.18"/>
+  <circle cx="128" cy="128" r="24" fill="url(#up-icon-core)"/>
+  <ellipse cx="121" cy="120" rx="8" ry="4.5" fill="#fdeee0" opacity="0.55"/>
+</svg>
