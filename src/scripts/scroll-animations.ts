@@ -214,23 +214,13 @@ ready(function () {
 
     cards.forEach((card, index) => {
       const fromX = index % 2 === 0 ? -32 : 32;
-      gsap.set(card, { x: fromX, opacity: 0, transformOrigin: '50% 50%' });
-
-      const hoverTimeline = gsap
-        .timeline({ paused: true, defaults: { ease: 'power2.out' } })
-        .to(card, { y: -12, scale: 1.02, boxShadow: '0 28px 55px -30px rgba(255, 176, 122, 0.6)', duration: 0.35 }, 0);
+      gsap.set(card, { x: fromX, opacity: 0 });
 
       const reveal = () => {
-        hoverTimeline.progress(0).pause();
         gsap.to(card, { x: 0, opacity: 1, duration: 0.6, ease: 'power1.out' });
       };
 
       ScrollTrigger.create({ trigger: card, start: 'top 85%', onEnter: reveal, onEnterBack: reveal });
-
-      card.addEventListener('mouseenter', () => hoverTimeline.play());
-      card.addEventListener('mouseleave', () => hoverTimeline.reverse());
-      card.addEventListener('focusin', () => hoverTimeline.play());
-      card.addEventListener('focusout', () => hoverTimeline.reverse());
     });
   }
 

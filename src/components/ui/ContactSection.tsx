@@ -9,7 +9,7 @@ export function ContactSection({ email, linkedin, github }: ContactSectionProps)
   return (
     <section
       id="contact"
-      className="scroll-mt-32 flex min-h-screen flex-col justify-center border-t border-aluminum-500/20 bg-charcoal-900">
+      className="scroll-mt-32 flex min-h-screen flex-col justify-center border-t border-aluminum-500/20 bg-transparent">
       <div className="relative mx-auto w-full max-w-3xl px-6 py-20 text-center" data-animate="contact-wrapper">
         <div
           aria-hidden="true"

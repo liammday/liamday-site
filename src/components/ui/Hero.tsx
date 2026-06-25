@@ -28,7 +28,7 @@ export function Hero({
   return (
     <section
       id="profile"
-      className="relative flex min-h-screen flex-col justify-center overflow-hidden border-b border-aluminum-500/20 bg-charcoal-900">
+      className="relative flex min-h-screen flex-col justify-center overflow-hidden border-b border-aluminum-500/20 bg-transparent">
       <div className="mx-auto flex w-full max-w-5xl flex-col justify-center gap-10 px-6 py-24">
         <div className="grid gap-10 lg:grid-cols-4 lg:items-center lg:gap-4">
           <div className="flex justify-center" data-animate="hero-photo">

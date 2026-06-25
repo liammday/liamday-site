@@ -93,7 +93,7 @@ export function ProjectsShowcase({ projects }: ProjectsShowcaseProps) {
   return (
     <section
       id="projects"
-      className="scroll-mt-32 flex min-h-screen flex-col justify-center border-b border-aluminum-500/20 bg-charcoal-900">
+      className="scroll-mt-32 flex min-h-screen flex-col justify-center border-b border-aluminum-500/20 bg-transparent">
       <div className="mx-auto w-full max-w-5xl px-6 py-16">
         <div className="max-w-3xl space-y-4" data-animate="section-heading">
           <h2 className="text-3xl font-semibold text-aluminum-100">Projects</h2>
@@ -102,24 +102,22 @@ export function ProjectsShowcase({ projects }: ProjectsShowcaseProps) {
         <div className="mt-10 space-y-6" data-animate="section-heading">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
             <span className="text-xs font-semibold uppercase tracking-[0.3em] text-aluminum-400">Sort</span>
-            <div className="flex flex-wrap gap-x-4 gap-y-2">
+            <div className="flex flex-wrap gap-2">
               {SORTS.map((s) => (
                 <button
                   key={s}
                   type="button"
                   aria-pressed={sort === s}
                   onClick={() => setSort(s)}
-                  className={`text-xs font-semibold uppercase tracking-[0.25em] transition ${
-                    sort === s ? 'text-ember-200 underline underline-offset-4' : 'text-aluminum-400 hover:text-aluminum-200'
-                  }`}>
+                  className={pillClass(sort === s)}>
                   {s.charAt(0).toUpperCase() + s.slice(1)}
                 </button>
               ))}
             </div>
           </div>
 
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:gap-4">
-            <span className="mt-1 text-xs font-semibold uppercase tracking-[0.3em] text-aluminum-400">Filter</span>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+            <span className="text-xs font-semibold uppercase tracking-[0.3em] text-aluminum-400">Filter</span>
             <div className="flex flex-wrap gap-2">
               <button
                 type="button"
