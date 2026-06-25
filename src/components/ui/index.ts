@@ -16,6 +16,8 @@ export { ProjectCard } from './ProjectCard';
 export { Hero } from './Hero';
 export { ContactSection } from './ContactSection';
 export { ProjectsShowcase } from './ProjectsShowcase';
+export { StarsBackground } from './StarsBackground';
+export type { StarsBackgroundProps } from './StarsBackground';
 export { ExternalLinkIcon } from './icons';
 // Preview-only wrapper for design-sync (excluded from the synced set).
 export { ThemeFrame } from './ThemeFrame';

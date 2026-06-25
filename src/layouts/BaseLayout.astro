@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import { site } from '../data/site';
+import { StarsBackground } from '../components/ui/StarsBackground';
 
 interface Props {
   title?: string;
@@ -85,7 +86,11 @@ const currentYear = new Date().getFullYear();
       _gs('set', 'anonymizeIP', true);
     </script>
   </head>
-  <body class="flex min-h-screen flex-col bg-charcoal-900 text-aluminum-100 antialiased">
+  <body class="flex min-h-screen flex-col text-aluminum-100 antialiased">
+    <!-- Site-wide drifting star field. Fixed behind all content (z-[-10]); the
+         charcoal body background shows through the gaps. Decorative + inert, so
+         it never intercepts clicks. client:only avoids an SSR/Math.random flash. -->
+    <StarsBackground client:only="react" className="fixed inset-0 z-[-10]" pointerEvents={false} />
     <a
       class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:rounded-md focus:bg-aluminum-100 focus:px-4 focus:py-2 focus:text-charcoal-900"
       href="#main">Skip to content</a

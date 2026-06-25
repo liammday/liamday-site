@@ -75,9 +75,16 @@
 }
 
 @layer base {
-  body {
-    @apply bg-charcoal-900 text-aluminum-100 antialiased;
+  /* The base/page colour lives on the <html> canvas (painted at the very back)
+     rather than <body>, so the fixed z-[-10] star field (a negative-z child of
+     body) is not occluded by an opaque body background. body stays transparent. */
+  html {
+    @apply bg-charcoal-900;
     background-attachment: fixed;
+  }
+
+  body {
+    @apply text-aluminum-100 antialiased;
   }
 
   a {
@@ -328,6 +335,41 @@
     stroke-opacity: 0.5;
   }
 
+  /* ── Stars background ───────────────────────────────────────────────────────
+     Drifting box-shadow star field (see StarsBackground.tsx). Star colour rides
+     `currentColor` so it swaps per theme: bright on the dark surface, a soft grey
+     pinprick on the near-white light surface (white stars would vanish there). */
+  .stars-bg {
+    position: relative;
+    overflow: hidden;
+    color: rgb(var(--aluminum-100) / 0.55);
+  }
+  :root[data-theme="light"] .stars-bg {
+    color: rgb(var(--aluminum-400) / 0.75);
+  }
+  .stars-bg__parallax {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    will-change: transform;
+  }
+  .stars-bg__layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2000px;
+    animation: stars-drift linear infinite;
+    will-change: transform;
+  }
+  .stars-bg__star {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: transparent;
+    border-radius: 9999px;
+  }
+
   /* ── Updates timeline (project case-study pages) ────────────────────────────── */
   .update-timeline {
     border-left: 1px solid rgb(var(--ember-400) / 0.3);
@@ -414,4 +456,115 @@
 a[class*='hover:']:not([class*='hover:underline']):hover,
 a[class*='hover:']:not([class*='hover:underline']):focus-visible {
   text-decoration-line: none;
+}
+
+/* Stars-background drift (kept top-level so it is never trapped behind a cascade
+   layer). The layer translates exactly one loop-height up; a second star block
+   stacked one loop-height down keeps the field seamless as it wraps. */
+@keyframes stars-drift {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(0, -2000px, 0); }
+}
+
+/* Respect reduced-motion: hold the field still (the GSAP parallax is skipped in
+   the component under the same query). */
+@media (prefers-reduced-motion: reduce) {
+  .stars-bg__layer { animation: none; }
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Reading emphasis (UNLAYERED — intentional)
+
+   Secondary body copy, meta labels, section bullet lists and the technology
+   chips — grey `p.text-aluminum-300`, the smaller `.text-aluminum-400` meta
+   labels (eyebrows, dates, captions; scoped to non-interactive text tags so it
+   never touches the aluminum-400 sort buttons or the footer container), the
+   bullets inside grey lists (`ul/ol.text-aluminum-300 > li`, e.g. experience
+   highlights and project features), the `.tech-chip` pills (resting
+   aluminum-200), plus the case-study/blog `.prose-invert` body — keep their
+   dimmer resting colour so the title → body → meta colour hierarchy survives,
+   but ease to full title contrast on hover for reading focus. Prose tracks both
+   themes via the typography colour variables (`--tw-prose-headings`).
+
+   Unlayered so it beats the `text-aluminum-*` and @tailwindcss/typography
+   utilities — both compile into the `utilities` layer, which is LAST in the
+   cascade, so a layered override would silently lose (see the cascade-layer note
+   above). The resting grey already clears WCAG 2.1 AA, so hover is enhancement
+   only; under `prefers-contrast: more` we surface full contrast by default so no
+   one depends on hovering. Hover is gated to hover-capable pointers so touch
+   devices never stick in the emphasised state.
+   ────────────────────────────────────────────────────────────────────────── */
+p.text-aluminum-300,
+:where(p, span, figcaption, dt, dd, time).text-aluminum-400,
+:where(ul, ol).text-aluminum-300 > li,
+.tech-chip,
+.prose-invert :where(p, li) {
+  transition: color 0.3s ease;
+}
+
+@media (hover: hover) {
+  p.text-aluminum-300:hover,
+  :where(p, span, figcaption, dt, dd, time).text-aluminum-400:hover,
+  :where(ul, ol).text-aluminum-300 > li:hover,
+  .tech-chip:hover {
+    color: rgb(var(--aluminum-100));
+  }
+  .prose-invert :where(p, li):hover {
+    color: var(--tw-prose-headings);
+  }
+}
+
+/* Heading-group hover (UNLAYERED, hover-capable pointers only).
+
+   Hovering a section/hero heading (h1/h2) lights ALL of that section's secondary
+   content at once; hovering a card sub-heading (h3) lights just that card. The
+   descendants reuse the same emphasis targets as the per-element rules above and
+   already carry the colour transition, so the whole group eases up together.
+   `:has()` is Baseline-2023 — older browsers simply keep the per-element hover.
+   Prose headings are excluded by construction: their paragraphs live in a
+   `.detail-content`/`<article>`, not a `<section>`, and lighting a whole article
+   on a single heading hover would be too much. */
+@media (hover: hover) {
+  :is(section:has(:where(h1, h2):hover), .surface-panel:has(:where(h2, h3):hover)) p.text-aluminum-300,
+  :is(section:has(:where(h1, h2):hover), .surface-panel:has(:where(h2, h3):hover)) :where(p, span, figcaption, dt, dd, time).text-aluminum-400,
+  :is(section:has(:where(h1, h2):hover), .surface-panel:has(:where(h2, h3):hover)) :where(ul, ol).text-aluminum-300 > li,
+  :is(section:has(:where(h1, h2):hover), .surface-panel:has(:where(h2, h3):hover)) .tech-chip {
+    color: rgb(var(--aluminum-100));
+  }
+
+  /* The eyebrow sub-labels ("Core technologies", "Key features") act as the
+     heading for their immediately-following list: hovering the label lights its
+     chips or feature bullets, which sit as siblings inside the same group div. */
+  p.text-aluminum-400:hover ~ ul > li {
+    color: rgb(var(--aluminum-100));
+  }
+
+  /* The "Filter" eyebrow label lights its category chips. Those chips are
+     <button>s (in a sibling <div>), and only the inactive ones (text-aluminum-300)
+     are targeted, so the active/selected ember pill keeps its state. */
+  span.text-aluminum-400:hover ~ div button.text-aluminum-300 {
+    color: rgb(var(--aluminum-100));
+  }
+}
+
+@media (prefers-contrast: more) {
+  p.text-aluminum-300,
+  :where(p, span, figcaption, dt, dd, time).text-aluminum-400,
+  :where(ul, ol).text-aluminum-300 > li,
+  .tech-chip {
+    color: rgb(var(--aluminum-100));
+  }
+  .prose-invert :where(p, li) {
+    color: var(--tw-prose-headings);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  p.text-aluminum-300,
+  :where(p, span, figcaption, dt, dd, time).text-aluminum-400,
+  :where(ul, ol).text-aluminum-300 > li,
+  .tech-chip,
+  .prose-invert :where(p, li) {
+    transition: none;
+  }
 }
