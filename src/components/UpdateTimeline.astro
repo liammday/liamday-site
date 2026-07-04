@@ -15,7 +15,8 @@ interface Props {
 
 const { updates } = Astro.props;
 
-const sorted = [...updates].sort((a, b) => (b.date?.getTime() ?? 0) - (a.date?.getTime() ?? 0));
+// Oldest to newest, so updates read chronologically down the page after the main body.
+const sorted = [...updates].sort((a, b) => (a.date?.getTime() ?? 0) - (b.date?.getTime() ?? 0));
 
 function fmt(d?: Date): string {
   return d ? d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
