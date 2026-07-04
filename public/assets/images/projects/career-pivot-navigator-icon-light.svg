@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="cpn-icon-title-l">
+  <title id="cpn-icon-title-l">Career Pivot Navigator app icon</title>
+  <defs>
+    <radialGradient id="cpn-icon-bg-l" cx="38%" cy="60%" r="80%">
+      <stop offset="0%" stop-color="#faf6f0"/>
+      <stop offset="65%" stop-color="#f3ede3"/>
+      <stop offset="100%" stop-color="#ece2d4"/>
+    </radialGradient>
+    <radialGradient id="cpn-icon-hub-l" cx="40%" cy="34%" r="70%">
+      <stop offset="0%" stop-color="#d87435"/>
+      <stop offset="55%" stop-color="#cc785c"/>
+      <stop offset="100%" stop-color="#a85c44"/>
+    </radialGradient>
+    <linearGradient id="cpn-icon-route-l" x1="84" y1="172" x2="186" y2="80" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#cc785c" stop-opacity="0.35"/>
+      <stop offset="60%" stop-color="#b34d09" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#b34d09" stop-opacity="0.95"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="256" height="256" rx="56" fill="url(#cpn-icon-bg-l)"/>
+
+  <!-- Bearing ring -->
+  <g fill="none" stroke="#cc785c" stroke-opacity="0.22">
+    <circle cx="84" cy="172" r="30"/>
+    <circle cx="84" cy="172" r="48"/>
+  </g>
+
+  <!-- Soft routes -->
+  <g fill="none" stroke="#cc785c" stroke-opacity="0.45" stroke-width="2.5" stroke-dasharray="2 8" stroke-linecap="round">
+    <path d="M84 172 C 150 150, 120 90, 132 64"/>
+    <path d="M84 172 C 160 170, 180 150, 188 138"/>
+  </g>
+
+  <!-- Lit route to the recommended destination -->
+  <path d="M84 172 C 150 140, 168 100, 184 80" fill="none" stroke="url(#cpn-icon-route-l)" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- Candidate waypoints -->
+  <g fill="#2a2622" fill-opacity="0.85">
+    <circle cx="132" cy="64" r="5.5"/>
+    <circle cx="188" cy="138" r="5.5"/>
+  </g>
+
+  <!-- Recommended destination: flagged + ringed -->
+  <circle cx="184" cy="80" r="7" fill="#2a2622"/>
+  <circle cx="184" cy="80" r="13" fill="none" stroke="#b34d09" stroke-opacity="0.85" stroke-width="1.5"/>
+  <line x1="184" y1="80" x2="184" y2="52" stroke="#b34d09" stroke-opacity="0.9" stroke-width="2"/>
+  <path d="M184 53 L206 58 L184 65 Z" fill="#cc785c"/>
+
+  <!-- Origin hub -->
+  <circle cx="84" cy="172" r="17" fill="url(#cpn-icon-hub-l)"/>
+  <ellipse cx="79" cy="167" rx="5.5" ry="2.2" fill="#fdeee0" opacity="0.5"/>
+</svg>
