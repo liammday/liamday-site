@@ -1,0 +1,25 @@
+---
+import type { ThemedSource } from '../../lib/themed-image';
+
+interface Props {
+  light: ThemedSource;
+  dark: ThemedSource;
+  alt: string;
+  width?: number;
+  height?: number;
+  class?: string;
+  pictureClass?: string;
+  loading?: 'lazy' | 'eager';
+}
+
+const { light, dark, alt, width, height, class: klass, pictureClass, loading = 'eager' } = Astro.props;
+---
+
+<picture class:list={['theme-dark-only', pictureClass]}>
+  {dark.webp && <source srcset={dark.webp} type="image/webp" />}
+  <img src={dark.src} alt={alt} class={klass} loading={loading} width={width} height={height} />
+</picture>
+<picture class:list={['theme-light-only', pictureClass]}>
+  {light.webp && <source srcset={light.webp} type="image/webp" />}
+  <img src={light.src} alt={alt} class={klass} loading={loading} width={width} height={height} />
+</picture>
