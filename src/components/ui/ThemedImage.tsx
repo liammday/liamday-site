@@ -18,6 +18,11 @@ export interface ThemedImageProps {
  * (.theme-dark-only / .theme-light-only) shows the one matching the active
  * theme. When both variants resolve to the same file the browser dedupes the
  * request, so a variant-less image costs nothing extra.
+ *
+ * `loading` defaults to 'eager' (matching ThemedImage.astro): the inactive
+ * variant starts in a display:none <picture>, and a loading="lazy" image that
+ * is never rendered is not fetched — so when the theme toggle later reveals it,
+ * it stays blank. Both variants must load up front for the swap to be instant.
  */
 export function ThemedImage({
   light,
@@ -27,7 +32,7 @@ export function ThemedImage({
   height,
   className,
   pictureClassName,
-  loading = 'lazy',
+  loading = 'eager',
 }: ThemedImageProps) {
   const pic = (variant: ThemedSource, themeClass: string) => (
     <picture className={[themeClass, pictureClassName].filter(Boolean).join(' ')}>
