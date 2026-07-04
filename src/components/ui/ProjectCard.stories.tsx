@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { AppProject } from '../../data/projects';
 import { ProjectCard } from './ProjectCard';
 import odrIcon from './__examples__/open-defence-radar-icon.png';
+import odrIconLight from './__examples__/open-defence-radar-icon.png';
 import peakingIcon from './__examples__/PeakingAppIcon-256.png';
 
 const odr: AppProject = {
@@ -52,3 +53,15 @@ type Story = StoryObj<typeof meta>;
 export const CaseStudy: Story = {};
 export const ExternalLink: Story = { args: { project: peaking } };
 export const NoIcon: Story = { args: { project: { ...odr, icon: undefined, icon_webp: undefined } } };
+
+// Verifies the light-variant slot: passing icon_light swaps the tile under the
+// light theme (use the Storybook DOM inspector / a data-theme=light wrapper).
+export const ThemedIcon: Story = {
+  args: { project: { ...odr, icon_light: odrIconLight as unknown as string } },
+  decorators: [
+    (Story) => {
+      if (typeof document !== 'undefined') document.documentElement.setAttribute('data-theme', 'light');
+      return <div className="max-w-2xl">{Story()}</div>;
+    },
+  ],
+};
