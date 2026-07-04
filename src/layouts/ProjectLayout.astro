@@ -2,9 +2,20 @@
 import BaseLayout from './BaseLayout.astro';
 import { MetaList } from '../components/ui/MetaList';
 import UpdateTimeline from '../components/UpdateTimeline.astro';
+import ThemedImage from '../components/ui/ThemedImage.astro';
+import { resolveThemedPair } from '../lib/themed-image';
 
 const { project } = Astro.props;
 const data = project.data;
+
+const heroPair = resolveThemedPair(
+  data.hero_image,
+  data.hero_image_webp,
+  data.hero_image_light,
+  data.hero_image_light_webp,
+  data.hero_image_dark,
+  data.hero_image_dark_webp,
+);
 
 function fmtDay(d?: Date): string {
   return d ? d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
@@ -38,19 +49,17 @@ const hasUpdates = (data.updates?.length ?? 0) > 0;
         }
         <h1 class="mt-6 text-4xl font-semibold text-aluminum-100">{data.title}</h1>
         {
-          data.hero_image && (
+          heroPair && (
             <figure class="mt-10">
-              <picture>
-                {data.hero_image_webp && <source srcset={data.hero_image_webp} type="image/webp" />}
-                <img
-                  src={data.hero_image}
-                  alt={data.hero_image_alt ?? data.title}
-                  class="w-full rounded-2xl shadow-[0_20px_45px_-30px_rgba(0,0,0,0.9)]"
-                  width={data.hero_image_width}
-                  height={data.hero_image_height}
-                  loading="eager"
-                />
-              </picture>
+              <ThemedImage
+                light={heroPair.light}
+                dark={heroPair.dark}
+                alt={data.hero_image_alt ?? data.title}
+                width={data.hero_image_width}
+                height={data.hero_image_height}
+                class="w-full rounded-2xl shadow-[0_20px_45px_-30px_rgba(0,0,0,0.9)]"
+                loading="eager"
+              />
               {data.hero_image_caption && (
                 <figcaption class="mt-3 text-xs text-aluminum-400">{data.hero_image_caption}</figcaption>
               )}
@@ -59,7 +68,7 @@ const hasUpdates = (data.updates?.length ?? 0) > 0;
         }
         {
           data.summary && (
-            <p class:list={[data.hero_image ? 'mt-8' : 'mt-4', 'text-lg leading-relaxed text-aluminum-300']}>
+            <p class:list={[heroPair ? 'mt-8' : 'mt-4', 'text-lg leading-relaxed text-aluminum-300']}>
               {data.summary}
             </p>
           )

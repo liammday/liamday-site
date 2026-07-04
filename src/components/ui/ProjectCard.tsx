@@ -3,6 +3,8 @@ import { formatMonth } from '../../lib/format';
 import { Button } from './Button';
 import { Tag } from './Tag';
 import { ExternalLinkIcon } from './icons';
+import { ThemedImage } from './ThemedImage';
+import { resolveThemedPair } from '../../lib/themed-image';
 
 interface ProjectCardProps {
   project: AppProject;
@@ -10,25 +12,27 @@ interface ProjectCardProps {
 
 /** The rich project/app card used in the projects showcase. */
 export function ProjectCard({ project }: ProjectCardProps) {
-  const { name, platform, status, icon, icon_webp, audience, summary, technologies, features, link, link_label } =
-    project;
+  const {
+    name, platform, status, icon, icon_webp,
+    icon_light, icon_light_webp, icon_dark, icon_dark_webp,
+    audience, summary, technologies, features, link, link_label,
+  } = project;
+  const iconPair = resolveThemedPair(icon, icon_webp, icon_light, icon_light_webp, icon_dark, icon_dark_webp);
   const isExternal = !!link && link.includes('://');
 
   return (
     <article className="surface-panel h-full p-6 lg:p-8 transition-opacity duration-300 ease-in-out" data-animate="project-card">
       <div className="project-card__header flex items-start gap-4">
-        {icon ? (
-          <picture className="h-32 w-32 shrink-0">
-            {icon_webp && <source srcSet={icon_webp} type="image/webp" />}
-            <img
-              className="h-32 w-32 object-cover"
-              src={icon}
-              alt={`${name} app icon`}
-              loading="lazy"
-              width={128}
-              height={128}
-            />
-          </picture>
+        {iconPair ? (
+          <ThemedImage
+            light={iconPair.light}
+            dark={iconPair.dark}
+            alt={`${name} app icon`}
+            width={128}
+            height={128}
+            className="h-32 w-32 object-cover"
+            pictureClassName="h-32 w-32 shrink-0"
+          />
         ) : (
           <div className="flex h-32 w-32 shrink-0 items-center justify-center rounded-2xl border border-ember-400/30 bg-ember-500/10 texture-noise">
             <span aria-hidden="true" className="text-3xl text-ember-200">

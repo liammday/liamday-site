@@ -13,6 +13,8 @@ export { CapabilityCard } from './CapabilityCard';
 export { EducationPanel } from './EducationPanel';
 export { MetaList } from './MetaList';
 export { ProjectCard } from './ProjectCard';
+export { ThemedImage } from './ThemedImage';
+export type { ThemedImageProps } from './ThemedImage';
 export { Hero } from './Hero';
 export { ContactSection } from './ContactSection';
 export { ProjectsShowcase } from './ProjectsShowcase';
