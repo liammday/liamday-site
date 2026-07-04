@@ -1,48 +1,59 @@
-# iOS dark-appearance app icons — export & wiring handoff
+# iOS dark-appearance app icons — source & refresh
 
 The website shows a light and a dark variant of every project icon, tracking the
 site theme. The three iOS apps (Peaking, Training, Squash Tracker) keep their
-current tile as the default/light appearance; the **dark** appearance must be
-exported from Apple's **Icon Composer** on a Mac, because it is a real per-app
-asset, not a recolour of the light tile.
+current tile as the default/light appearance and now also ship a **dark**
+appearance in dark mode — **already wired**, no Icon Composer export needed.
 
-## Per app (Peaking, Training, SquashTracker)
+## Where the dark icons came from
 
-1. Open the app's icon in **Icon Composer** and select the **Dark** appearance.
-2. Export it at **1024×1024 PNG**.
-3. Downscale to **256×256** and save it here, matching the existing tile names:
-   - `public/assets/images/projects/PeakingAppIcon-256-dark.png`
-   - `public/assets/images/projects/TrainingAppIcon-256-dark.png`
-   - `public/assets/images/projects/SquashTrackerAppIcon-256-dark.png`
-4. Generate the `.webp` sibling for each (matches the existing `-256.webp` set):
-   ```bash
-   cd public/assets/images/projects
-   for f in PeakingAppIcon-256-dark TrainingAppIcon-256-dark SquashTrackerAppIcon-256-dark; do
-     cwebp -q 82 "$f.png" -o "$f.webp"
-   done
-   ```
-   (If `cwebp` is unavailable: `brew install webp`. A `.webp` is optional — the
-   `.png` alone works; the resolver just won't have a webp source.)
-5. Add the `icon_dark` (and `icon_dark_webp`) lines to `src/data/app_projects.yml`
-   under each app's existing `icon:`/`icon_webp:`:
+The dark tiles were not hand-drawn or re-exported: each app already ships its
+authentic dark-appearance icon in its own repo. They were copied in, downscaled
+to 256×256 (to match the existing `-256` tiles), and given a webp sibling:
 
-   Peaking:
-   ```yaml
-   icon_dark: /assets/images/projects/PeakingAppIcon-256-dark.png
-   icon_dark_webp: /assets/images/projects/PeakingAppIcon-256-dark.webp
-   ```
-   Training:
-   ```yaml
-   icon_dark: /assets/images/projects/TrainingAppIcon-256-dark.png
-   icon_dark_webp: /assets/images/projects/TrainingAppIcon-256-dark.webp
-   ```
-   Squash Tracker:
-   ```yaml
-   icon_dark: /assets/images/projects/SquashTrackerAppIcon-256-dark.png
-   icon_dark_webp: /assets/images/projects/SquashTrackerAppIcon-256-dark.webp
-   ```
-6. `npm run build`, then `npm run dev` and toggle the theme on `/#projects`:
-   the three tiles should switch to their dark-appearance icon in dark mode.
+| Site asset | Source in the app repo |
+|---|---|
+| `PeakingAppIcon-256-dark.png` | `~/GitHub/Peaking/Peaking/Assets.xcassets/AppIcon.appiconset/AppIcon-iOS-Dark.png` |
+| `TrainingAppIcon-256-dark.png` | `~/GitHub/Training/Training/Assets.xcassets/AppIcon.appiconset/AppIcon-iOS-Dark.png` |
+| `SquashTrackerAppIcon-256-dark.png` | `~/GitHub/SquashTrackerWatch/SquashTrackerMultiplatform/Assets.xcassets/AppIcon.appiconset/Icon-App-iTunes 1.png` (the `luminosity: dark` marketing icon) |
 
-Until these land, `icon_dark` is unset and the current tile shows on both
-themes — no regression.
+Peaking and Training ship a rounded dark tile already. Squash Tracker's dark
+asset is a full-bleed square, so it was masked to an iOS squircle to match the
+other two on the card.
+
+Each is wired in `src/data/app_projects.yml` as `icon_dark` / `icon_dark_webp`
+beneath the existing `icon:` / `icon_webp:`.
+
+## Refreshing a dark icon when an app's artwork changes
+
+From the site repo root:
+
+```bash
+SITE=public/assets/images/projects
+
+# 1. Copy + downscale the app's dark asset to 256 (repeat per app, adjust paths)
+sips -z 256 256 "$HOME/GitHub/Peaking/Peaking/Assets.xcassets/AppIcon.appiconset/AppIcon-iOS-Dark.png" \
+  --out "$SITE/PeakingAppIcon-256-dark.png"
+
+# 2. (Squash Tracker only) round the square marketing icon to a squircle:
+python3 - <<'PY'
+from PIL import Image; import numpy as np
+p="public/assets/images/projects/SquashTrackerAppIcon-256-dark.png"
+img=Image.open(p).convert("RGBA"); S=img.size[0]; SS=S*4
+yy,xx=np.mgrid[0:SS,0:SS]; u=(xx+0.5)/(SS/2)-1; v=(yy+0.5)/(SS/2)-1
+m=Image.fromarray(((np.abs(u)**5+np.abs(v)**5)<=1).astype('uint8')*255,'L').resize((S,S),Image.LANCZOS)
+a=np.minimum(np.array(img.split()[3]),np.array(m)).astype('uint8')
+img.putalpha(Image.fromarray(a,'L')); img.save(p)
+PY
+
+# 3. Regenerate the webp sibling
+cwebp -quiet -q 82 "$SITE/PeakingAppIcon-256-dark.png" -o "$SITE/PeakingAppIcon-256-dark.webp"
+
+# 4. Rebuild and verify in dark mode
+npm run build
+```
+
+If an app ever drops its shipped dark asset, export the Dark appearance from
+**Icon Composer** at 1024, save it as the source PNG above, and run the same
+steps. Until a dark asset exists for an app, leave its `icon_dark` unset — the
+resolver falls back to the light tile on both themes with no regression.
