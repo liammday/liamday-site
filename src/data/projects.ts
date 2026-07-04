@@ -10,6 +10,10 @@ export interface AppProject {
   tags?: string[];
   icon?: string;
   icon_webp?: string;
+  icon_light?: string;
+  icon_light_webp?: string;
+  icon_dark?: string;
+  icon_dark_webp?: string;
   link?: string;
   link_label?: string;
   audience?: string;

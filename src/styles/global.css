@@ -568,3 +568,12 @@ p.text-aluminum-300,
     transition: none;
   }
 }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Theme-aware image swap. Dark is the default theme (no data-theme attribute):
+   the dark variant shows, the light variant is hidden. Under the manual light
+   toggle, the pair flips. `revert` restores <picture>'s natural inline display.
+   ────────────────────────────────────────────────────────────────────────── */
+.theme-light-only { display: none; }
+:root[data-theme="light"] .theme-dark-only { display: none; }
+:root[data-theme="light"] .theme-light-only { display: revert; }
