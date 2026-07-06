@@ -15,21 +15,168 @@ screenshots:
 updates:
   - date: 2023-06-09
     version: origin
+    id: origin
     title: First commit — the idea
     summary: A map that knows which summits you have actually stood on.
     content: |
       Peaking began as a simple question: could an app confirm a summit from the
       route you walked, rather than trusting a manual check-in? The first commit
-      laid down a SwiftUI shell and a MapKit view — no versioning, no sync, just
-      the seed of the idea.
-  - date: 2025-11-01
-    version: v1.0
-    title: First public TestFlight
-    summary: The map, collections and summit matching reach a shippable whole.
+      laid down a SwiftUI shell and a MapKit view. There was no persistence layer,
+      no sync and no accounts — just enough to prove the map could hold a location
+      and a pin. Everything else was deliberately deferred.
+  - date: 2024-03-01
+    id: swiftdata-foundations
+    title: SwiftData models and a summit record
+    summary: The idea gets a data model — peaks, summits, and a real onboarding flow.
     content: |
-      The map, published collections (Munros, Wainwrights) and route-based summit
-      matching came together into something worth handing to external testers for
-      the first time.
+      After a long quiet stretch the project resumed with a proper data layer:
+      SwiftData models for summits, a create/delete flow for logging one, and an
+      onboarding sequence that decoded a bundled peak list from JSON. Filtering by
+      elevation and cross-checking against Strava downloads showed up early,
+      establishing the core idea that a summit should be checkable against
+      something external rather than just ticked by hand. The navigation was still
+      a single list; tabs and a proper map came later.
+  - date: 2025-03-11
+    id: osm-rewrite
+    title: The OSM rewrite
+    summary: A working-but-slow MapKit prototype is stripped back and rebuilt on OpenStreetMap data.
+    content: |
+      A first attempt at a map-first version shipped internally but performed
+      poorly and its import pipeline did not work reliably, so it was deliberately
+      stripped back to the key layout elements and rebuilt on new SwiftData models.
+      The rebuild moved peak data onto OpenStreetMap nodes and relations via the
+      Overpass API, with a dedicated map controller and an actor-isolated API
+      layer to keep large node sets off the main thread. This is the point the app
+      stopped being a demo and became an engineering problem: rendering thousands
+      of peaks on a map without stalling it.
+  - date: 2025-08-01
+    id: cloudkit-healthkit-strava
+    title: CloudKit sync, HealthKit and Strava route matching
+    summary: Route-based summit verification arrives, backed by CloudKit and an offline tile cache.
+    content: |
+      Collections (the app's name for hiking lists such as the Munros) were
+      generalised across element types, and models were adjusted ahead of
+      CloudKit compliance so a user's summits could sync across devices. This is
+      when the verification idea from day one finally landed in code: a route
+      summit search actor checked HealthKit workouts and, shortly after, Strava
+      activities against nearby peaks to confirm a summit from the GPS track
+      rather than a manual tap. A tile cache with a quick-load-then-refresh
+      pattern kept the map usable offline, which set the pattern the app has
+      followed ever since — local-first, sync second.
+  - date: 2025-11-15
+    id: friends-achievements
+    title: Friends and achievements land before the tags do
+    summary: Social features and progress tracking arrive ahead of any formal versioning.
+    content: |
+      Friends and Achievements tabs were added to the navigation, giving the app
+      its social dimension — seeing what peaks friends had summited — well before
+      the project adopted version tags. This period also carried the CloudKit
+      migration warnings that come with any SwiftData-backed sync model: renaming
+      a field is a one-way door once records exist in production, a lesson that
+      shaped how cautiously the schema was changed from here on.
+  - date: 2026-04-16
+    version: v1.0
+    id: v1-0
+    title: v1.0 — first public TestFlight
+    summary: The map, collections, and route-verified summits reach a shippable whole.
+    content: |
+      The map, published collections (Munros, Wainwrights, and other classic UK
+      hill lists), and HealthKit/Strava-verified summit tracking came together
+      into something worth handing to external testers. Patch releases in the
+      following days fixed onboarding and import edge cases surfaced immediately
+      by real devices and real accounts, rather than the simulator.
+  - date: 2026-04-20
+    version: v1.1
+    id: v1-1
+    title: v1.1 — DoBIH catalog widening
+    summary: A second UK hills database is folded in alongside OpenStreetMap.
+    content: |
+      The peak catalogue widened to include the Database of British and Irish
+      Hills alongside OpenStreetMap, with cascading import, pre-matched merges
+      against the existing mirror registry, and UI to surface DoBIH-only peaks
+      inside downloaded collections. Getting two independent data sources to
+      agree on the same hill without duplicating it turned out to be a bigger
+      job than the map rendering that came before it.
+  - date: 2026-05-22
+    version: v1.2
+    id: v1-2
+    title: v1.2 — Accolades, disambiguation, and a rebuilt launch flow
+    summary: Achievements grow a proper identity system, search matures, and onboarding gets a full rewrite.
+    content: |
+      This cycle replaced the ad-hoc maintenance/processing screens with a single
+      unified startup flow and folded onboarding into the same presentation
+      system, so first-run and every-run app entry share one code path. A
+      disambiguation formatter was built to distinguish peaks that share a name —
+      surprisingly common — and wired through every list, map annotation, and
+      picker in the app. Achievements ("Accolades") gained a record-holder type,
+      and location-based search shipped alongside a first pass at tokenised
+      full-text search across the whole peak catalogue.
+  - date: 2026-06-04
+    version: v1.3
+    id: v1-3
+    title: v1.3 — Strava as a primary source
+    summary: Strava graduates from optional extra to a primary way of confirming a summit.
+    content: |
+      Strava import was promoted from a secondary signal to a primary source
+      alongside HealthKit for the Friends & Family beta, which meant tightening
+      up route deduplication so activities recorded a year apart no longer merged
+      into one. A collection-structure rubric was also introduced and enforced at
+      import time, codifying rules for which sub-peaks belong inside a list versus
+      standing alone — a decision that had previously been made by hand, list by
+      list.
+  - date: 2026-06-09
+    version: v1.4
+    id: v1-4
+    title: v1.4 — Grouped achievements and searchable settings
+    summary: Achievements gain hierarchy, and Settings becomes searchable rather than browsed.
+    content: |
+      Achievements grew a parent/child structure so a family of related peaks
+      could roll up into one meta-achievement, with a recursive evaluator and a
+      dedicated peakingctl command to publish the hierarchy to CloudKit. Settings
+      also stopped being something you scrolled to find: a search catalogue and
+      pure matching engine were built and wired into every screen, including the
+      developer tools, on the view that a growing app needs a way to find its own
+      switches.
+  - date: 2026-06-17
+    version: v1.5
+    id: v1-5
+    title: v1.5 — Making friend invites actually reliable
+    summary: Connecting with a friend gets a typeable fallback and self-service recovery.
+    content: |
+      Friend invites had been fragile — a share link that failed silently, or a
+      connection that got stuck with no way to tell why. This cycle added a
+      typeable short-code as a fallback to the tappable CKShare link, plus
+      visible connection status and self-service repair when a sync stalled.
+      Underneath, several CloudKit zones needed a legacy-keyed rehydration path
+      so existing connections survived the change rather than quietly breaking
+      for anyone who had already added a friend.
+  - date: 2026-06-22
+    version: v1.6
+    id: v1-6
+    title: v1.6 — A Photos tab and real-time friend activity
+    summary: Photos become a first-class content type, and friend activity starts to feel live.
+    content: |
+      A new Photos tab unified photo feeds from every source into one gallery,
+      with clustering on the map, cross-links back to the route or summit a
+      photo was taken on, and deep links from a peak straight to photos taken
+      there. Friend activity moved from a static list to something closer to
+      real-time: notifications on a logged summit or earned achievement, plus a
+      fix so removing a friend actually revoked their CloudKit access straight
+      away rather than on the next sync.
+  - date: 2026-06-30
+    version: v1.7
+    id: v1-7
+    title: v1.7 — Collections Browse convergence and a performance pass
+    summary: Every collection surface adopts one shared browsing pattern, then gets a speed audit.
+    content: |
+      Collections, Summits, Routes, Friends and Achievements were brought onto a
+      single shared "Browse" pattern — one List/Cards toggle and one inline
+      sort-and-filter menu instead of several bespoke ones — closing out a
+      rollout that had been running behind a feature flag for weeks. That
+      convergence was followed immediately by a performance pass: friend-profile
+      navigation that had been hanging for several seconds, and in one case
+      nearly a minute, was traced to over-eager recomputation and fixed by
+      fetching projections lazily instead of eagerly.
 ---
 Peaking is a mountain companion for hillwalkers and mountaineers. It maps the peaks
 around you, confirms a summit from the route you actually walked, and tracks your
