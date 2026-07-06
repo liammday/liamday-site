@@ -203,6 +203,9 @@
   icon_webp: /assets/images/projects/TrainingAppIcon-256.webp
   icon_dark: /assets/images/projects/TrainingAppIcon-256-dark.png
   icon_dark_webp: /assets/images/projects/TrainingAppIcon-256-dark.webp
+  slug: training
+  link: /projects/training/
+  link_label: Development log
   summary: >
     Training is a planning-and-accountability app that turns weekly intentions into measurable progress by comparing planned sessions with real workouts recorded in Apple Health.
   technologies:
