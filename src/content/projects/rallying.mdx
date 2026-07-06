@@ -1,10 +1,10 @@
 ---
-title: Squash Tracker
+title: Rallying
 kind: app
-slug: squash-tracker
-subtitle: Record live squash on Apple Watch — rally-by-rally scoring and heart-rate capture — then review your match history.
-compatibility: Apple Watch + iPhone · watchOS 10+ / iOS 17+
-description: A match companion for recording live squash on Apple Watch, capturing rally-by-rally scores and health metrics, and reviewing match statistics over time.
+slug: rallying
+subtitle: A multi-sport racket tracker for iPhone and Apple Watch — record matches rally-by-rally on the wrist, review them later.
+compatibility: iPhone & Apple Watch · iOS 17+ / watchOS 10+
+description: A multi-sport racket tracker for recording live matches on iPhone and Apple Watch, capturing rally-by-rally scores and health metrics, and reviewing match statistics over time.
 updates:
   - date: 2025-02-01
     id: origin
@@ -93,34 +93,76 @@ updates:
       deeper issue: the app's notion of "the default player" was informal and
       prone to duplicating on reinstall — a problem that would take a proper
       identity store to fix, which came later as part of the v2 rewrite below.
-  - id: v2-redesign-and-sunset
+  - id: v2-redesign-and-pivot
     date: 2026-04-26
     version: v2.0.0
-    title: v2.0.0 — a slot-based schema rewrite, then sunset in favour of Rallying
-    summary: A six-phase model rewrite fixes around twenty long-standing bugs, and the app then hands its future to a successor.
+    title: v2.0.0 — the slot-based rewrite that became Rallying's foundation
+    summary: A six-phase model rewrite fixes around twenty long-standing bugs, and its schema becomes the foundation the next app is built on.
     content: |
       A full schema redesign replaced the original model layer with slot-based
       player references, explicit game and match scoring detail, and a
       dedicated recordedBy field to distinguish who played from who scored —
       addressing roughly twenty latent bugs along the way, including an HR-chart
       crash, duplicate players on reinstall, and drawn games being conflated
-      with incomplete ones. It shipped as v2.0.0, but it was also the last
-      planned release under this name: future racket-sport tracking work moved
-      to a new, separately-provisioned app called Rallying, and this build's
-      final addition was an in-app popup explaining the move and the export →
-      import path for carrying match history across.
+      with incomplete ones. It shipped as v2.0.0, and that slot-based schema is
+      what came next: rather than growing Squash Tracker sport-by-sport, the
+      rewrite was lifted whole into a new, separately-provisioned multi-sport
+      app called Rallying, alongside an export → import path for carrying
+      existing match history across.
+  - id: rallying-born
+    date: 2026-04-26
+    title: Rallying is born — the v3.A port from Squash Tracker
+    summary: A fresh multiplatform app, seeded with the proven schema, UI and CSV importer, gated to squash for launch.
+    content: |
+      Rallying started as a new Xcode multiplatform project, immediately
+      followed by a straight port of the v3.A foundations from Squash Tracker:
+      the slot-based schema, the shared iPhone UI (matches, players, locations,
+      settings), the Watch recording surface, and the CSV importer that lets
+      existing testers carry their history across. The sport picker was gated
+      to the squash family for launch, so the app shipped as squash-only on
+      day one even though the schema underneath was already multi-sport.
+  - date: 2026-04-27
+    title: v3.A.1 — past-match entry and a shared live-record controller
+    summary: Matches played away from a device can be logged after the fact, and phone and watch share one recording brain.
+    content: |
+      A score cascade was added to the match create/edit flow so a match played
+      without the app running could still be entered properly after the fact,
+      rather than only ever recorded live. Alongside it, live recording was
+      pulled out into a shared controller used by both the iPhone and Watch UI,
+      so the two platforms record a match through the same logic rather than
+      two parallel implementations drifting apart.
+  - date: 2026-05-05
+    title: A real app icon, and the first Internal TestFlight build
+    summary: The placeholder icon is replaced with a layered design, and Rallying reaches its first testers.
+    content: |
+      The placeholder icon was replaced with a proper layered Rallying app
+      icon, and the build tag was stamped into the release notes for the
+      project's first Internal TestFlight build — the point Rallying stopped
+      being a local port and became something an actual tester could install.
+  - date: 2026-05-19
+    title: CloudKit schema-as-code, and a guarded tokenless CI lint
+    summary: The CloudKit schema becomes a checked-in file, with a lint that catches drift without needing a live token in CI.
+    content: |
+      CloudKit schema-as-code tooling was onboarded from the sibling apps: the
+      live schema is exported to a checked-in file, validated locally, and
+      checked in CI via a lint that is guarded to run without a CloudKit token —
+      laying the sync foundation a multi-device, eventually multi-sport app
+      depends on.
 ---
-Squash Tracker is a match companion for squash players, built around scoring a
-game live on Apple Watch. Each rally is logged as it happens — server, side, and
-outcome — so the score, the game, and the match update themselves rather than
-needing a manual tally kept elsewhere.
+Rallying is a match companion for racket-sport players, built around scoring a
+game live on Apple Watch or iPhone. Squash is the first sport supported, with
+tennis, padel, pickleball, badminton, table tennis and racquetball planned on
+top of the same scoring model — singles or doubles, score-only or
+rally-by-rally, whichever a player prefers.
 
 Playing a match also starts an Apple Health workout session, so heart rate and
 active energy are captured for the same window the score was recorded in and
-shown alongside it afterwards. A companion iPhone app carries match history,
-player and court management, and statistics — win-loss records, game breakdowns,
-and milestones — synced across devices via CloudKit.
+shown alongside it afterwards. A shared recording controller keeps the watch
+and phone in step, and match history, player and location management, and
+detailed statistics sync across devices via CloudKit.
 
-Squash Tracker's active development concluded with a v2 schema rewrite in April
-2026; racket-sport tracking continues in a successor app, Rallying, with an
-export/import path for carrying match history across.
+Rallying grew out of Squash Tracker, the squash-only predecessor that proved
+the slot-based scoring model over more than a year of real matches. Its final
+release rewrote the schema from the ground up, and that rewrite became
+Rallying's foundation rather than a dead end — existing Squash Tracker testers
+can carry their match history across via CSV export and import.
