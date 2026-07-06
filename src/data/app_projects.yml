@@ -231,6 +231,8 @@
   slug: rallying
   icon: /assets/images/projects/RallyingAppIcon-256.png
   icon_webp: /assets/images/projects/RallyingAppIcon-256.webp
+  icon_dark: /assets/images/projects/RallyingAppIcon-256-dark.png
+  icon_dark_webp: /assets/images/projects/RallyingAppIcon-256-dark.webp
   link: /projects/rallying/
   link_label: Development log
   audience: For racket-sport players who want to record matches on Apple Watch and review performance over time, across squash today and more sports as it grows.
