@@ -171,8 +171,9 @@
   icon_webp: /assets/images/projects/PeakingAppIcon-256.webp
   icon_dark: /assets/images/projects/PeakingAppIcon-256-dark.png
   icon_dark_webp: /assets/images/projects/PeakingAppIcon-256-dark.webp
-  link: https://testflight.apple.com/join/2T6FwyZF
-  link_label: Beta test this app
+  slug: peaking
+  link: /projects/peaking/
+  link_label: Development log
   summary: >
     Peaking is a mountain companion app for discovering peaks, verifying summits from route data, and tracking progress across iconic hiking lists even with patchy connectivity.
   technologies:

@@ -1,0 +1,41 @@
+---
+title: Peaking
+kind: app
+slug: peaking
+subtitle: Discover peaks, verify summits from your own routes, and track iconic hiking lists — offline-first.
+compatibility: iPhone · iOS 17+
+testflight_url: https://testflight.apple.com/join/2T6FwyZF
+description: A mountain companion for discovering peaks, verifying summits from route data, and tracking progress across iconic hiking lists, even with patchy signal.
+screenshots:
+  - light: /assets/images/projects/PeakingAppIcon-256.png
+    light_webp: /assets/images/projects/PeakingAppIcon-256.webp
+    dark: /assets/images/projects/PeakingAppIcon-256-dark.png
+    dark_webp: /assets/images/projects/PeakingAppIcon-256-dark.webp
+    alt: Peaking placeholder screenshot — replace with a device capture
+updates:
+  - date: 2023-06-09
+    version: origin
+    title: First commit — the idea
+    summary: A map that knows which summits you have actually stood on.
+    content: |
+      Peaking began as a simple question: could an app confirm a summit from the
+      route you walked, rather than trusting a manual check-in? The first commit
+      laid down a SwiftUI shell and a MapKit view — no versioning, no sync, just
+      the seed of the idea.
+  - date: 2025-11-01
+    version: v1.0
+    title: First public TestFlight
+    summary: The map, collections and summit matching reach a shippable whole.
+    content: |
+      The map, published collections (Munros, Wainwrights) and route-based summit
+      matching came together into something worth handing to external testers for
+      the first time.
+---
+Peaking is a mountain companion for hillwalkers and mountaineers. It maps the peaks
+around you, confirms a summit from the route you actually walked, and tracks your
+progress across the classic hiking lists — and it keeps working when the signal does
+not.
+
+The interesting part is the verification: instead of a manual check-in, Peaking
+matches a summit against the GPS track from your Apple Watch or Strava activity, so
+your list of completed peaks reflects where you genuinely stood.
