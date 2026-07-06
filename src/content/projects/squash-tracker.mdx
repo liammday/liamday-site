@@ -44,19 +44,19 @@ updates:
       work" commits worked through over the following two weeks, alongside
       player statistics that could now finally account for drawn matches.
   - id: healthkit-workout-capture
-    date: 2025-05-01
+    date: 2025-05-16
     title: HealthKit workout sessions and a heart-rate chart
     summary: Playing a match becomes a tracked workout, with heart rate charted alongside the score.
     content: |
       A workout session tracker was added so that scoring a match on the watch
       also recorded it as an Apple Health workout, complete with heart rate and
-      active energy. It shipped rough — the first version was described in its
-      own commit message as "working but buggy" — and ending a workout cleanly
-      took several passes: async session handling, nil-safety checks, and a
-      confirmation step to stop a workout being ended by accident. A heart-rate
-      chart on the match detail view, hidden automatically for imported matches
-      without timing data, was the payoff for getting the session lifecycle
-      right.
+      active energy. It shipped rough in March — the first version was described
+      in its own commit message as "working but buggy" — and ending a workout
+      cleanly was hardened over the following weeks: async session handling,
+      nil-safety checks, and, by mid-May, a confirmation step to stop a workout
+      being ended by accident. A heart-rate chart on the match detail view,
+      hidden automatically for imported matches without timing data, was the
+      payoff for getting the session lifecycle right.
   - id: voice-announcements-stats
     date: 2025-05-30
     title: Spoken score announcements and a proper stats screen
@@ -70,30 +70,29 @@ updates:
       and a trend indicator showing whether a given stat was rising or falling
       over recent matches.
   - id: naming-and-match-options
-    date: 2025-07-07
+    date: 2025-06-30
     title: Fixing "Me" in score announcements, and more flexible match setup
     summary: Announcements learn to say your name properly, and match creation gets faster with remembered defaults.
     content: |
       A recurring naming bug in the spoken announcements — the app referring to
       the player as "Me" instead of their name, producing lines like "Me's
       service from left" — was traced to a first/third-person mix-up and fixed
-      properly rather than patched around. Match setup also became more
-      flexible: a "best of" target became optional (falling back to an
-      open-ended match), and new-match options now prefilled from whatever
-      rules, target, location and ball type were used last, so starting a
-      second match took noticeably fewer taps.
+      properly rather than patched around. Match setup became more flexible
+      soon after, in early July: a "best of" target became optional (falling
+      back to an open-ended match), and new-match options now prefilled from
+      whatever rules, target, location and ball type were used last, so
+      starting a second match took noticeably fewer taps.
   - id: cloudkit-identity-rework
-    date: 2025-11-10
-    title: CloudKit-backed sync and a rebuilt identity model
-    summary: SwiftData containers get real CloudKit mirroring, and "who is the default player" becomes an explicit, migrated concept.
+    date: 2025-10-31
+    title: CloudKit-backed sync and a settings diagnostics tab
+    summary: SwiftData containers get real CloudKit mirroring, and sync problems become visible instead of silent.
     content: |
       After a quiet stretch, CloudKit backing was properly enabled for the
       SwiftData containers, with diagnostics tools added to a new settings tab
-      to make sync problems visible rather than silent. That surfaced a deeper
-      issue: the app's notion of "the default player" was informal and prone to
-      duplicating on reinstall, so it was replaced with an explicit identity
-      store, a migration plan, and regression tests to confirm existing matches
-      still resolved to the right player once the new model landed.
+      to make sync problems visible rather than silent. That work surfaced a
+      deeper issue: the app's notion of "the default player" was informal and
+      prone to duplicating on reinstall — a problem that would take a proper
+      identity store to fix, which came later as part of the v2 rewrite below.
   - id: v2-redesign-and-sunset
     date: 2026-04-26
     version: v2.0.0
