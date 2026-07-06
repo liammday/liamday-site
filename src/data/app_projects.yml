@@ -232,6 +232,9 @@
   icon_webp: /assets/images/projects/SquashTrackerAppIcon-256.webp
   icon_dark: /assets/images/projects/SquashTrackerAppIcon-256-dark.png
   icon_dark_webp: /assets/images/projects/SquashTrackerAppIcon-256-dark.webp
+  slug: squash-tracker
+  link: /projects/squash-tracker/
+  link_label: Development log
   summary: >
     Squash Tracker is a match companion app for recording live squash games on Apple Watch, capturing rally-by-rally scores and health metrics, and reviewing detailed match statistics across your playing history.
   technologies:

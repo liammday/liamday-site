@@ -1,0 +1,127 @@
+---
+title: Squash Tracker
+kind: app
+slug: squash-tracker
+subtitle: Record live squash on Apple Watch — rally-by-rally scoring and heart-rate capture — then review your match history.
+compatibility: Apple Watch + iPhone · watchOS 10+ / iOS 17+
+description: A match companion for recording live squash on Apple Watch, capturing rally-by-rally scores and health metrics, and reviewing match statistics over time.
+updates:
+  - date: 2025-02-01
+    id: origin
+    title: First commit — the idea
+    summary: A watchOS companion app scaffold, with the phone app to follow.
+    content: |
+      Squash Tracker began on the watch: an initial commit with basic data
+      structures and a navigation stack, built to run standalone before a phone
+      companion existed. Within three weeks a second target was added for the
+      iPhone app, alongside a CloudKit container to eventually carry match data
+      between the two. The earliest UI work was mostly navigation and onboarding
+      scaffolding — nothing that could score a rally yet.
+  - id: rally-scoring-foundations
+    date: 2025-03-04
+    title: Rally-by-rally scoring and server tracking
+    summary: The core mechanic arrives — recording who served, who won the rally, and the score that follows.
+    content: |
+      The data model grew a proper scoring method, with explicit selection of
+      the first server and the opening server for each match and game, and
+      server-side tracking that updated automatically as rallies were logged.
+      Fixing custom-enum handling for CloudKit came early, a reminder that
+      SwiftData's CloudKit mirroring is stricter about type shape than local
+      persistence alone. By early March a match could be scored rally by rally
+      with the correct side and points display, the foundation everything else
+      was built on.
+  - id: shared-views-refactor
+    date: 2025-04-24
+    title: One shared codebase for watch and phone, then a production CloudKit rebuild
+    summary: The standalone watch app is folded into a companion app, and CloudKit sync is rebuilt to survive production.
+    content: |
+      After a failed attempt to archive the watch app as a standalone target, it
+      was refactored into a proper companion app sharing views, models and a
+      CloudKit container with the phone. That unlocked the first TestFlight
+      build, but CloudKit sync then had to be rebuilt to work reliably in the
+      production container rather than only in development — a gap that a
+      string of "bug fixes to matches" and "rebuilds to get cloudkit sync to
+      work" commits worked through over the following two weeks, alongside
+      player statistics that could now finally account for drawn matches.
+  - id: healthkit-workout-capture
+    date: 2025-05-01
+    title: HealthKit workout sessions and a heart-rate chart
+    summary: Playing a match becomes a tracked workout, with heart rate charted alongside the score.
+    content: |
+      A workout session tracker was added so that scoring a match on the watch
+      also recorded it as an Apple Health workout, complete with heart rate and
+      active energy. It shipped rough — the first version was described in its
+      own commit message as "working but buggy" — and ending a workout cleanly
+      took several passes: async session handling, nil-safety checks, and a
+      confirmation step to stop a workout being ended by accident. A heart-rate
+      chart on the match detail view, hidden automatically for imported matches
+      without timing data, was the payoff for getting the session lifecycle
+      right.
+  - id: voice-announcements-stats
+    date: 2025-05-30
+    title: Spoken score announcements and a proper stats screen
+    summary: The watch speaks the score after each rally, and match statistics grow milestones and trends.
+    content: |
+      Text-to-speech announcements were added so a score update could be heard
+      rather than read mid-rally, with a toggle to turn them off and several
+      rounds of fixing audio clashes and crashes along the way. In parallel, the
+      statistics side of the app matured well past a simple win-loss count:
+      combined stats-and-milestone views, sortable and filterable match lists,
+      and a trend indicator showing whether a given stat was rising or falling
+      over recent matches.
+  - id: naming-and-match-options
+    date: 2025-07-07
+    title: Fixing "Me" in score announcements, and more flexible match setup
+    summary: Announcements learn to say your name properly, and match creation gets faster with remembered defaults.
+    content: |
+      A recurring naming bug in the spoken announcements — the app referring to
+      the player as "Me" instead of their name, producing lines like "Me's
+      service from left" — was traced to a first/third-person mix-up and fixed
+      properly rather than patched around. Match setup also became more
+      flexible: a "best of" target became optional (falling back to an
+      open-ended match), and new-match options now prefilled from whatever
+      rules, target, location and ball type were used last, so starting a
+      second match took noticeably fewer taps.
+  - id: cloudkit-identity-rework
+    date: 2025-11-10
+    title: CloudKit-backed sync and a rebuilt identity model
+    summary: SwiftData containers get real CloudKit mirroring, and "who is the default player" becomes an explicit, migrated concept.
+    content: |
+      After a quiet stretch, CloudKit backing was properly enabled for the
+      SwiftData containers, with diagnostics tools added to a new settings tab
+      to make sync problems visible rather than silent. That surfaced a deeper
+      issue: the app's notion of "the default player" was informal and prone to
+      duplicating on reinstall, so it was replaced with an explicit identity
+      store, a migration plan, and regression tests to confirm existing matches
+      still resolved to the right player once the new model landed.
+  - id: v2-redesign-and-sunset
+    date: 2026-04-26
+    version: v2.0.0
+    title: v2.0.0 — a slot-based schema rewrite, then sunset in favour of Rallying
+    summary: A six-phase model rewrite fixes around twenty long-standing bugs, and the app then hands its future to a successor.
+    content: |
+      A full schema redesign replaced the original model layer with slot-based
+      player references, explicit game and match scoring detail, and a
+      dedicated recordedBy field to distinguish who played from who scored —
+      addressing roughly twenty latent bugs along the way, including an HR-chart
+      crash, duplicate players on reinstall, and drawn games being conflated
+      with incomplete ones. It shipped as v2.0.0, but it was also the last
+      planned release under this name: future racket-sport tracking work moved
+      to a new, separately-provisioned app called Rallying, and this build's
+      final addition was an in-app popup explaining the move and the export →
+      import path for carrying match history across.
+---
+Squash Tracker is a match companion for squash players, built around scoring a
+game live on Apple Watch. Each rally is logged as it happens — server, side, and
+outcome — so the score, the game, and the match update themselves rather than
+needing a manual tally kept elsewhere.
+
+Playing a match also starts an Apple Health workout session, so heart rate and
+active energy are captured for the same window the score was recorded in and
+shown alongside it afterwards. A companion iPhone app carries match history,
+player and court management, and statistics — win-loss records, game breakdowns,
+and milestones — synced across devices via CloudKit.
+
+Squash Tracker's active development concluded with a v2 schema rewrite in April
+2026; racket-sport tracking continues in a successor app, Rallying, with an
+export/import path for carrying match history across.
