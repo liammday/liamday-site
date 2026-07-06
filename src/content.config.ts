@@ -47,6 +47,8 @@ const projects = defineCollection({
           dark_webp: z.string().optional(),
           alt: z.string(),
           caption: z.string().optional(),
+          version: z.string().optional(),
+          captured: z.string().optional(),
         }),
       )
       .optional(),
