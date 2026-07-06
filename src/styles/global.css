@@ -428,6 +428,15 @@
       transition: none;
     }
   }
+
+  /* ── App screenshot gallery (horizontal scroll with snap) ─────────────────── */
+  .app-gallery {
+    scroll-snap-type: x proximity;
+    scrollbar-width: thin;
+  }
+  .app-gallery__item {
+    scroll-snap-align: start;
+  }
 }
 
 /* ──────────────────────────────────────────────────────────────────────────
