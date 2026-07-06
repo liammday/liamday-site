@@ -31,6 +31,25 @@ const projects = defineCollection({
     location: z.string().optional(),
     nav: z.array(z.object({ id: z.string(), label: z.string() })).optional(),
     links: z.array(z.object({ title: z.string(), url: z.string() })).optional(),
+    kind: z.enum(['app']).optional(),
+    slug: z.string().optional(),
+    subtitle: z.string().optional(),
+    compatibility: z.string().optional(),
+    app_store_url: z.string().optional(),
+    testflight_url: z.string().optional(),
+    github_url: z.string().optional(),
+    screenshots: z
+      .array(
+        z.object({
+          light: z.string(),
+          light_webp: z.string().optional(),
+          dark: z.string().optional(),
+          dark_webp: z.string().optional(),
+          alt: z.string(),
+          caption: z.string().optional(),
+        }),
+      )
+      .optional(),
     updates: z
       .array(
         z.object({
@@ -39,6 +58,7 @@ const projects = defineCollection({
           title: z.string(),
           summary: z.string().optional(),
           content: z.string().optional(),
+          version: z.string().optional(),
         }),
       )
       .optional(),

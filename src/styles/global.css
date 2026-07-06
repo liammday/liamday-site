@@ -395,6 +395,48 @@
   @media (min-width: 640px) {
     .update-timeline__marker { margin-left: -2.25rem; }
   }
+  .update-timeline__version {
+    color: rgb(var(--ember-200));
+    background-color: rgb(var(--ember-500) / 0.14);
+    border: 1px solid rgb(var(--ember-400) / 0.4);
+    border-radius: 9999px;
+    padding: 0.05rem 0.5rem;
+    letter-spacing: 0.08em;
+  }
+  .update-timeline__summary {
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: rgb(var(--ember-300));
+    list-style: none;
+  }
+  .update-timeline__summary::-webkit-details-marker {
+    display: none;
+  }
+  .update-timeline__summary::after {
+    content: "▸";
+    transition: transform 0.2s ease;
+  }
+  .update-timeline__details[open] .update-timeline__summary::after {
+    transform: rotate(90deg);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .update-timeline__summary::after {
+      transition: none;
+    }
+  }
+
+  /* ── App screenshot gallery (horizontal scroll with snap) ─────────────────── */
+  .app-gallery {
+    scroll-snap-type: x proximity;
+    scrollbar-width: thin;
+  }
+  .app-gallery__item {
+    scroll-snap-align: start;
+  }
 }
 
 /* ──────────────────────────────────────────────────────────────────────────

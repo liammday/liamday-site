@@ -1,0 +1,51 @@
+---
+import ThemedImage from './ThemedImage.astro';
+import { resolveThemedPair } from '../../lib/themed-image';
+
+interface Screenshot {
+  light: string;
+  light_webp?: string;
+  dark?: string;
+  dark_webp?: string;
+  alt: string;
+  caption?: string;
+}
+
+interface Props {
+  screenshots: Screenshot[];
+  title: string;
+}
+
+const { screenshots, title } = Astro.props;
+
+const items = screenshots
+  .map((s) => ({
+    pair: resolveThemedPair(s.light, s.light_webp, undefined, undefined, s.dark, s.dark_webp),
+    alt: s.alt,
+    caption: s.caption,
+  }))
+  .filter((it) => it.pair);
+---
+
+<section id="screenshots" class="mx-auto max-w-5xl px-6 py-12">
+  <h2 class="sr-only">Screenshots</h2>
+  <ul class="app-gallery flex gap-4 overflow-x-auto pb-3" aria-label={`${title} screenshots`}>
+    {
+      items.map((it, i) => (
+        <li class="app-gallery__item shrink-0">
+          <figure class="m-0">
+            <ThemedImage
+              light={it.pair!.light}
+              dark={it.pair!.dark}
+              alt={it.alt}
+              class="h-[440px] w-auto rounded-2xl border border-aluminum-500/20 shadow-[0_20px_45px_-30px_rgba(0,0,0,0.9)]"
+              pictureClass="block"
+              loading={i === 0 ? 'eager' : 'lazy'}
+            />
+            {it.caption && <figcaption class="mt-2 text-xs text-aluminum-400">{it.caption}</figcaption>}
+          </figure>
+        </li>
+      ))
+    }
+  </ul>
+</section>

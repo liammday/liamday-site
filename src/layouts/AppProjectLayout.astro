@@ -1,0 +1,153 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import UpdateTimeline from '../components/UpdateTimeline.astro';
+import AppScreenshotGallery from '../components/ui/AppScreenshotGallery.astro';
+import ThemedImage from '../components/ui/ThemedImage.astro';
+import { Button } from '../components/ui/Button';
+import { resolveThemedPair } from '../lib/themed-image';
+import { appProjects } from '../data/projects';
+import { formatMonth } from '../lib/format';
+
+const { project } = Astro.props;
+const data = project.data;
+
+// Join back to the card metadata in app_projects.yml by slug — single source of truth.
+const app = appProjects.find((p) => p.slug === data.slug);
+
+const iconPair = app
+  ? resolveThemedPair(app.icon, app.icon_webp, app.icon_light, app.icon_light_webp, app.icon_dark, app.icon_dark_webp)
+  : null;
+
+const technologies = app?.technologies ?? [];
+const features = app?.features ?? [];
+const platform = app?.platform;
+const status = app?.status;
+const audience = app?.audience;
+
+const started = app?.date_started ? formatMonth(app.date_started) : '';
+const finished = app?.date_finished ? formatMonth(app.date_finished) : '';
+
+const screenshots = data.screenshots ?? [];
+const hasScreenshots = screenshots.length > 0;
+const hasFeatures = features.length > 0;
+const hasUpdates = (data.updates?.length ?? 0) > 0;
+
+const ctas = [
+  data.testflight_url && { href: data.testflight_url, label: 'Beta test on TestFlight', variant: 'primary' as const },
+  data.app_store_url && { href: data.app_store_url, label: 'View on the App Store', variant: 'primary' as const },
+  data.github_url && { href: data.github_url, label: 'GitHub', variant: 'secondary' as const },
+].filter(Boolean) as { href: string; label: string; variant: 'primary' | 'secondary' }[];
+
+const navLink =
+  'whitespace-nowrap rounded-full border border-transparent px-4 py-2 font-medium text-aluminum-300 transition hover:border-aluminum-500/40 hover:text-aluminum-100 aria-[current=page]:border-ember-400/50 aria-[current=page]:bg-ember-500/10 aria-[current=page]:text-ember-200 aria-[current=page]:texture-noise';
+---
+
+<BaseLayout title={data.title} description={data.description ?? data.summary} type="article" image={data.image}>
+  <article class="bg-transparent text-aluminum-100">
+    <section class="border-b border-aluminum-500/25 bg-transparent">
+      <div class="mx-auto max-w-5xl px-6 py-20">
+        <a
+          class="text-sm text-aluminum-300 underline underline-offset-4 transition hover:text-ember-300 hover:underline"
+          href="/#projects">← Back to Projects</a
+        >
+
+        <div class="mt-8 flex flex-col gap-6 sm:flex-row sm:items-start">
+          {
+            iconPair && (
+              <ThemedImage
+                light={iconPair.light}
+                dark={iconPair.dark}
+                alt={`${data.title} app icon`}
+                width={112}
+                height={112}
+                class="h-28 w-28 rounded-[1.35rem] object-cover"
+                pictureClass="h-28 w-28 shrink-0"
+                loading="eager"
+              />
+            )
+          }
+          <div>
+            {
+              (platform || status) && (
+                <p class="text-xs font-semibold uppercase tracking-[0.3em] text-aluminum-400">
+                  {platform}
+                  {status ? ` · ${status}` : ''}
+                </p>
+              )
+            }
+            <h1 class="mt-3 text-4xl font-semibold text-aluminum-100">{data.title}</h1>
+            {data.subtitle && <p class="mt-3 text-lg leading-relaxed text-aluminum-300">{data.subtitle}</p>}
+            {audience && <p class="mt-3 max-w-[60ch] text-sm leading-relaxed text-aluminum-400">{audience}</p>}
+            {
+              (started || data.compatibility) && (
+                <p class="mt-4 text-xs font-medium text-aluminum-400">
+                  {started && <span>{finished ? `${started} → ${finished}` : `${started} → Present`}</span>}
+                  {started && data.compatibility && <span> · </span>}
+                  {data.compatibility && <span>{data.compatibility}</span>}
+                </p>
+              )
+            }
+            {
+              ctas.length > 0 && (
+                <div class="mt-6 flex flex-wrap gap-3">
+                  {ctas.map((c) => (
+                    <Button variant={c.variant} href={c.href} target="_blank" rel="noopener noreferrer">
+                      {c.label}
+                    </Button>
+                  ))}
+                </div>
+              )
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <nav
+      class="sticky top-0 z-40 border-b border-aluminum-500/25 bg-charcoal-900/95 backdrop-blur"
+      aria-label="Page sections"
+      data-sticky-nav>
+      <div class="page-nav-bleed flex gap-3 overflow-x-auto py-4 text-sm" data-nav-scroll>
+        {hasScreenshots && <a class={navLink} href="#screenshots" data-nav-link>Screenshots</a>}
+        <a class={navLink} href="#overview" data-nav-link>Overview</a>
+        {hasFeatures && <a class={navLink} href="#features" data-nav-link>Features</a>}
+        {hasUpdates && <a class={navLink} href="#updates" data-nav-link>Development log</a>}
+      </div>
+    </nav>
+
+    {hasScreenshots && <AppScreenshotGallery screenshots={screenshots} title={data.title} />}
+
+    <section id="overview" class="mx-auto max-w-5xl px-6 py-16">
+      <div class="detail-content prose prose-invert">
+        <slot />
+      </div>
+    </section>
+
+    {
+      hasFeatures && (
+        <section id="features" class="mx-auto max-w-5xl px-6 pb-16">
+          <h2 class="text-2xl font-semibold text-aluminum-100">Features</h2>
+          <ul class="mt-6 grid gap-4 sm:grid-cols-2">
+            {features.map((f) => (
+              <li class="surface-panel p-5 text-sm leading-relaxed text-aluminum-300">{f}</li>
+            ))}
+          </ul>
+          {technologies.length > 0 && (
+            <div class="mt-8">
+              <p class="text-xs font-semibold uppercase tracking-[0.3em] text-aluminum-400">Built with</p>
+              <ul class="mt-3 flex flex-wrap gap-2">
+                {technologies.map((t) => (
+                  <li class="rounded-full border border-aluminum-500/25 bg-graphite-700/60 px-3 py-1 text-xs text-aluminum-300">
+                    {t}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </section>
+      )
+    }
+
+    {hasUpdates && <UpdateTimeline updates={data.updates} collapsible label="Development log" />}
+  </article>
+</BaseLayout>

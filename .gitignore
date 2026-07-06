@@ -23,3 +23,6 @@ vendor/
 .DS_Store
 .env
 .env.production
+
+# superpowers brainstorming visual companion (transient mockups/state)
+.superpowers/

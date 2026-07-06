@@ -171,8 +171,9 @@
   icon_webp: /assets/images/projects/PeakingAppIcon-256.webp
   icon_dark: /assets/images/projects/PeakingAppIcon-256-dark.png
   icon_dark_webp: /assets/images/projects/PeakingAppIcon-256-dark.webp
-  link: https://testflight.apple.com/join/2T6FwyZF
-  link_label: Beta test this app
+  slug: peaking
+  link: /projects/peaking/
+  link_label: Development log
   summary: >
     Peaking is a mountain companion app for discovering peaks, verifying summits from route data, and tracking progress across iconic hiking lists even with patchy connectivity.
   technologies:
@@ -202,6 +203,9 @@
   icon_webp: /assets/images/projects/TrainingAppIcon-256.webp
   icon_dark: /assets/images/projects/TrainingAppIcon-256-dark.png
   icon_dark_webp: /assets/images/projects/TrainingAppIcon-256-dark.webp
+  slug: training
+  link: /projects/training/
+  link_label: Development log
   summary: >
     Training is a planning-and-accountability app that turns weekly intentions into measurable progress by comparing planned sessions with real workouts recorded in Apple Health.
   technologies:
@@ -218,27 +222,32 @@
     - Smart creation flow with natural-language workout parsing on supported devices.
     - Calendar sync and notifications that keep plans visible and actionable.
 
-- name: Squash Tracker
+- name: Rallying
   platform: iOS & watchOS
+  status: Active development · Internal TestFlight
   order: 8
-  date_started: "2025-03"
-  tags: [swift, ios, watchos, healthkit, personal]
-  audience: For squash players who want to record matches, track scores, and review performance over time.
-  icon: /assets/images/projects/SquashTrackerAppIcon-256.png
-  icon_webp: /assets/images/projects/SquashTrackerAppIcon-256.webp
-  icon_dark: /assets/images/projects/SquashTrackerAppIcon-256-dark.png
-  icon_dark_webp: /assets/images/projects/SquashTrackerAppIcon-256-dark.webp
+  date_started: "2025-02"
+  tags: [swift, ios, watchos, healthkit, cloudkit, personal]
+  slug: rallying
+  icon: /assets/images/projects/RallyingAppIcon-256.png
+  icon_webp: /assets/images/projects/RallyingAppIcon-256.webp
+  icon_dark: /assets/images/projects/RallyingAppIcon-256-dark.png
+  icon_dark_webp: /assets/images/projects/RallyingAppIcon-256-dark.webp
+  link: /projects/rallying/
+  link_label: Development log
+  audience: For racket-sport players who want to record matches on Apple Watch and review performance over time, across squash today and more sports as it grows.
   summary: >
-    Squash Tracker is a match companion app for recording live squash games on Apple Watch, capturing rally-by-rally scores and health metrics, and reviewing detailed match statistics across your playing history.
+    Rallying is a multi-sport racket tracker for iPhone and Apple Watch, built on the slot-based scoring model proven in its squash-only predecessor. Matches can be recorded rally-by-rally or score-only, singles or doubles, on the wrist or in your pocket, with HealthKit workout capture and CloudKit sync carrying history across every device.
   technologies:
     - SwiftUI
     - SwiftData
     - HealthKit
     - WatchKit
     - CloudKit
-    - MapKit
+    - Swift Charts
   features:
-    - Live match recording on Apple Watch with rally input, service tracking, and score announcements.
+    - Multi-sport tracking (squash today, more racket sports planned) with singles or doubles and score-only or rally-by-rally recording.
+    - Live match recording on Apple Watch or iPhone, with a shared recording controller keeping both in sync.
     - Heart rate and active energy capture via HealthKit workout sessions during play.
-    - Player and court management with location mapping and match history.
-    - Detailed match statistics including win-loss records, game breakdowns, and milestone tracking.
+    - CloudKit sync across devices, with CSV import to carry Squash Tracker match history across.
+    - Spoken score announcements and detailed match statistics carried over from the squash-only predecessor.

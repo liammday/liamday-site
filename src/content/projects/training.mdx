@@ -1,0 +1,156 @@
+---
+title: Training
+kind: app
+slug: training
+subtitle: Turn weekly intentions into measurable progress by comparing planned sessions with what Apple Health actually recorded.
+compatibility: iPhone · iOS 17+ (natural-language parsing on iOS 26+)
+description: A planning-and-accountability app that compares planned workouts with real sessions recorded in Apple Health.
+updates:
+  - date: 2023-07-13
+    id: origin
+    title: First commit — the idea
+    summary: A SwiftUI scaffold with a week picker, waiting for a reason to exist.
+    content: |
+      Training started as a stock Xcode template with a custom week picker view
+      bolted on shortly after. There was no data model yet, just a list of days
+      and an activity type enumeration sketching out what a "planned" workout
+      might need to look like. The project then sat quiet for most of a year.
+  - date: 2024-09-05
+    id: healthkit-planned-workout
+    title: PlannedWorkout, goal types, and HealthKit arrive together
+    summary: The core mechanic gets its first real data model — a plan, a goal, and a way to check it against Health.
+    content: |
+      Development resumed with tab navigation, a jump-to-date control, and a
+      proper PlannedWorkout model with a create/edit flow. HealthKit functions
+      moved into a dedicated controller, and goal types were reworked more than
+      once — from ad-hoc quantity identifiers to a bespoke goal type that could
+      infer its own HealthKit quantity when needed. This was the point the app's
+      central idea took shape in code: a planned session with a target, and a
+      way to check whether Health agreed it happened.
+  - date: 2024-10-30
+    id: period-goals-utc-dates
+    title: Period goals and a UTC-based date model
+    summary: Recurring goals and a rebuilt date layer replace ad-hoc DateComponents logic.
+    content: |
+      A PeriodGoal model introduced recurring targets — daily, weekly, monthly —
+      alongside a matching engine that paired completed workouts against planned
+      ones, preferring the closest one-to-one fit. The date handling underneath
+      was rebuilt on UTC with explicit timezone overrides rather than local
+      DateComponents, after recurring-plan predicates kept producing edge-case
+      bugs around day boundaries. A basic notification controller landed at the
+      same time, tied to the count of incomplete plans for the day. The project
+      then went quiet again for over a year.
+  - date: 2026-01-04
+    id: calendar-sync
+    title: Two-way calendar sync
+    summary: Planned workouts gain a live link to Calendar, in both directions.
+    content: |
+      Work resumed with a run of tightly scoped pull requests building EventKit
+      integration from the ground up: calendar permissions, recurrence mapping,
+      all-day event handling, conflict resolution, and a debug menu to inspect
+      sync state directly. The result let a planned workout create a calendar
+      event and stay in sync with edits made on either side, including recurring
+      series and their exceptions — the first of several features built this way,
+      as a fast sequence of small, reviewable pull requests rather than one large
+      branch.
+  - date: 2026-01-09
+    id: timeline-rebuild
+    title: The timeline becomes a real List with infinite scroll
+    summary: Ad-hoc week navigation is replaced by a proper scrolling timeline.
+    content: |
+      The week-by-week navigation was refactored into a List-based timeline with
+      drag-and-drop support, inset grouping, and infinite scroll in both
+      directions. Getting the scroll-to-today anchor right took several follow-up
+      fixes — the header alignment and initial offset kept drifting — but the
+      payoff was a timeline that behaved like a real calendar surface instead of
+      a stack of independently paged weeks.
+  - date: 2026-01-18
+    id: foundation-models-nl-parsing
+    title: Foundation Models replace the regex parser
+    summary: Natural-language workout entry moves from hand-written regex to on-device Foundation Models.
+    content: |
+      A natural-language input field let a session be typed as a sentence and
+      parsed into a structured planned workout. The first version used a
+      hand-written parser and gazetteer; within days it was rebuilt on Apple's
+      Foundation Models framework for iOS 26 and up, with confidence-based
+      disambiguation for ambiguous phrasing and the legacy regex parser removed
+      once the new path proved reliable. A structured fallback sheet was kept for
+      anything the parser could not resolve with confidence.
+  - date: 2026-02-10
+    id: goal-system-expansion
+    title: Nutrition, body, and sleep join workout goals
+    summary: The goal system widens well past workouts, and HealthKit querying gets sturdier.
+    content: |
+      Goal types expanded to cover nutrition targets, body composition (weight,
+      water, body fat), and sleep, each wired to its own HealthKit statistics
+      query and category query. This surfaced real HealthKit fragility —
+      incompatible units, throttled queries, background delivery gaps — so the
+      cycle also added retry logic, throttling, and diagnostics around historical
+      statistics refresh. The `aps-environment` and HealthKit background
+      entitlements were trimmed once the simpler polling approach proved
+      sufficient.
+  - date: 2026-02-17
+    id: app-intents
+    title: Shortcuts and persistent App Intents
+    summary: Logging a workout or rest day becomes possible from outside the app entirely.
+    content: |
+      App Intents work that had been scoped out in a planning document landed as
+      persistent intents for logging workouts and rest days, backed by an App
+      Group so Shortcuts and the main app shared state. Getting the intents to
+      compile alongside the rest of the target took a couple of follow-up fixes,
+      a reminder that App Intents' build-time metadata generation is stricter
+      about project structure than ordinary SwiftUI code.
+  - date: 2026-04-17
+    version: v1.0.0
+    id: v1-0-0
+    title: v1.0.0 — first external tag
+    summary: A small App Store Connect fix formalises the app's first external release.
+    content: |
+      Training's only external version tag landed not as a feature milestone but
+      as a fix: the legacy AppIcon asset set was populated so App Store Connect
+      would render a marketing icon at all. It followed a short cleanup pass that
+      removed an old release-notes GitHub Actions pipeline and a stale toolkit
+      submodule. Every build since has shipped through internal TestFlight tags
+      instead, which is why the timeline before and after this point is told
+      through dated phases rather than version numbers.
+  - date: 2026-06-30
+    id: calendar-representation-policy
+    title: A formal policy for calendar-authored plans
+    summary: Plans created from calendar events get a defined, migrated representation instead of an implicit one.
+    content: |
+      A calendar representation policy was designed and rolled out in phases: a
+      core sentinel-and-resolve-at-sync mechanic, an automatic migration with an
+      onboarding and settings guard, and a set of smaller consistency fixes —
+      honouring rest days, deterministic availability, and copying pins across a
+      recurring series. The work was paired with a UI and unit testing suite and
+      an architecture write-up on the timeline's infinite-scroll behaviour,
+      moving what had been implicit conventions into documented, tested rules.
+  - date: 2026-07-04
+    id: goal-reminders-group-naming
+    title: Goals as reminders, and one name per activity group
+    summary: Goals gain a Reminders-backed progress view, and activity naming is unified across the app.
+    content: |
+      Activity and nutrition goals were connected to Reminders as
+      progress-bearing entries, with a matching link for sleep goals to
+      CloudKit shortly after. In parallel, group-name representation was made
+      consistent across every screen that displayed a workout, with "also known
+      as" aliases merged into the same gazetteer used for natural-language
+      disambiguation — so a workout typed one way and a workout selected from a
+      picker resolve to the same name.
+---
+Training turns a week of intentions into a week you can actually check. You plan
+sessions, targets and rest days, and Training compares them against what Apple
+Health recorded, rather than trusting a box you ticked yourself.
+
+It is built for anyone training toward something specific and reasonably
+consistent — athletes, coaches, and people building a habit — who want their
+plan held to account by real data instead of a private tally. Reminders, calendar
+sync, and a Shortcuts-friendly quick-log flow keep the plan visible without
+requiring the app to be open.
+
+The interesting mechanic is the comparison itself: a planned session sits
+alongside whatever Health actually logged for that day, and Training matches the
+two rather than asking you to mark it done. On supported devices you can add a
+session by typing it in plain language, and the same matching and disambiguation
+logic that powers that parser keeps a workout's name consistent everywhere it
+appears — in the timeline, on a calendar event, or in a Shortcut.
