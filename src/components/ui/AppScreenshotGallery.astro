@@ -27,9 +27,12 @@ const items = screenshots
   .filter((it) => it.pair);
 ---
 
-<section id="screenshots" class="mx-auto max-w-5xl px-6 py-12">
+<section id="screenshots" class="py-8">
   <h2 class="sr-only">Screenshots</h2>
-  <ul class="app-gallery flex gap-4 overflow-x-auto pb-3" aria-label={`${title} screenshots`}>
+  {/* Full-bleed scroll: the track spans the viewport while `page-nav-bleed` keeps the
+      first item aligned to the column (same pattern as the sticky sub-nav). The vertical
+      padding gives the image drop-shadow room so `overflow-x-auto` doesn't clip it. */}
+  <ul class="app-gallery page-nav-bleed flex gap-4 overflow-x-auto pt-2 pb-8" aria-label={`${title} screenshots`}>
     {
       items.map((it, i) => (
         <li class="app-gallery__item shrink-0">

@@ -432,7 +432,13 @@
   /* ── App screenshot gallery (horizontal scroll with snap) ─────────────────── */
   .app-gallery {
     scroll-snap-type: x proximity;
-    scrollbar-width: thin;
+    /* Hide the scrollbar to match the sticky sub-nav ([data-nav-scroll]); the
+       scroll mechanism (wheel, touch, drag) still works, just no visible bar. */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .app-gallery::-webkit-scrollbar {
+    display: none;
   }
   .app-gallery__item {
     scroll-snap-align: start;
