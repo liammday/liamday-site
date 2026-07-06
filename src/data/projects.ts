@@ -5,6 +5,7 @@ export interface AppProject {
   platform?: string;
   status?: string;
   order: number;
+  slug?: string;
   date_started?: string;
   date_finished?: string;
   tags?: string[];
