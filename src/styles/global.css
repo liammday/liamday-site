@@ -191,15 +191,11 @@
     margin-top: 0.5em;
   }
 
-  /* Project-page content widths: lift the 65ch prose cap off the container so
-     bounded media (figures, tables, the architecture diagram) fill the column,
-     and re-apply the reading width only to text body elements. */
-  .detail-content {
-    max-width: none;
-  }
-  .detail-content :where(p, ul, ol, blockquote, dl):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
-    max-width: 65ch;
-  }
+  /* NOTE: the `.detail-content` content-width overrides (lift the 65ch cap off
+     the container; re-cap only text body elements) live UNLAYERED further down —
+     see "Case-study content widths". @tailwindcss/typography's `.prose` sets
+     `max-width: 65ch` from the `utilities` layer, so a layered `.detail-content`
+     rule can never win regardless of specificity. */
 
   /* Page-nav scroll bleed: scroll viewport spans the full nav width, but dynamic
      padding aligns the first/last pill with the content column edges
@@ -477,6 +473,24 @@
   --tw-prose-pre-bg: rgb(var(--graphite-700));
   --tw-prose-th-borders: rgb(var(--aluminum-500) / 0.3);
   --tw-prose-td-borders: rgb(var(--aluminum-500) / 0.2);
+}
+
+/* Case-study content widths (UNLAYERED — intentional, same reason as above).
+
+   Lift the 65ch reading cap off the `.detail-content` container so bounded media
+   (figures, tables, the architecture diagram, surface-panel asides) fill the
+   full max-w-5xl column, then re-apply the reading width only to text body
+   elements. @tailwindcss/typography's `.prose` sets `max-width: 65ch` on the
+   container from the `utilities` layer; a layered override silently loses (it
+   previously sat in @layer components, capping every inset object to the text
+   column — the exact bug this block fixes), so these sit unlayered to win. The
+   UpdateTimeline body reaches the same result via an explicit `max-w-none`
+   utility, which is why the Updates section was already full-width. */
+.detail-content {
+  max-width: none;
+}
+.detail-content :where(p, ul, ol, blockquote, dl):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  max-width: 65ch;
 }
 
 /* Primary CTA hover in light mode. The hover:bg-ember-300 utility yields a
