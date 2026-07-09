@@ -124,10 +124,46 @@
     - Self-authored job-application-tracking MCP that orchestrates the full lifecycle of an application from JD analysis through draft management.
     - "Self-improving skills: internal performance tracking informs external skill and tool research so the system iterates on its own deployment patterns over time."
 
+- name: HomeOS
+  platform: Personal Applied AI · Smart Home
+  status: Live, daily use
+  order: 5
+  date_started: "2026-07"
+  tags: [applied-ai, home-assistant, homekit, matter, python, personal]
+  icon: /assets/images/projects/homeos-icon.svg
+  icon_light: /assets/images/projects/homeos-icon-light.svg
+  link: /projects/homeos/
+  link_label: Read the case study
+  audience: A HomeKit-first smart home run like an operating system, where the Home app stays the controller and Home Assistant computes and exposes the intelligence behind it.
+  summary: >
+    HomeOS treats a home like an operating system. Apple Home is the interface and
+    the control plane, and every automation lives there; a single Raspberry Pi runs
+    Homebridge and Home Assistant as the compute plane, doing the things HomeKit
+    cannot do for itself and handing the result back as ordinary accessories. A
+    legacy of IKEA and Lightwave kit is bridged in rather than replaced, with Matter
+    and Thread preferred for anything new. The build so far has virtualised a dumb
+    heated towel rail into a real thermostat, added a local dashboard that logs every
+    room against the weather outside, and injected computed virtual sensors, like
+    whether the sun is on the glass, so the Home app can automate on things it could
+    never measure.
+  technologies:
+    - HomeKit · Apple Home
+    - Home Assistant
+    - Homebridge
+    - Matter · Thread
+    - Raspberry Pi
+    - Python (AI-paired)
+  features:
+    - "Home app as the controller: automations are authored in Apple Home, while Home Assistant only computes and exposes values as plain HomeKit sensors."
+    - Virtualised a dumb heated towel rail into a real HomeKit thermostat, driven by a generic-thermostat loop over a Matter sensor and a relay.
+    - "Local temperature dashboard logging every room against outdoor weather, with ribbon tracks for day and night, blinds, and sun-on-glass."
+    - "Injected virtual sensors (outdoor climate plus booleans like Direct Sun on Windows and High Solar Gain) so the Home app can keep blinds shut against solar gain in summer."
+    - "Legacy bridged, not binned: IKEA and Lightwave kit exposed through HomeKit, with Matter and Thread preferred for anything new."
+
 - name: Claude Usage Pacer
   platform: Personal Applied AI · macOS menu bar
   status: Live, daily use
-  order: 5
+  order: 6
   date_started: "2026-06"
   tags: [applied-ai, python, personal, macos]
   icon: /assets/images/projects/claude-usage-pacer-icon.svg
@@ -163,7 +199,7 @@
 - name: Peaking
   platform: iOS
   status: Active development
-  order: 6
+  order: 7
   date_started: "2024-06"
   tags: [swift, ios, mapkit, cloudkit, personal]
   audience: For hikers and mountaineers who track summits, routes, and collection progress.
@@ -195,7 +231,7 @@
 - name: Training
   platform: iOS
   status: Active development
-  order: 7
+  order: 8
   date_started: "2025-01"
   tags: [swift, ios, healthkit, personal]
   audience: For athletes, coaches, and habit-focused users who want stronger training consistency.
@@ -225,7 +261,7 @@
 - name: Rallying
   platform: iOS & watchOS
   status: Active development · Internal TestFlight
-  order: 8
+  order: 9
   date_started: "2025-02"
   tags: [swift, ios, watchos, healthkit, cloudkit, personal]
   slug: rallying
