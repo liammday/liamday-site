@@ -1,0 +1,165 @@
+---
+title: HomeOS
+description: An architecture case study on HomeOS, a HomeKit-first smart-home operating system on a single Raspberry Pi. The Home app controls; Home Assistant computes and exposes. Covers virtualising a dumb towel rail into a thermostat, a local temperature-tracking dashboard, and injecting computed sensors to drive climate automations.
+summary: A HomeKit-first home run like an operating system. The Home app stays the controller; Home Assistant and Homebridge on one Raspberry Pi do the computing and bridging; dumb devices get virtualised and computed sensors get injected, so the Home app can automate on things it could never measure.
+role: Architect, operator, and engineer (AI-paired)
+year: 2026 – Present
+client: Personal applied-AI build
+order: 2
+type: Case study
+image: /assets/images/projects/homeos-og-card.png
+hero_image: /assets/images/projects/homeos-hero.svg
+hero_image_light: /assets/images/projects/homeos-hero-light.svg
+hero_image_width: 1600
+hero_image_height: 800
+hero_image_alt: "HomeOS mark: a central ember-orange house core surrounded by seven room nodes, with a warm sun glow."
+nav:
+  - id: lede
+    label: What it is
+  - id: stack
+    label: The stack
+  - id: principles
+    label: Operating principles
+  - id: open
+    label: Open work
+updates:
+  - date: 2026-07-07
+    id: towel-rail-thermostat
+    title: Virtualising a dumb heated towel rail as a smart thermostat
+    summary: A dumb electric heated towel rail, made to behave like a real HomeKit thermostat with a target temperature it actually chases.
+    content: |
+      The bathroom towel rail was a dumb electric heater: on or off, with no sense
+      of the room. The goal was to make it present in Apple Home as a real
+      thermostat, with a setpoint and a reading it chases.
+
+      The brain is Home Assistant's `generic_thermostat`. It reads room
+      temperature from an FP300 multi-sensor (Matter) and switches a relay when the
+      room drifts below the target, exactly as a thermostat would. That virtual
+      thermostat is exposed to HomeKit through the HASS bridge, and a set of Apple
+      Home mirror automations keep the two views in step so the rail can be driven
+      from either side.
+
+      The honest edges: the sensor and the relay are separate devices, so the loop
+      is only as tight as their reporting; and the current relay is a stopgap
+      pending a Matter contactor that would make the control path HomeKit-native
+      end to end. But the outcome is real. A heated towel rail that used to be a
+      switch now holds a temperature, shows its state in the Home app, and can be
+      automated like any other thermostat.
+  - date: 2026-07-09
+    id: temperature-dashboard
+    title: A local temperature-tracker dashboard
+    summary: An on-Mac tool that logs every room's temperature and humidity against the weather outside, and shades exactly when the sun is on the glass.
+    content: |
+      Before automating the climate I wanted to see it. The temperature tracker is
+      a small tool that runs entirely on my Mac. It reads every HomeKit
+      temperature, humidity and blind sensor through a local bridge, pulls outdoor
+      temperature and humidity from a free weather source keyed to the house
+      coordinates, logs both to a local database every few minutes, and renders a
+      live, zoomable dashboard.
+
+      The design lesson was in the encoding. With several rooms, an outdoor line, a
+      comfort band and a stack of on-off states all fighting for the same chart,
+      colour alone stopped being enough. The fix was to give each kind of data its
+      own channel: room lines are per-location averages, the outdoor line is a
+      distinct dashed reference, and the on-off states (day and night, sun on the
+      windows, blinds open or closed) moved off the plot into slim ribbon tracks
+      beneath it. It computes the sun's position from the site's latitude and
+      longitude to shade exactly when the sun is on the glazed wall, which turned
+      out to be the clearest predictor of a room heating up.
+
+      It is deliberately local and dependency-light, and it doubles as the
+      instrument panel for the automations that came next. If a rule is going to
+      act on "hotter outside than in" or "sun on the glass", this is where I can
+      watch it be true.
+  - date: 2026-07-09
+    id: virtual-sensor-injection
+    title: Injecting virtual sensors to control the internal climate
+    summary: Computed sensors pushed into HomeKit so the Home app can automate on things it could never measure, like keeping the blinds shut when it is hotter outside.
+    content: |
+      The Home app can automate on a sensor crossing a threshold, but it cannot
+      compare two values or reason about the sun. So I taught Home Assistant to do
+      the reasoning and hand the answer back as a sensor.
+
+      Seven computed entities now live in a new "Outside" room in Apple Home. Four
+      are readings: outdoor temperature, humidity, dew point, and an estimated
+      illuminance derived from sun elevation and cloud cover. Three are booleans
+      built for automations: **Direct Sun on Windows**, on while the sun's bearing
+      and elevation put it on the east glazed wall; **High Solar Gain**, when the
+      sun is on the glass, the sky is fairly clear and it is warm; and **Freezing
+      Outside** for winter protection. Each is a Home Assistant template, exposed
+      through the existing HomeKit bridge, so the maths lives in HA and the
+      decision lives in the Home app.
+
+      The point is the pattern, not the seven sensors. It closes the loop the
+      dashboard opened. Instead of me reading a chart and deciding to shut the
+      blinds, the house can hold a fact like "the sun is on the glass and it is
+      hotter outside than in", and the Home app can act on it, keeping the blinds
+      closed against solar gain in summer and opening them for light and warmth
+      once the sun has moved on. The known gap: "hotter outside than in" is
+      currently limited to the one indoor sensor Home Assistant can see, so
+      bringing the rest of the rooms into HA is what makes the comparison whole.
+---
+
+<h2 id="lede" class="scroll-mt-32">What it is</h2>
+
+HomeOS is my home run like an operating system. The interface is Apple Home. The controller is the Home app, and it stays the controller: every automation lives there, on the device I actually reach for. Underneath, a single Raspberry Pi runs Homebridge and Home Assistant, and its only job is to do the things HomeKit cannot do for itself, then hand the result back to HomeKit as an ordinary accessory.
+
+The through-line is a division of labour. HomeKit is the surface and the control plane. Home Assistant is the compute plane. It measures, models and derives, but it does not decide. Anything it works out, from a room's true temperature to whether the sun is currently on the glass, is published back into the Home app as a sensor I can automate on. The result is a home where the clever part is invisible and the control stays somewhere a person can see and change it.
+
+<h2 id="stack" class="scroll-mt-32">The stack</h2>
+
+One Raspberry Pi carries the lot. Homebridge exposes the odds and ends that have no native HomeKit path. Home Assistant runs alongside it as the compute layer and bridges its own devices into HomeKit over a single HASS bridge. The estate is deliberately mixed: a legacy of IKEA and Lightwave kit, bridged in rather than thrown out, sitting next to newer Matter and Thread devices, which are the preferred direction for anything new. Nothing is rebought just to be tidy. A device earns its place by working through HomeKit, and the bridge is how the old kit keeps earning it.
+
+<aside class="surface-panel my-8 p-6">
+  <p class="text-xs font-semibold uppercase tracking-[0.3em] text-aluminum-400">The division of labour</p>
+  <div class="mt-4 overflow-x-auto">
+    <table class="w-full min-w-[560px] text-left text-sm leading-relaxed text-aluminum-300">
+      <thead class="text-xs uppercase tracking-wider text-aluminum-400">
+        <tr>
+          <th class="pr-4 pb-3 font-semibold">Layer</th>
+          <th class="pr-4 pb-3 font-semibold">Role</th>
+          <th class="pb-3 font-semibold">Owns</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-aluminum-500/15">
+        <tr>
+          <td class="py-3 pr-4 text-aluminum-200">Apple Home / HomeKit</td>
+          <td class="py-3 pr-4">Control plane</td>
+          <td class="py-3">Interface, room model, every automation</td>
+        </tr>
+        <tr>
+          <td class="py-3 pr-4 text-aluminum-200">Home Assistant (Pi)</td>
+          <td class="py-3 pr-4">Compute plane</td>
+          <td class="py-3">Measuring, deriving, virtual sensors, then exposing</td>
+        </tr>
+        <tr>
+          <td class="py-3 pr-4 text-aluminum-200">Homebridge (Pi)</td>
+          <td class="py-3 pr-4">Bridge</td>
+          <td class="py-3">Odds and ends with no native HomeKit path</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</aside>
+
+<h2 id="principles" class="scroll-mt-32">Operating principles</h2>
+
+Five rules hold the whole thing together.
+
+**The Home app is the primary controller.** Automations are authored in Apple Home, not in Home Assistant. This is a deliberate constraint: the place I trust to keep running, to be shared with the household, and to still be legible in six months is the Home app.
+
+**Home Assistant computes, it does not automate.** Its job is to measure and derive, then expose. When a rule needs a fact the Home app cannot measure, HA works the fact out and publishes it as a plain HomeKit sensor. The logic lives in a template; the decision lives in the Home app.
+
+**One fact, one home.** Every value has a single source. A derived reading is computed in one place and read everywhere else, rather than copied and left to drift.
+
+**If you cannot see it, you cannot tune it.** Before automating the climate, I built the means to watch it. Observability came first, on purpose.
+
+**Prefer Matter and Thread, bridge the legacy.** New devices are chosen for a native, local, HomeKit path. Old devices are bridged, not binned.
+
+The three updates below are the system growing along those lines: first a dumb device made smart, then the instrumentation to see the house, then the computed senses that let the Home app act on a world it previously could not measure.
+
+<h2 id="open" class="scroll-mt-32">Open work</h2>
+
+A few threads are still live. The towel-rail thermostat drives its relay through Home Assistant today; the plan is to swap it for a Matter contactor so the control path is HomeKit-native end to end. The indoor room sensors are still HomeKit-only, which means Home Assistant can compare the outside against the bathroom but not yet against the living room; pulling those sensors into HA through the HomeKit Controller integration is the next unlock for true per-room rules. Home Assistant is also still running in Fahrenheit under the hood, which everything quietly converts around but which deserves a proper switch to metric. And a granular immersion-heater controller remains parked for want of a clean HomeKit path.
+
+HomeOS is not finished and is not meant to be. It is a home I can reason about: a control surface I trust, a compute layer I can extend, and a growing set of senses that let the house act on more of the world than it can physically feel.
