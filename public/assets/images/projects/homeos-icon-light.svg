@@ -1,1 +1,28 @@
-²ø1šYì
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="HomeOS icon">
+  <defs>
+    <radialGradient id="hil-bg" cx="38%" cy="30%" r="85%">
+      <stop offset="0%" stop-color="#f6efe4"/>
+      <stop offset="60%" stop-color="#efe4d4"/>
+      <stop offset="100%" stop-color="#e7d9c5"/>
+    </radialGradient>
+    <radialGradient id="hil-house" cx="38%" cy="28%" r="80%">
+      <stop offset="0%" stop-color="#e8975f"/>
+      <stop offset="55%" stop-color="#cc785c"/>
+      <stop offset="100%" stop-color="#a2543c"/>
+    </radialGradient>
+  </defs>
+  <rect width="256" height="256" rx="56" fill="url(#hil-bg)"/>
+  <g stroke="#c77a5e" stroke-opacity="0.5" stroke-width="2" fill="none" stroke-linecap="round">
+    <line x1="128" y1="96" x2="128" y2="60"/>
+    <line x1="160" y1="120" x2="196" y2="104"/>
+    <line x1="160" y1="150" x2="196" y2="166"/>
+    <line x1="96" y1="120" x2="60" y2="104"/>
+    <line x1="96" y1="150" x2="60" y2="166"/>
+  </g>
+  <g fill="#6f5a49">
+    <circle cx="128" cy="52" r="7"/><circle cx="204" cy="100" r="7"/>
+    <circle cx="204" cy="170" r="7"/><circle cx="52" cy="100" r="7"/><circle cx="52" cy="170" r="7"/>
+  </g>
+  <path d="M96 126 L128 96 L160 126 L160 172 L96 172 Z" fill="url(#hil-house)"/>
+  <rect x="120" y="146" width="16" height="26" rx="2" fill="#7a3f2e" fill-opacity="0.5"/>
+</svg>
