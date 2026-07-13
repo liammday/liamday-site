@@ -36,3 +36,9 @@ Pushing/merging to `main` runs `.github/workflows/deploy.yml`: `npm ci` → `ast
 - **Case studies:** add `src/content/projects/<slug>.mdx` with frontmatter (see existing files); embed diagrams with `<Diagram name="..." />`.
 - **CV / project cards:** edit `src/data/cv.yml` and `src/data/app_projects.yml`.
 - **Theme:** colour tokens live in `src/styles/global.css` (dark defaults + `[data-theme="light"]` overrides).
+
+<!-- wiki-migrate:documentation-pointer -->
+## Documentation
+
+Narrative and process docs live in the [wiki](https://github.com/liammday/liamday-site/wiki), not in this repo tree. New runbooks, design notes, and retrospectives belong there, not in docs/, comms/, or notes/ here.
+<!-- /wiki-migrate:documentation-pointer -->
