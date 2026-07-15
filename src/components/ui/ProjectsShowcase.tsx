@@ -96,12 +96,12 @@ export function ProjectsShowcase({ projects }: ProjectsShowcaseProps) {
       className="scroll-mt-32 flex min-h-screen flex-col justify-center border-b border-aluminum-500/20 bg-transparent">
       <div className="mx-auto w-full max-w-5xl px-6 py-16">
         <div className="max-w-3xl space-y-4" data-animate="section-heading">
-          <h2 className="text-3xl font-semibold text-aluminum-100">Projects</h2>
+          <h2 className="type-heading">Projects</h2>
         </div>
 
         <div className="mt-10 space-y-6" data-animate="section-heading">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
-            <span className="text-xs font-semibold uppercase tracking-[0.3em] text-aluminum-400">Sort</span>
+            <span className="eyebrow">Sort</span>
             <div className="flex flex-wrap gap-2">
               {SORTS.map((s) => (
                 <button
@@ -117,7 +117,7 @@ export function ProjectsShowcase({ projects }: ProjectsShowcaseProps) {
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
-            <span className="text-xs font-semibold uppercase tracking-[0.3em] text-aluminum-400">Filter</span>
+            <span className="eyebrow">Filter</span>
             <div className="flex flex-wrap gap-2">
               <button
                 type="button"

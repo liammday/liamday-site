@@ -15,7 +15,7 @@ export function ContactSection({ email, linkedin, github }: ContactSectionProps)
           aria-hidden="true"
           className="pointer-events-none absolute inset-x-1/2 top-12 -z-10 h-64 w-[36rem] -translate-x-1/2 rounded-full bg-ember-400/20 blur-[120px] opacity-0"
           data-animate="contact-glow"></div>
-        <h2 className="text-3xl font-semibold text-aluminum-100" data-animate="contact-heading">
+        <h2 className="type-heading" data-animate="contact-heading">
           Let's build momentum together
         </h2>
         <p className="mt-6 text-lg text-aluminum-300" data-animate="contact-copy">

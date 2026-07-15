@@ -12,6 +12,9 @@ export default defineConfig({
   // Jekyll used pretty permalinks (/projects/name/); keep trailing slashes so
   // existing canonical URLs and inbound links resolve identically.
   trailingSlash: 'always',
+  // Dev-only overlay (island inspector / audits); never ships to production.
+  // Disabled to keep the preview — and screenshots — clean.
+  devToolbar: { enabled: false },
   // Preserve the old Jekyll date-based URL for the one migrated blog post.
   redirects: {
     '/2023/07/01/coaching-design-teams/': '/posts/coaching-design-teams/',

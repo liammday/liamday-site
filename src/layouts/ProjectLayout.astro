@@ -44,10 +44,10 @@ const hasUpdates = (data.updates?.length ?? 0) > 0;
         >
         {
           data.type && (
-            <p class="mt-8 text-xs font-semibold uppercase tracking-[0.35em] text-aluminum-400">{data.type}</p>
+            <p class="mt-8 eyebrow">{data.type}</p>
           )
         }
-        <h1 class="mt-6 text-4xl font-semibold text-aluminum-100">{data.title}</h1>
+        <h1 class="mt-6 type-title">{data.title}</h1>
         {
           heroPair && (
             <figure class="mt-10">
@@ -118,7 +118,7 @@ const hasUpdates = (data.updates?.length ?? 0) > 0;
       data.links && (
         <div class="mx-auto max-w-5xl px-6 pb-20">
           <div class="surface-panel p-6">
-            <h2 class="text-lg font-semibold text-aluminum-100">Further reading</h2>
+            <h2 class="type-subheading">Further reading</h2>
             <ul class="mt-4 space-y-2 text-sm text-aluminum-300">
               {data.links.map((link) => (
                 <li>

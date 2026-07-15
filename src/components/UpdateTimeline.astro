@@ -32,19 +32,19 @@ const rendered = sorted.map((u) => ({
 ---
 
 <section id="updates" class="mx-auto max-w-5xl px-6 pb-16">
-  <h2 class="text-2xl font-semibold text-aluminum-100">{label}</h2>
+  <h2 class="type-heading">{label}</h2>
   <ol class="update-timeline mt-8">
     {
       rendered.map((u) => (
         <li id={u.id} class="relative scroll-mt-24">
           <span class="update-timeline__marker" aria-hidden="true" />
           {(u.date || u.version) && (
-            <p class="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.25em] text-aluminum-400">
+            <p class="flex items-center gap-2 eyebrow">
               {u.date && <span>{fmt(u.date)}</span>}
               {u.version && <span class="update-timeline__version">{u.version}</span>}
             </p>
           )}
-          <h3 class="mt-2 text-xl font-semibold text-aluminum-100">
+          <h3 class="mt-2 type-subheading">
             {u.id ? (
               <a class="underline-offset-4 hover:text-ember-300 hover:underline" href={`#${u.id}`}>
                 {u.title}

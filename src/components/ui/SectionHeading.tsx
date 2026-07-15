@@ -9,7 +9,7 @@ interface SectionHeadingProps {
 export function SectionHeading({ title, intro }: SectionHeadingProps) {
   return (
     <div className="max-w-3xl space-y-4" data-animate="section-heading">
-      <h2 className="text-3xl font-semibold text-aluminum-100">{title}</h2>
+      <h2 className="type-heading">{title}</h2>
       {intro && <p className="text-lg text-aluminum-300">{intro}</p>}
     </div>
   );

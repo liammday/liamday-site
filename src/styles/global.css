@@ -95,11 +95,10 @@
     font-family: var(--ff-body, ui-sans-serif, system-ui, sans-serif);
   }
 
-  /* Headings carry the editorial serif; weight utilities (font-semibold etc.)
-     still win from the utilities layer, so only the family is set here. */
-  h1,
-  h2,
-  h3 {
+  /* Only h1-level titles wear the display serif (Fraunces). Section (h2) and
+     sub (h3) headings inherit the body grotesque. Visual size/weight lives in
+     the .type-* role classes below — never keyed off the raw element. */
+  h1 {
     font-family: var(--ff-display, Georgia, Cambria, serif);
   }
 
@@ -121,6 +120,33 @@
 }
 
 @layer components {
+  /* ──────────────────────────────────────────────────────────────────────
+     Type roles — single source of truth for heading & label treatment.
+     Applied by *role*, not by element level, so semantic h-levels stay
+     correct while visual weight is consistent. Serif (Fraunces) is reserved
+     for title roles; sections/cards use the body grotesque; labels use mono.
+     These live in the components layer, so a one-off utility can still
+     override any single property on an element.
+     ────────────────────────────────────────────────────────────────────── */
+  .type-display {
+    font-family: var(--ff-display, Georgia, serif);
+    @apply text-4xl font-semibold tracking-[-0.02em] text-aluminum-100 sm:text-5xl;
+  }
+  .type-title {
+    font-family: var(--ff-display, Georgia, serif);
+    @apply text-4xl font-semibold tracking-[-0.01em] text-aluminum-100;
+  }
+  .type-heading {
+    @apply text-3xl font-semibold tracking-[-0.01em] text-aluminum-100;
+  }
+  .type-subheading {
+    @apply text-xl font-semibold leading-tight text-aluminum-100;
+  }
+  .eyebrow {
+    font-family: var(--ff-mono, ui-monospace, monospace);
+    @apply text-xs font-medium uppercase tracking-[0.2em] text-aluminum-400;
+  }
+
   .surface-panel {
     @apply rounded-2xl border border-aluminum-500/20 bg-graphite-700/80 shadow-glow backdrop-blur;
     position: relative;
