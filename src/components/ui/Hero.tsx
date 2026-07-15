@@ -43,12 +43,12 @@ export function Hero({
 
           <div className="space-y-6 lg:col-span-3" data-animate="hero-copy">
             <span
-              className="inline-flex items-center rounded-full border border-ember-400/30 bg-ember-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.4em] text-ember-200 texture-noise"
+              className="inline-flex items-center rounded-full border border-ember-400/30 bg-ember-500/10 px-4 py-2 eyebrow text-ember-200 texture-noise"
               data-animate="hero-badge">
               {badge}
             </span>
 
-            <h1 className="text-4xl font-semibold text-aluminum-100 sm:text-5xl" data-animate="hero-heading">
+            <h1 className="type-display" data-animate="hero-heading">
               {heading}
             </h1>
 

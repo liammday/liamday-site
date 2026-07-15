@@ -69,13 +69,13 @@ const navLink =
           <div>
             {
               (platform || status) && (
-                <p class="text-xs font-semibold uppercase tracking-[0.3em] text-aluminum-400">
+                <p class="eyebrow">
                   {platform}
                   {status ? ` · ${status}` : ''}
                 </p>
               )
             }
-            <h1 class="mt-3 text-4xl font-semibold text-aluminum-100">{data.title}</h1>
+            <h1 class="mt-3 type-title">{data.title}</h1>
             {data.subtitle && <p class="mt-3 text-lg leading-relaxed text-aluminum-300">{data.subtitle}</p>}
             {audience && <p class="mt-3 max-w-[60ch] text-sm leading-relaxed text-aluminum-400">{audience}</p>}
             {
@@ -126,7 +126,7 @@ const navLink =
     {
       hasFeatures && (
         <section id="features" class="mx-auto max-w-5xl px-6 pb-16">
-          <h2 class="text-2xl font-semibold text-aluminum-100">Features</h2>
+          <h2 class="type-heading">Features</h2>
           <ul class="mt-6 grid gap-4 sm:grid-cols-2">
             {features.map((f) => (
               <li class="surface-panel p-5 text-sm leading-relaxed text-aluminum-300">{f}</li>
@@ -134,7 +134,7 @@ const navLink =
           </ul>
           {technologies.length > 0 && (
             <div class="mt-8">
-              <p class="text-xs font-semibold uppercase tracking-[0.3em] text-aluminum-400">Built with</p>
+              <p class="eyebrow">Built with</p>
               <ul class="mt-3 flex flex-wrap gap-2">
                 {technologies.map((t) => (
                   <li class="rounded-full border border-aluminum-500/25 bg-graphite-700/60 px-3 py-1 text-xs text-aluminum-300">

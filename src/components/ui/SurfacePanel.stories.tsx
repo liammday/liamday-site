@@ -14,7 +14,7 @@ export const Default: Story = {
     className: 'p-6 max-w-sm',
     children: (
       <>
-        <p className="text-sm uppercase tracking-[0.3em] text-aluminum-400">Surface panel</p>
+        <p className="eyebrow">Surface panel</p>
         <p className="mt-3 text-2xl font-semibold text-aluminum-100">Hover me</p>
         <p className="mt-2 text-sm text-aluminum-400">Ember ring and spotlight glow on hover.</p>
       </>

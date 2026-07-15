@@ -6,16 +6,16 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   <section class="bg-charcoal-900 py-16 text-aluminum-100">
     <div class="mx-auto flex max-w-5xl flex-col gap-12 px-6">
       <header class="space-y-4">
-        <p class="text-sm font-semibold uppercase tracking-[0.3em] text-aluminum-400">Foundations</p>
-        <h1 class="text-3xl font-bold text-aluminum-100 md:text-4xl">Interface style guide</h1>
+        <p class="eyebrow">Foundations</p>
+        <h1 class="type-title">Interface style guide</h1>
         <p class="text-lg text-aluminum-300">
-          A lightweight reference for the site's evolved visual language. Charcoal neutrals, a burnt orange accent, and a
-          subtle anodised aluminium texture reserved for highlights shape the refreshed interface.
+          A lightweight reference for the site's visual language. Charcoal neutrals, a burnt-orange ember accent, a
+          subtle anodised-aluminium texture on highlights, and a three-family type system shape the interface.
         </p>
       </header>
 
       <section class="space-y-6">
-        <h2 class="text-2xl font-semibold text-aluminum-100">Color palette</h2>
+        <h2 class="type-heading">Colour palette</h2>
         <div class="grid gap-6 md:grid-cols-3">
           <div class="rounded-xl border border-aluminum-500/25 bg-graphite-700/70 p-6">
             <div class="h-16 w-full rounded-lg bg-charcoal-900"></div>
@@ -33,29 +33,57 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             <p class="text-sm text-aluminum-300">Ember 400</p>
           </div>
         </div>
-        <p class="text-sm text-aluminum-300">
-          Charcoal and graphite neutrals keep focus on content, while the ember accent provides warmth for interactive
-          states.
-        </p>
       </section>
 
       <section class="space-y-6">
-        <h2 class="text-2xl font-semibold text-aluminum-100">Typography</h2>
-        <div class="space-y-3 rounded-xl border border-aluminum-500/25 bg-graphite-700/70 p-6">
-          <h3 class="text-3xl font-bold text-aluminum-100">Heading example</h3>
-          <p class="text-lg text-aluminum-300">
-            Body copy remains in the system sans-serif stack for clarity. Generous spacing reinforces the premium
-            industrial tone introduced by the new palette.
-          </p>
-          <p class="text-sm uppercase tracking-[0.3em] text-aluminum-400">Supporting label text</p>
+        <h2 class="type-heading">Typography</h2>
+        <p class="text-lg text-aluminum-300">
+          <strong class="text-aluminum-100">Fraunces</strong> (display serif) is reserved for h1-level titles;
+          <strong class="text-aluminum-100">Hanken Grotesk</strong> carries sections, cards and body;
+          <strong class="text-aluminum-100">JetBrains Mono</strong> handles eyebrows, labels and code. Apply the
+          <code class="text-sm text-ember-200">.type-*</code> and <code class="text-sm text-ember-200">.eyebrow</code>
+          roles by intent, not the raw heading level.
+        </p>
+        <div class="space-y-8 rounded-xl border border-aluminum-500/25 bg-graphite-700/70 p-8">
+          <div class="space-y-1">
+            <p class="eyebrow text-aluminum-500">.type-display · Fraunces · hero</p>
+            <p class="type-display">Hello, I'm Liam Day</p>
+          </div>
+          <div class="space-y-1">
+            <p class="eyebrow text-aluminum-500">.type-title · Fraunces · page h1</p>
+            <p class="type-title">Project title</p>
+          </div>
+          <div class="space-y-1">
+            <p class="eyebrow text-aluminum-500">.type-heading · Hanken · section h2</p>
+            <p class="type-heading">Section heading</p>
+          </div>
+          <div class="space-y-1">
+            <p class="eyebrow text-aluminum-500">.type-subheading · Hanken · card h3</p>
+            <p class="type-subheading">Card title / sub-heading</p>
+          </div>
+          <div class="space-y-1">
+            <p class="eyebrow text-aluminum-500">.eyebrow · JetBrains Mono · labels</p>
+            <p class="eyebrow">Product manager · Winchester</p>
+          </div>
+          <div class="space-y-1">
+            <p class="eyebrow text-aluminum-500">body · Hanken Grotesk</p>
+            <p class="max-w-2xl text-lg text-aluminum-300">
+              Body copy is set in Hanken Grotesk — a humanist grotesque tuned for long-form readability, paired with the
+              serif so headings carry the voice and paragraphs stay quiet.
+            </p>
+          </div>
+          <div class="space-y-1">
+            <p class="eyebrow text-aluminum-500">mono · JetBrains Mono</p>
+            <p><code class="text-sm text-aluminum-200">const clearance = "DV"; // labels, code, metadata</code></p>
+          </div>
         </div>
       </section>
 
       <section class="space-y-6">
-        <h2 class="text-2xl font-semibold text-aluminum-100">Components</h2>
+        <h2 class="type-heading">Components</h2>
         <div class="grid gap-6 md:grid-cols-2">
           <div class="rounded-xl border border-aluminum-500/25 bg-graphite-700/70 p-6">
-            <p class="text-sm font-semibold text-aluminum-100">Buttons</p>
+            <p class="eyebrow">Buttons</p>
             <div class="mt-4 flex flex-wrap gap-3">
               <a
                 class="inline-flex items-center justify-center rounded-full border border-aluminum-500/40 px-5 py-2 text-sm font-semibold text-aluminum-200 transition hover:border-ember-400/40 hover:bg-ember-500/10"
@@ -68,9 +96,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             </div>
           </div>
           <div class="rounded-xl border border-aluminum-500/25 bg-graphite-700/70 p-6">
-            <p class="text-sm font-semibold text-aluminum-100">Cards</p>
+            <p class="eyebrow">Cards</p>
             <div class="mt-4 space-y-3 surface-panel p-4 shadow-none">
-              <h3 class="text-lg font-semibold text-aluminum-100">Simple card</h3>
+              <h3 class="type-subheading">Simple card</h3>
               <p class="text-sm text-aluminum-300">
                 Surface treatments rely on softened graphite borders, while ember accents carry the anodised texture for
                 contrast.

@@ -41,7 +41,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
           </div>
         )}
         <div className="space-y-2">
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-aluminum-400">
+          <p className="eyebrow">
             {platform}
             {status ? ` · ${status}` : ''}
           </p>
@@ -59,7 +59,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
               )}
             </p>
           )}
-          <h3 className="text-xl font-semibold leading-tight text-aluminum-100">{name}</h3>
+          <h3 className="type-subheading">{name}</h3>
           {audience && <p className="text-sm leading-relaxed text-aluminum-300">{audience}</p>}
         </div>
       </div>
@@ -68,7 +68,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
 
       {technologies && technologies.length > 0 && (
         <div className="mt-6 space-y-3">
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-aluminum-400">Core technologies</p>
+          <p className="eyebrow">Core technologies</p>
           <ul className="flex flex-wrap gap-2">
             {technologies.map((tech) => (
               <Tag as="li" key={tech}>
@@ -81,7 +81,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
 
       {features && features.length > 0 && (
         <div className="mt-6 space-y-3">
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-aluminum-400">Key features</p>
+          <p className="eyebrow">Key features</p>
           <ul className="list-disc space-y-2 pl-5 text-sm leading-relaxed text-aluminum-300 marker:text-ember-300">
             {features.map((feature) => (
               <li key={feature}>{feature}</li>
