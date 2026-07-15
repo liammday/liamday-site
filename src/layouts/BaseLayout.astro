@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import { Font } from 'astro:assets';
 import { site } from '../data/site';
 import { StarsBackground } from '../components/ui/StarsBackground';
 
@@ -28,6 +29,13 @@ const currentYear = new Date().getFullYear();
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Self-hosted fonts (Astro Fonts API). Display + body preloaded for LCP;
+         mono is non-critical so it loads without a preload hint. -->
+    <Font cssVariable="--ff-display" preload />
+    <Font cssVariable="--ff-body" preload />
+    <Font cssVariable="--ff-mono" />
+
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />

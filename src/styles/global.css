@@ -72,6 +72,13 @@
   --color-ember-600: rgb(var(--ember-600));
 
   --shadow-glow: 0 20px 40px -20px rgba(0, 0, 0, 0.6);
+
+  /* Typography. Families resolve to the self-hosted faces injected at :root by
+     the Astro Fonts API (the --ff-* vars). Registering them here gives the
+     Tailwind `font-sans` / `font-display` / `font-mono` utilities too. */
+  --font-sans: var(--ff-body);
+  --font-display: var(--ff-display);
+  --font-mono: var(--ff-mono);
 }
 
 @layer base {
@@ -85,6 +92,22 @@
 
   body {
     @apply text-aluminum-100 antialiased;
+    font-family: var(--ff-body, ui-sans-serif, system-ui, sans-serif);
+  }
+
+  /* Headings carry the editorial serif; weight utilities (font-semibold etc.)
+     still win from the utilities layer, so only the family is set here. */
+  h1,
+  h2,
+  h3 {
+    font-family: var(--ff-display, Georgia, Cambria, serif);
+  }
+
+  code,
+  kbd,
+  samp,
+  pre {
+    font-family: var(--ff-mono, ui-monospace, SFMono-Regular, monospace);
   }
 
   a {
