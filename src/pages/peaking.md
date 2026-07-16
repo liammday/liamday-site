@@ -31,10 +31,6 @@ Garmin Connect, COROS, Polar Flow, Suunto, Wahoo, Fitbit, AllTrails, Komoot. Eac
 
 Direct Strava OAuth (independent of Apple Health) is in development and gated on Strava API approval.
 
-## Changelog
-
-See the [Peaking changelog](/peaking/changelog/) for release notes and updates.
-
 ## Privacy
 
 See the [Peaking privacy policy](/peaking/privacy/) for full detail on what data the app handles, where it lives, and how to delete it.
