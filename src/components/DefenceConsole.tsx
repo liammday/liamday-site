@@ -727,6 +727,8 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
   // The panel renders from displayProject, which lags openProject just long
   // enough to play the exit slide before unmounting.
   const [displayProject, setDisplayProject] = useState<number | null>(null);
+  // Desktop reading-width toggle: half-panel ↔ full width (← / → arrows).
+  const [expanded, setExpanded] = useState(false);
   const [dossiers, setDossiers] = useState<Record<string, string>>({});
   const closeBtnRef = useRef<HTMLButtonElement>(null);
   const panelWrapRef = useRef<HTMLDivElement>(null);
@@ -775,6 +777,7 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
     if (openProject !== null || displayProject === null) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !panelWrapRef.current) {
       setDisplayProject(null);
+      setExpanded(false);
       return;
     }
     gsap.to(panelWrapRef.current, {
@@ -782,9 +785,26 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
       duration: 0.28,
       ease: 'power2.in',
       overwrite: 'auto',
-      onComplete: () => setDisplayProject(null),
+      onComplete: () => {
+        setDisplayProject(null);
+        setExpanded(false); // next open starts at half width
+      },
     });
   }, [openProject, displayProject]);
+
+  // Half ↔ full width. The wrapper node is recreated per open (conditional
+  // render), so the inline width never leaks between sessions.
+  useEffect(() => {
+    if (displayProject === null || !panelWrapRef.current) return;
+    if (!window.matchMedia('(min-width: 768px)').matches) return; // mobile is always full
+    const rm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    gsap.to(panelWrapRef.current, {
+      width: expanded ? '100%' : '50%',
+      duration: rm ? 0 : 0.35,
+      ease: EASE,
+      overwrite: 'auto',
+    });
+  }, [expanded, displayProject]);
   const [globeState, setGlobeState] = useState<GlobeState>({
     designation: 'SEC /01 — INDEX',
     geo: homeGeo,
@@ -926,6 +946,8 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
 
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') closeDossier();
+      else if (e.key === 'ArrowLeft') setExpanded(true); // grow leftward to full
+      else if (e.key === 'ArrowRight') setExpanded(false); // return to half
     };
     window.addEventListener('keydown', onKey);
     return () => {
@@ -1389,7 +1411,12 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
         >
           {/* Reading panel — rides the centre split from the right */}
           <div ref={panelRef} className="h-full overflow-y-auto border-l border-aluminum-500 bg-charcoal-900">
-            <div ref={panelContentRef} className="w-full max-w-xl px-6 py-20 md:pl-14">
+            <div
+              ref={panelContentRef}
+              className={`w-full px-6 py-20 transition-all duration-300 ${
+                expanded ? 'md:mx-auto md:max-w-3xl' : 'md:max-w-xl md:pl-14'
+              }`}
+            >
               <p data-dossier-reveal className="t-kicker">
                 <span className="text-ember-400">DOSSIER 05.{displayProject + 1}</span>
                 {'  —  '}[{designationChip(projects[displayProject])}]
@@ -1419,11 +1446,22 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
               </div>
             </div>
           </div>
+          {/* Width toggle — mirrors the close control on the panel's other
+              shoulder; ← grows the sheet to full width, → returns it. */}
+          <button
+            type="button"
+            onClick={() => setExpanded((e) => !e)}
+            aria-pressed={expanded}
+            aria-label={expanded ? 'Collapse dossier to half width' : 'Expand dossier to full width'}
+            className="t-readout absolute left-6 top-6 z-[16] hidden cursor-pointer border border-aluminum-500 bg-charcoal-900/80 px-4 py-2 text-aluminum-300 transition-colors duration-150 hover:border-ember-400 hover:text-ember-300 md:block"
+          >
+            {expanded ? '[→] COLLAPSE' : '[←] EXPAND'}
+          </button>
           <button
             ref={closeBtnRef}
             type="button"
             onClick={closeDossier}
-            className="t-readout fixed right-6 top-6 z-[16] cursor-pointer border border-aluminum-500 bg-charcoal-900/80 px-4 py-2 text-aluminum-300 transition-colors duration-150 hover:border-ember-400 hover:text-ember-300"
+            className="t-readout absolute right-6 top-6 z-[16] cursor-pointer border border-aluminum-500 bg-charcoal-900/80 px-4 py-2 text-aluminum-300 transition-colors duration-150 hover:border-ember-400 hover:text-ember-300"
           >
             [ESC] CLOSE
           </button>

@@ -146,11 +146,13 @@ const projects = appProjects.map((p) => ({
   }
   /* UpdateTimeline ships its own standalone-page container (mx-auto max-w-5xl
      px-6) — inside the dossier column that padding indents the "Development
-     log" heading against the prose. Flatten it to the column grid. */
+     log" heading against the prose. Flatten it to the column grid, and give
+     the section clear air above it after the intro body. */
   [data-tactical] .dossier-article #updates {
     max-width: none;
     padding-left: 0;
     padding-right: 0;
+    margin-top: 3.5rem;
   }
   /* Gallery bleed helper is tuned for the standalone page's centred column;
      inside the panel just pad it like the rest of the content. */
