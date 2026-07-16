@@ -60,9 +60,82 @@ export function greatCircleArcPoints(
   return points;
 }
 
-/** Globe render modes. `map` = country outlines; `matrix` = the dot-matrix
-    abstraction used behind non-geographic sections (capabilities, projects). */
-export type GlobeMode = 'map' | 'matrix';
+/* ── Shared geometry builders (module-cached; radius is constant in practice) ── */
+
+type Tuple3 = [number, number, number];
+
+interface GlobeGeometry {
+  /** Country outlines as consecutive segment-pair tuples (fat-line input). */
+  outlineSegments: Tuple3[];
+  /** Dot-matrix vertex buffer (every other outline vertex). */
+  dots: Float32Array;
+}
+
+const globeGeometryCache = new Map<number, GlobeGeometry>();
+
+export function getGlobeGeometry(radius: number): GlobeGeometry {
+  const cached = globeGeometryCache.get(radius);
+  if (cached) return cached;
+
+  const segs: Tuple3[] = [];
+  const dots: number[] = [];
+
+  const pushRing = (ring: number[][]) => {
+    const pts = ring.map(([lng, lat]) => latLongToVector3(lat, lng, radius));
+    for (let i = 0; i < pts.length - 1; i++) {
+      segs.push([pts[i].x, pts[i].y, pts[i].z], [pts[i + 1].x, pts[i + 1].y, pts[i + 1].z]);
+    }
+    // Dot matrix samples every other outline vertex — dense enough to read
+    // as landmass, sparse enough to read as abstraction.
+    for (let i = 0; i < pts.length; i += 2) {
+      dots.push(pts[i].x, pts[i].y, pts[i].z);
+    }
+  };
+
+  (countriesGeoJSON.features as GeoFeature[]).forEach((feature) => {
+    const { type, coordinates } = feature.geometry;
+    if (type === 'Polygon') {
+      (coordinates as number[][][]).forEach(pushRing);
+    } else if (type === 'MultiPolygon') {
+      (coordinates as number[][][][]).forEach((polygon) => polygon.forEach(pushRing));
+    }
+  });
+
+  const built: GlobeGeometry = { outlineSegments: segs, dots: new Float32Array(dots) };
+  globeGeometryCache.set(radius, built);
+  return built;
+}
+
+/** Graticule (15° lat rings + meridians) as segment-pair tuples. */
+export function buildGraticule(radius: number, stepDeg = 15, segments = 72): Tuple3[] {
+  const out: Tuple3[] = [];
+
+  const push = (a: THREE.Vector3, b: THREE.Vector3) => {
+    out.push([a.x, a.y, a.z], [b.x, b.y, b.z]);
+  };
+
+  // Latitude rings (skip the poles).
+  for (let lat = -90 + stepDeg; lat <= 90 - stepDeg; lat += stepDeg) {
+    for (let i = 0; i < segments; i++) {
+      const lngA = (i / segments) * 360 - 180;
+      const lngB = ((i + 1) / segments) * 360 - 180;
+      push(latLongToVector3(lat, lngA, radius), latLongToVector3(lat, lngB, radius));
+    }
+  }
+  // Meridians, pole to pole.
+  for (let lng = -180; lng < 180; lng += stepDeg) {
+    for (let i = 0; i < segments / 2; i++) {
+      const latA = -90 + (i / (segments / 2)) * 180;
+      const latB = -90 + ((i + 1) / (segments / 2)) * 180;
+      push(latLongToVector3(latA, lng, radius), latLongToVector3(latB, lng, radius));
+    }
+  }
+  return out;
+}
+
+/** Globe render modes: country outlines / dot-matrix abstraction / bare
+    graticule sphere (the orbital "shipped work" state). */
+export type GlobeMode = 'map' | 'matrix' | 'orbital';
 
 interface GlobeMapProps {
   radius?: number;
@@ -70,8 +143,10 @@ interface GlobeMapProps {
   /** THREE-parseable literals (hex/rgb) — never CSS vars. */
   lineColor?: string;
   dotColor?: string;
+  graticuleColor?: string;
   lineOpacity?: number;
   dotOpacity?: number;
+  graticuleOpacity?: number;
   /** Stroke width in PIXELS (drei fat lines), not world units. */
   lineWidth?: number;
 }
@@ -81,70 +156,64 @@ export const GlobeMap: React.FC<GlobeMapProps> = ({
   mode = 'map',
   lineColor = '#9ea3ab',
   dotColor = '#8b8d98',
+  graticuleColor = '#6f7480',
   lineOpacity = 0.5,
   dotOpacity = 0.55,
+  graticuleOpacity = 0.35,
   lineWidth = 1.1,
 }) => {
   const lineRef = useRef<Line2>(null);
+  const gratRef = useRef<Line2>(null);
   const dotsMatRef = useRef<THREE.PointsMaterial>(null);
 
-  // Country outlines as ONE merged segment list, rendered via drei's
+  // Country outlines merged into ONE segment list, rendered via drei's
   // <Line segments> (LineSegments2 fat lines): gl.LINES hairlines are locked
   // to 1 physical px in WebGL, which made the map invisible on 2x displays —
   // fat lines rasterise as screen-space quads with a real pixel width.
-  // The same vertices double as the dot-matrix Points geometry.
-  const { segments, dotsGeometry } = useMemo(() => {
-    const segs: [number, number, number][] = [];
-    const dots: number[] = [];
+  const { outlineSegments, dots } = useMemo(() => getGlobeGeometry(radius), [radius]);
+  const graticuleSegments = useMemo(() => buildGraticule(radius), [radius]);
 
-    const pushRing = (ring: number[][]) => {
-      const pts = ring.map(([lng, lat]) => latLongToVector3(lat, lng, radius));
-      for (let i = 0; i < pts.length - 1; i++) {
-        segs.push([pts[i].x, pts[i].y, pts[i].z], [pts[i + 1].x, pts[i + 1].y, pts[i + 1].z]);
-      }
-      // Dot matrix samples every other outline vertex — dense enough to read
-      // as landmass, sparse enough to read as abstraction.
-      for (let i = 0; i < pts.length; i += 2) {
-        dots.push(pts[i].x, pts[i].y, pts[i].z);
-      }
-    };
-
-    (countriesGeoJSON.features as GeoFeature[]).forEach((feature) => {
-      const { type, coordinates } = feature.geometry;
-      if (type === 'Polygon') {
-        (coordinates as number[][][]).forEach(pushRing);
-      } else if (type === 'MultiPolygon') {
-        (coordinates as number[][][][]).forEach((polygon) => polygon.forEach(pushRing));
-      }
-    });
-
+  const dotsGeometry = useMemo(() => {
     const geo = new THREE.BufferGeometry();
     geo.setAttribute('position', new THREE.Float32BufferAttribute(dots, 3));
-    return { segments: segs, dotsGeometry: geo };
-  }, [radius]);
+    return geo;
+  }, [dots]);
 
   useEffect(() => () => dotsGeometry.dispose(), [dotsGeometry]);
 
-  // Crossfade outlines ↔ dot matrix on mode change. 600ms per the brief.
+  // Crossfade between the three layers on mode change. 600ms per the brief.
   useEffect(() => {
     const lineMat = lineRef.current?.material as { opacity: number } | undefined;
+    const gratMat = gratRef.current?.material as { opacity: number } | undefined;
     const dotsMat = dotsMatRef.current;
-    if (!lineMat || !dotsMat) return;
-    const toMatrix = mode === 'matrix';
-    gsap.to(lineMat, { opacity: toMatrix ? 0 : lineOpacity, duration: 0.6, ease: 'power2.inOut' });
-    gsap.to(dotsMat, { opacity: toMatrix ? dotOpacity : 0, duration: 0.6, ease: 'power2.inOut' });
-  }, [mode, lineOpacity, dotOpacity]);
+    if (!lineMat || !gratMat || !dotsMat) return;
+    const fade = (target: { opacity: number }, to: number) =>
+      gsap.to(target, { opacity: to, duration: 0.6, ease: 'power2.inOut' });
+    fade(lineMat, mode === 'map' ? lineOpacity : 0);
+    fade(dotsMat, mode === 'matrix' ? dotOpacity : 0);
+    fade(gratMat, mode === 'orbital' ? graticuleOpacity : 0);
+  }, [mode, lineOpacity, dotOpacity, graticuleOpacity]);
 
   return (
     <group>
       <Line
         ref={lineRef}
-        points={segments}
+        points={outlineSegments}
         segments
         color={lineColor}
         lineWidth={lineWidth}
         transparent
         opacity={lineOpacity}
+        depthWrite={false}
+      />
+      <Line
+        ref={gratRef}
+        points={graticuleSegments}
+        segments
+        color={graticuleColor}
+        lineWidth={1}
+        transparent
+        opacity={0}
         depthWrite={false}
       />
       <points geometry={dotsGeometry}>
@@ -159,7 +228,7 @@ export const GlobeMap: React.FC<GlobeMapProps> = ({
         />
       </points>
       {/* Opaque near-black sphere just under the wireframe: writes depth so the
-          far hemisphere's outlines self-occlude and the globe reads as solid. */}
+          far hemisphere's lines self-occlude and the globe reads as solid. */}
       <mesh>
         <sphereGeometry args={[radius * 0.99, 48, 48]} />
         <meshBasicMaterial color="#101116" />

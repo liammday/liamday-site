@@ -10,14 +10,17 @@ import { geoEmployment, geoEducation, HOME_GEO } from '../data/defence';
 const profileText = withExperienceYears(cv.profile);
 const stats = cv.hero_stats.map((s) => ({ ...s, value: withExperienceYears(s.value) }));
 
-// Keep the island bundle lean: only the fields the ledger renders.
+// Keep the island bundle lean: only the fields the ledger renders/sorts.
 const projects = appProjects.map((p) => ({
   name: p.name,
-  slug: p.slug,
+  link: p.link,
   summary: p.summary,
   platform: p.platform,
   technologies: p.technologies,
-  status: p.status,
+  tags: p.tags,
+  order: p.order,
+  date_started: p.date_started,
+  date_finished: p.date_finished,
 }));
 ---
 
