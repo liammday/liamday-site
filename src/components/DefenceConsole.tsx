@@ -576,7 +576,7 @@ const Scene = ({
   return (
     <group ref={offsetRef}>
       <group ref={groupRef}>
-        <GlobeMap radius={RADIUS} mode={state.mode} detail={state.camZ <= 8} />
+        <GlobeMap radius={RADIUS} mode={state.mode} />
         {Array.from({ length: 8 }, (_, i) => (
           <Constellation key={i} index={i} active={state.mode === 'matrix' && activeCapability === i} color={accentCss} />
         ))}

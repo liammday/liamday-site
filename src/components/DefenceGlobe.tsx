@@ -164,8 +164,6 @@ export type GlobeMode = 'map' | 'matrix' | 'orbital';
 interface GlobeMapProps {
   radius?: number;
   mode?: GlobeMode;
-  /** True when the camera is zoomed in — crossfades to the 50m outlines. */
-  detail?: boolean;
   /** THREE-parseable literals (hex/rgb) — never CSS vars. */
   lineColor?: string;
   dotColor?: string;
@@ -180,7 +178,6 @@ interface GlobeMapProps {
 export const GlobeMap: React.FC<GlobeMapProps> = ({
   radius = 5,
   mode = 'map',
-  detail = false,
   lineColor = '#9ea3ab',
   dotColor = '#8b8d98',
   graticuleColor = '#6f7480',
@@ -210,9 +207,11 @@ export const GlobeMap: React.FC<GlobeMapProps> = ({
 
   useEffect(() => () => dotsGeometry.dispose(), [dotsGeometry]);
 
-  // First zoom-in pulls the 50m outline set in the background.
+  // The 50m outline set is the PERMANENT map. It loads immediately on mount
+  // (as its own lazy chunk, so the console's first paint isn't blocked); the
+  // bundled 110m set exists only to give that first paint a map, and fades
+  // out for good the moment the higher-fidelity set arrives.
   useEffect(() => {
-    if (!detail || hiResSegments) return;
     let cancelled = false;
     loadHiResSegments(radius).then((segs) => {
       if (!cancelled) setHiResSegments(segs);
@@ -220,24 +219,23 @@ export const GlobeMap: React.FC<GlobeMapProps> = ({
     return () => {
       cancelled = true;
     };
-  }, [detail, hiResSegments, radius]);
+  }, [radius]);
 
-  // Crossfade the layers on mode/detail change. 600ms per the brief. The
-  // 110m base holds until the 50m set has actually loaded.
+  // Crossfade the layers on mode change (600ms per the brief).
   useEffect(() => {
     const lineMat = lineRef.current?.material as { opacity: number } | undefined;
     const hiResMat = hiResRef.current?.material as { opacity: number } | undefined;
     const gratMat = gratRef.current?.material as { opacity: number } | undefined;
     const dotsMat = dotsMatRef.current;
     if (!lineMat || !gratMat || !dotsMat) return;
-    const useHiRes = detail && hiResSegments !== null;
+    const useHiRes = hiResSegments !== null;
     const fade = (target: { opacity: number }, to: number) =>
       gsap.to(target, { opacity: to, duration: 0.6, ease: 'power2.inOut' });
     fade(lineMat, mode === 'map' && !useHiRes ? lineOpacity : 0);
     if (hiResMat) fade(hiResMat, mode === 'map' && useHiRes ? lineOpacity : 0);
     fade(dotsMat, mode === 'matrix' ? dotOpacity : 0);
     fade(gratMat, mode === 'orbital' ? graticuleOpacity : 0);
-  }, [mode, detail, hiResSegments, lineOpacity, dotOpacity, graticuleOpacity]);
+  }, [mode, hiResSegments, lineOpacity, dotOpacity, graticuleOpacity]);
 
   return (
     <group>
