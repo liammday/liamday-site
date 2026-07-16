@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { Line } from '@react-three/drei';
 import type { Line2 } from 'three-stdlib';
@@ -71,12 +71,8 @@ interface GlobeGeometry {
   dots: Float32Array;
 }
 
-const globeGeometryCache = new Map<number, GlobeGeometry>();
-
-export function getGlobeGeometry(radius: number): GlobeGeometry {
-  const cached = globeGeometryCache.get(radius);
-  if (cached) return cached;
-
+/** Country outlines (+ dot samples) from a GeoJSON feature list. */
+function buildFromFeatures(features: GeoFeature[], radius: number): GlobeGeometry {
   const segs: Tuple3[] = [];
   const dots: number[] = [];
 
@@ -92,7 +88,7 @@ export function getGlobeGeometry(radius: number): GlobeGeometry {
     }
   };
 
-  (countriesGeoJSON.features as GeoFeature[]).forEach((feature) => {
+  features.forEach((feature) => {
     const { type, coordinates } = feature.geometry;
     if (type === 'Polygon') {
       (coordinates as number[][][]).forEach(pushRing);
@@ -101,9 +97,37 @@ export function getGlobeGeometry(radius: number): GlobeGeometry {
     }
   });
 
-  const built: GlobeGeometry = { outlineSegments: segs, dots: new Float32Array(dots) };
+  return { outlineSegments: segs, dots: new Float32Array(dots) };
+}
+
+const globeGeometryCache = new Map<number, GlobeGeometry>();
+
+export function getGlobeGeometry(radius: number): GlobeGeometry {
+  const cached = globeGeometryCache.get(radius);
+  if (cached) return cached;
+  const built = buildFromFeatures(countriesGeoJSON.features as GeoFeature[], radius);
   globeGeometryCache.set(radius, built);
   return built;
+}
+
+/* Hi-res (Natural Earth 50m) outlines, lazy-loaded on first zoom-in. The
+   TopoJSON (~740KB, gzips to ~300KB) + topojson-client only ever load when a
+   zoomed section is reached, and only once per session. */
+let hiResPromise: Promise<Tuple3[]> | null = null;
+
+function loadHiResSegments(radius: number): Promise<Tuple3[]> {
+  if (!hiResPromise) {
+    hiResPromise = Promise.all([import('../data/countries-50m.json'), import('topojson-client')]).then(
+      ([topo, tc]) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const topology = (topo.default ?? topo) as any;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const fc = tc.feature(topology, topology.objects.countries) as any;
+        return buildFromFeatures(fc.features as GeoFeature[], radius).outlineSegments;
+      },
+    );
+  }
+  return hiResPromise;
 }
 
 /** Graticule (15° lat rings + meridians) as segment-pair tuples. */
@@ -140,6 +164,8 @@ export type GlobeMode = 'map' | 'matrix' | 'orbital';
 interface GlobeMapProps {
   radius?: number;
   mode?: GlobeMode;
+  /** True when the camera is zoomed in — crossfades to the 50m outlines. */
+  detail?: boolean;
   /** THREE-parseable literals (hex/rgb) — never CSS vars. */
   lineColor?: string;
   dotColor?: string;
@@ -154,6 +180,7 @@ interface GlobeMapProps {
 export const GlobeMap: React.FC<GlobeMapProps> = ({
   radius = 5,
   mode = 'map',
+  detail = false,
   lineColor = '#9ea3ab',
   dotColor = '#8b8d98',
   graticuleColor = '#6f7480',
@@ -163,8 +190,10 @@ export const GlobeMap: React.FC<GlobeMapProps> = ({
   lineWidth = 1.1,
 }) => {
   const lineRef = useRef<Line2>(null);
+  const hiResRef = useRef<Line2>(null);
   const gratRef = useRef<Line2>(null);
   const dotsMatRef = useRef<THREE.PointsMaterial>(null);
+  const [hiResSegments, setHiResSegments] = useState<Tuple3[] | null>(null);
 
   // Country outlines merged into ONE segment list, rendered via drei's
   // <Line segments> (LineSegments2 fat lines): gl.LINES hairlines are locked
@@ -181,18 +210,34 @@ export const GlobeMap: React.FC<GlobeMapProps> = ({
 
   useEffect(() => () => dotsGeometry.dispose(), [dotsGeometry]);
 
-  // Crossfade between the three layers on mode change. 600ms per the brief.
+  // First zoom-in pulls the 50m outline set in the background.
+  useEffect(() => {
+    if (!detail || hiResSegments) return;
+    let cancelled = false;
+    loadHiResSegments(radius).then((segs) => {
+      if (!cancelled) setHiResSegments(segs);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [detail, hiResSegments, radius]);
+
+  // Crossfade the layers on mode/detail change. 600ms per the brief. The
+  // 110m base holds until the 50m set has actually loaded.
   useEffect(() => {
     const lineMat = lineRef.current?.material as { opacity: number } | undefined;
+    const hiResMat = hiResRef.current?.material as { opacity: number } | undefined;
     const gratMat = gratRef.current?.material as { opacity: number } | undefined;
     const dotsMat = dotsMatRef.current;
     if (!lineMat || !gratMat || !dotsMat) return;
+    const useHiRes = detail && hiResSegments !== null;
     const fade = (target: { opacity: number }, to: number) =>
       gsap.to(target, { opacity: to, duration: 0.6, ease: 'power2.inOut' });
-    fade(lineMat, mode === 'map' ? lineOpacity : 0);
+    fade(lineMat, mode === 'map' && !useHiRes ? lineOpacity : 0);
+    if (hiResMat) fade(hiResMat, mode === 'map' && useHiRes ? lineOpacity : 0);
     fade(dotsMat, mode === 'matrix' ? dotOpacity : 0);
     fade(gratMat, mode === 'orbital' ? graticuleOpacity : 0);
-  }, [mode, lineOpacity, dotOpacity, graticuleOpacity]);
+  }, [mode, detail, hiResSegments, lineOpacity, dotOpacity, graticuleOpacity]);
 
   return (
     <group>
@@ -206,6 +251,18 @@ export const GlobeMap: React.FC<GlobeMapProps> = ({
         opacity={lineOpacity}
         depthWrite={false}
       />
+      {hiResSegments && (
+        <Line
+          ref={hiResRef}
+          points={hiResSegments}
+          segments
+          color={lineColor}
+          lineWidth={lineWidth}
+          transparent
+          opacity={0}
+          depthWrite={false}
+        />
+      )}
       <Line
         ref={gratRef}
         points={graticuleSegments}

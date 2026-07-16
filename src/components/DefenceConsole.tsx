@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Line, Html } from '@react-three/drei';
+import type { Line2 } from 'three-stdlib';
 import * as THREE from 'three';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -80,6 +81,10 @@ const FOV = 40;
 /** One easing curve for all UI (Anduril/Palantir convergence). */
 const EASE = 'power2.out';
 
+/** What the instrument is highlighting: the home station, one role (by
+    index), the education institutions, or nothing (abstract modes). */
+type Focus = 'home' | 'edu' | 'none' | number;
+
 interface GlobeState {
   designation: string;
   geo: { lat: number; lng: number } | null; // null = hold current orientation
@@ -87,7 +92,7 @@ interface GlobeState {
   mode: GlobeMode;
   dim: number; // canvas wrapper opacity
   split: boolean; // true = pin centred in the right half (desktop)
-  activeRole: number | null;
+  focus: Focus;
 }
 
 /** Per-role framing: role 0 frames home↔posting together (both in view);
@@ -178,12 +183,27 @@ const Marker = ({
   );
 };
 
-const CareerPath = ({ color, stations }: { color: string; stations: GeoPoint[] }) => {
+/** Markers float at 1.02R; arcs launch from the same altitude so their ends
+    meet the marker cores exactly (they previously started on the surface). */
+const MARKER_ALTITUDE = 1.02;
+
+const CareerPath = ({
+  color,
+  stations,
+  emphasised,
+}: {
+  color: string;
+  stations: GeoPoint[];
+  /** Full accent during the experience sequence; recessive grey elsewhere. */
+  emphasised: boolean;
+}) => {
+  const lineRef = useRef<{ material: { opacity: number } }>(null);
+
   const points = useMemo(() => {
     const segs: [number, number, number][] = [];
     for (let i = 0; i < stations.length - 1; i++) {
       if (stations[i].lat === stations[i + 1].lat && stations[i].lng === stations[i + 1].lng) continue;
-      const arc = greatCircleArcPoints(stations[i], stations[i + 1], RADIUS);
+      const arc = greatCircleArcPoints(stations[i], stations[i + 1], RADIUS * MARKER_ALTITUDE);
       for (let j = 0; j < arc.length - 1; j++) {
         segs.push([arc[j].x, arc[j].y, arc[j].z], [arc[j + 1].x, arc[j + 1].y, arc[j + 1].z]);
       }
@@ -191,9 +211,77 @@ const CareerPath = ({ color, stations }: { color: string; stations: GeoPoint[] }
     return segs;
   }, [stations]);
 
+  useEffect(() => {
+    const mat = lineRef.current?.material;
+    if (mat) gsap.to(mat, { opacity: emphasised ? 0.45 : 0.1, duration: 0.6, ease: 'power2.inOut' });
+  }, [emphasised]);
+
   if (points.length === 0) return null;
   return (
-    <Line points={points} segments color={color} lineWidth={1.3} transparent opacity={0.4} depthWrite={false} />
+    <Line
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ref={lineRef as any}
+      points={points}
+      segments
+      color={color}
+      lineWidth={1.3}
+      transparent
+      opacity={0.1}
+      depthWrite={false}
+    />
+  );
+};
+
+/** Role-01 remote-work link: an animated dashed arc between the posting and
+    home — marching dashes illustrate the recurring movement between the two. */
+const RemoteLink = ({
+  from,
+  to,
+  color,
+  active,
+  reducedMotion,
+}: {
+  from: GeoPoint;
+  to: GeoPoint;
+  color: string;
+  active: boolean;
+  reducedMotion: boolean;
+}) => {
+  const lineRef = useRef<Line2>(null);
+
+  const points = useMemo(
+    () =>
+      greatCircleArcPoints(from, to, RADIUS * MARKER_ALTITUDE, 0.1).map(
+        (p) => [p.x, p.y, p.z] as [number, number, number],
+      ),
+    [from, to],
+  );
+
+  useFrame((_, delta) => {
+    const mat = lineRef.current?.material as { dashOffset?: number } | undefined;
+    if (active && !reducedMotion && mat && typeof mat.dashOffset === 'number') {
+      mat.dashOffset -= delta * 0.4; // dashes flow from home toward the posting
+    }
+  });
+
+  useEffect(() => {
+    const mat = lineRef.current?.material as { opacity: number } | undefined;
+    if (mat) gsap.to(mat, { opacity: active ? 0.9 : 0, duration: 0.5, ease: 'power2.inOut' });
+  }, [active]);
+
+  return (
+    <Line
+      ref={lineRef}
+      points={points}
+      color={color}
+      lineWidth={1.6}
+      dashed
+      dashSize={0.12}
+      gapSize={0.08}
+      transparent
+      opacity={0}
+      depthWrite={false}
+    />
   );
 };
 
@@ -349,6 +437,7 @@ interface SceneProps {
   isDesktop: boolean;
   roles: ConsoleRole[];
   homeGeo: GeoPoint;
+  educationSites: GeoPoint[];
   activeCapability: number;
   activeProject: number | null;
   projectNames: string[];
@@ -362,6 +451,7 @@ const Scene = ({
   isDesktop,
   roles,
   homeGeo,
+  educationSites,
   activeCapability,
   activeProject,
   projectNames,
@@ -425,38 +515,66 @@ const Scene = ({
   }, [roles]);
 
   const markerScale = Math.min(1, Math.max(0.3, (state.camZ - RADIUS) / 5));
+  const { focus } = state;
+  const activeRole = typeof focus === 'number' ? focus : null;
+  // Role 0 is the remote posting: its focus lights BOTH ends of the link.
+  const homeActive = focus === 'home' || focus === 0;
 
   return (
     <group ref={offsetRef}>
       <group ref={groupRef}>
-        <GlobeMap radius={RADIUS} mode={state.mode} />
-        <CareerPath color={accentCss} stations={stations} />
+        <GlobeMap radius={RADIUS} mode={state.mode} detail={state.camZ <= 8} />
         {Array.from({ length: 8 }, (_, i) => (
           <Constellation key={i} index={i} active={state.mode === 'matrix' && activeCapability === i} color={accentCss} />
         ))}
-        {sites.map(({ geo, roleIndices }) => {
-          const pos = latLongToVector3(geo.lat, geo.lng, RADIUS).multiplyScalar(1.02);
-          const isActive = state.activeRole !== null && roleIndices.includes(state.activeRole);
-          return (
-            <Marker
-              key={geo.label}
-              position={pos}
-              color={accentCss}
-              active={isActive}
-              dimmed={state.activeRole !== null && !isActive}
-              pulse={!reducedMotion}
-              sizeScale={markerScale}
-            />
-          );
-        })}
-        <Marker
-          position={latLongToVector3(homeGeo.lat, homeGeo.lng, RADIUS).multiplyScalar(1.02)}
-          color={accentCss}
-          active={state.activeRole === null && state.mode === 'map'}
-          dimmed={state.activeRole !== null}
-          pulse={!reducedMotion}
-          sizeScale={markerScale}
-        />
+        {/* Geography layer — markers and arcs exist only in map mode */}
+        <group visible={state.mode === 'map'}>
+          <CareerPath color={accentCss} stations={stations} emphasised={activeRole !== null} />
+          <RemoteLink
+            from={homeGeo}
+            to={roles[0].geo}
+            color={accentCss}
+            active={focus === 0}
+            reducedMotion={reducedMotion}
+          />
+          {sites.map(({ geo, roleIndices }) => {
+            const pos = latLongToVector3(geo.lat, geo.lng, RADIUS).multiplyScalar(MARKER_ALTITUDE);
+            const isActive = activeRole !== null && roleIndices.includes(activeRole);
+            return (
+              <Marker
+                key={geo.label}
+                position={pos}
+                color={accentCss}
+                active={isActive}
+                dimmed={!isActive}
+                pulse={!reducedMotion}
+                sizeScale={markerScale}
+              />
+            );
+          })}
+          <Marker
+            position={latLongToVector3(homeGeo.lat, homeGeo.lng, RADIUS).multiplyScalar(MARKER_ALTITUDE)}
+            color={accentCss}
+            active={homeActive}
+            dimmed={!homeActive}
+            pulse={!reducedMotion}
+            sizeScale={markerScale}
+          />
+          {/* Education institutions — lit only during /04 */}
+          <group visible={focus === 'edu'}>
+            {educationSites.map((geo) => (
+              <Marker
+                key={geo.label}
+                position={latLongToVector3(geo.lat, geo.lng, RADIUS).multiplyScalar(MARKER_ALTITUDE)}
+                color={accentCss}
+                active={focus === 'edu'}
+                dimmed={focus !== 'edu'}
+                pulse={false}
+                sizeScale={markerScale}
+              />
+            ))}
+          </group>
+        </group>
       </group>
       <OrbitalRing
         visible={state.mode === 'orbital'}
@@ -517,7 +635,7 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
     mode: 'map',
     dim: 1,
     split: true,
-    activeRole: null,
+    focus: 'home',
   });
 
   useEffect(() => {
@@ -550,6 +668,10 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
   );
 
   const projectNames = useMemo(() => projects.map((p) => p.name), [projects]);
+  const educationSites = useMemo(
+    () => education.map((q) => q.geo).filter((g): g is GeoPoint => Boolean(g)),
+    [education],
+  );
 
   // Section triggers.
   useGSAP(
@@ -566,7 +688,7 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
             mode: 'map',
             dim: 1,
             split: true,
-            activeRole: null,
+            focus: 'home',
           },
         },
         {
@@ -578,7 +700,7 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
             mode: 'matrix',
             dim: 0.4,
             split: false,
-            activeRole: null,
+            focus: 'none',
           },
         },
         {
@@ -590,7 +712,7 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
             mode: 'map',
             dim: 0.6,
             split: true,
-            activeRole: null,
+            focus: 'edu',
           },
         },
         {
@@ -602,7 +724,7 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
             mode: 'orbital',
             dim: 0.55,
             split: false,
-            activeRole: null,
+            focus: 'none',
           },
         },
         {
@@ -614,22 +736,15 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
             mode: 'map',
             dim: 1,
             split: true,
-            activeRole: null,
+            focus: 'home',
           },
         },
       ];
 
-      sections.forEach(({ sel, state }) => {
-        ScrollTrigger.create({
-          trigger: sel,
-          start: 'top center',
-          end: 'bottom center',
-          onEnter: () => set(state),
-          onEnterBack: () => set(state),
-        });
-      });
-
       // Per-role triggers inside experience — each with its own framing + zoom.
+      // Created BEFORE the section triggers deliberately: on an instant jump
+      // (anchor link / find-in-page) several triggers fire in one batch in
+      // creation order, and the section state must win those collisions.
       gsap.utils.toArray<HTMLElement>('[data-role-index]').forEach((el) => {
         const i = Number(el.dataset.roleIndex);
         const framing = roleFraming(roles[i], i, homeGeo);
@@ -640,10 +755,20 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
           mode: 'map',
           dim: 1,
           split: true,
-          activeRole: i,
+          focus: i,
         };
         ScrollTrigger.create({
           trigger: el,
+          start: 'top center',
+          end: 'bottom center',
+          onEnter: () => set(state),
+          onEnterBack: () => set(state),
+        });
+      });
+
+      sections.forEach(({ sel, state }) => {
+        ScrollTrigger.create({
+          trigger: sel,
           start: 'top center',
           end: 'bottom center',
           onEnter: () => set(state),
@@ -701,6 +826,7 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
             isDesktop={isDesktop}
             roles={roles}
             homeGeo={homeGeo}
+            educationSites={educationSites}
             activeCapability={activeCapability}
             activeProject={activeProject}
             projectNames={projectNames}
@@ -747,13 +873,7 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
                 ))}
               </div>
 
-              {/* Provenance stamp — every line true */}
-              <div className="mt-14 t-readout text-aluminum-400">
-                <p>DESIGNED + BUILT BY LIAM DAY</p>
-                <p>EST. 2013 → PRESENT</p>
-              </div>
-
-              <p className="t-kicker mt-10 motion-safe:animate-pulse">↓ SCROLL</p>
+              <p className="t-kicker mt-14 motion-safe:animate-pulse">↓ SCROLL</p>
             </div>
           </Half>
         </section>
@@ -886,9 +1006,6 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
                     GITHUB ↗
                   </a>
                 )}
-              </div>
-              <div className="mt-24 t-readout text-aluminum-400">
-                <p>DESIGNED + BUILT BY LIAM DAY — {homeGeo.label}</p>
               </div>
             </div>
           </Half>
