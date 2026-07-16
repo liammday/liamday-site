@@ -9,6 +9,9 @@ interface Props {
   description?: string;
   image?: string;
   type?: 'website' | 'article';
+  /** Full-experience pages (the /defence console) render their own closing
+      credits inside the page and opt out of the site footer. */
+  footer?: boolean;
 }
 
 const {
@@ -16,6 +19,7 @@ const {
   description = site.description,
   image = '/assets/images/favicons/og-image.jpg',
   type = 'website',
+  footer = true,
 } = Astro.props;
 
 const fullTitle = title ? `${title} · ${site.title}` : site.title;
@@ -107,7 +111,7 @@ const currentYear = new Date().getFullYear();
       <slot />
     </main>
 
-    <footer class="border-t border-aluminum-500/25 bg-charcoal-900">
+    <footer class:list={['border-t border-aluminum-500/25 bg-charcoal-900', { hidden: !footer }]}>
       <div class="mx-auto flex w-full max-w-5xl flex-col gap-4 px-6 py-10 text-sm text-aluminum-400">
         <div class="flex flex-wrap items-center gap-3">
           <p>© {currentYear} {site.title}</p>

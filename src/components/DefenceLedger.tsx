@@ -51,13 +51,22 @@ export function slugFromLink(link?: string): string {
   return m ? m[1] : '';
 }
 
+/** Hand-set designations where no heuristic can know better. */
+const CHIP_OVERRIDES: Record<string, string> = {
+  podforge: 'TTS', // the product is text-to-speech, not its MCP plumbing
+  homeos: 'MCP',
+};
+
 export function designationChip(p: LedgerProject): string {
+  const override = CHIP_OVERRIDES[slugFromLink(p.link)];
+  if (override) return override;
   const platform = (p.platform ?? '').toLowerCase();
   if (platform.includes('ios') || platform.includes('watch')) return 'IOS';
   const tech = [...(p.technologies ?? []), ...(p.tags ?? [])].join(' ').toLowerCase();
   if (tech.includes('mcp')) return 'MCP';
   if (tech.includes('swift')) return 'IOS';
-  if (tech.includes('macos') || tech.includes('cli')) return 'CLI';
+  if (tech.includes('macos')) return 'MACOS';
+  if (tech.includes('cli')) return 'CLI';
   return 'SW';
 }
 

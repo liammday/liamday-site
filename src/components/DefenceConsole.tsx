@@ -123,6 +123,7 @@ const Marker = ({
   dimmed,
   pulse,
   sizeScale,
+  muted,
 }: {
   position: THREE.Vector3;
   color: string;
@@ -130,6 +131,9 @@ const Marker = ({
   dimmed: boolean;
   pulse: boolean;
   sizeScale: number;
+  /** Mobile: the globe sits behind full-width text, so accent pins soften
+      and pulses stop — the map must read as backdrop, never foreground. */
+  muted: boolean;
 }) => {
   const contentRef = useRef<THREE.Group>(null);
   const ringRef = useRef<THREE.Mesh>(null);
@@ -153,7 +157,7 @@ const Marker = ({
   }, [sizeScale]);
 
   useEffect(() => {
-    if (!pulse || !active || !ringRef.current) return;
+    if (!pulse || !active || muted || !ringRef.current) return;
     const mat = ringRef.current.material as THREE.MeshBasicMaterial;
     const state = { t: 0 };
     const tween = gsap.to(state, {
@@ -171,14 +175,14 @@ const Marker = ({
       tween.kill();
       mat.opacity = 0;
     };
-  }, [pulse, active]);
+  }, [pulse, active, muted]);
 
   return (
     <group position={position} quaternion={quaternion}>
       <group ref={contentRef}>
         <mesh>
           <sphereGeometry args={[active ? 0.05 : 0.032, 16, 16]} />
-          <meshBasicMaterial color={dimmed ? '#5a5c66' : color} />
+          <meshBasicMaterial color={dimmed ? '#5a5c66' : color} transparent opacity={muted ? 0.45 : 1} />
         </mesh>
         <mesh ref={ringRef}>
           <ringGeometry args={[0.096, 0.104, 48]} />
@@ -202,11 +206,13 @@ const CareerPath = ({
   color,
   stations,
   emphasised,
+  muted,
 }: {
   color: string;
   stations: GeoPoint[];
   /** Full accent during the experience sequence; recessive grey elsewhere. */
   emphasised: boolean;
+  muted: boolean;
 }) => {
   const lineRef = useRef<{ material: { opacity: number } }>(null);
 
@@ -224,8 +230,13 @@ const CareerPath = ({
 
   useEffect(() => {
     const mat = lineRef.current?.material;
-    if (mat) gsap.to(mat, { opacity: emphasised ? 0.45 : 0.1, duration: 0.6, ease: 'power2.inOut' });
-  }, [emphasised]);
+    if (mat)
+      gsap.to(mat, {
+        opacity: emphasised ? (muted ? 0.2 : 0.45) : 0.1,
+        duration: 0.6,
+        ease: 'power2.inOut',
+      });
+  }, [emphasised, muted]);
 
   if (points.length === 0) return null;
   return (
@@ -251,12 +262,14 @@ const RemoteLink = ({
   color,
   active,
   reducedMotion,
+  muted,
 }: {
   from: GeoPoint;
   to: GeoPoint;
   color: string;
   active: boolean;
   reducedMotion: boolean;
+  muted: boolean;
 }) => {
   const lineRef = useRef<Line2>(null);
 
@@ -270,15 +283,16 @@ const RemoteLink = ({
 
   useFrame((_, delta) => {
     const mat = lineRef.current?.material as { dashOffset?: number } | undefined;
-    if (active && !reducedMotion && mat && typeof mat.dashOffset === 'number') {
+    if (active && !reducedMotion && !muted && mat && typeof mat.dashOffset === 'number') {
       mat.dashOffset -= delta * 0.4; // dashes flow from home toward the posting
     }
   });
 
   useEffect(() => {
     const mat = lineRef.current?.material as { opacity: number } | undefined;
-    if (mat) gsap.to(mat, { opacity: active ? 0.9 : 0, duration: 0.5, ease: 'power2.inOut' });
-  }, [active]);
+    if (mat)
+      gsap.to(mat, { opacity: active ? (muted ? 0.3 : 0.9) : 0, duration: 0.5, ease: 'power2.inOut' });
+  }, [active, muted]);
 
   return (
     <Line
@@ -298,7 +312,17 @@ const RemoteLink = ({
 
 /** One capability's constellation: ~6 dot-matrix vertices, index-seeded
     (deterministic — no fake randomness), joined by hairline edges. */
-const Constellation = ({ index, active, color }: { index: number; active: boolean; color: string }) => {
+const Constellation = ({
+  index,
+  active,
+  color,
+  muted,
+}: {
+  index: number;
+  active: boolean;
+  color: string;
+  muted: boolean;
+}) => {
   const lineRef = useRef<{ material: { opacity: number } }>(null);
   const nodeMat = useMemo(
     () => new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0, depthWrite: false }),
@@ -320,9 +344,9 @@ const Constellation = ({ index, active, color }: { index: number; active: boolea
 
   useEffect(() => {
     const lineMat = lineRef.current?.material;
-    if (lineMat) gsap.to(lineMat, { opacity: active ? 0.7 : 0, duration: 0.4, ease: EASE });
-    gsap.to(nodeMat, { opacity: active ? 0.95 : 0, duration: 0.4, ease: EASE });
-  }, [active, nodeMat]);
+    if (lineMat) gsap.to(lineMat, { opacity: active ? (muted ? 0.3 : 0.7) : 0, duration: 0.4, ease: EASE });
+    gsap.to(nodeMat, { opacity: active ? (muted ? 0.4 : 0.95) : 0, duration: 0.4, ease: EASE });
+  }, [active, muted, nodeMat]);
 
   useEffect(() => () => nodeMat.dispose(), [nodeMat]);
 
@@ -351,6 +375,7 @@ const OrbitalRing = ({
   names,
   color,
   reducedMotion,
+  muted,
 }: {
   visible: boolean;
   activeIndex: number | null;
@@ -358,6 +383,7 @@ const OrbitalRing = ({
   names: string[];
   color: string;
   reducedMotion: boolean;
+  muted: boolean;
 }) => {
   const spinRef = useRef<THREE.Group>(null);
   const ringRef = useRef<{ material: { opacity: number } }>(null);
@@ -414,10 +440,11 @@ const OrbitalRing = ({
 
   useEffect(() => {
     const ringMat = ringRef.current?.material;
-    if (ringMat) gsap.to(ringMat, { opacity: visible ? 0.65 : 0, duration: 0.6, ease: 'power2.inOut' });
-    gsap.to(satMat, { opacity: visible ? 0.95 : 0, duration: 0.6, ease: 'power2.inOut' });
-    gsap.to(activeMat, { opacity: visible ? 1 : 0, duration: 0.6, ease: 'power2.inOut' });
-  }, [visible, satMat, activeMat]);
+    if (ringMat)
+      gsap.to(ringMat, { opacity: visible ? (muted ? 0.4 : 0.65) : 0, duration: 0.6, ease: 'power2.inOut' });
+    gsap.to(satMat, { opacity: visible ? (muted ? 0.5 : 0.95) : 0, duration: 0.6, ease: 'power2.inOut' });
+    gsap.to(activeMat, { opacity: visible ? (muted ? 0.55 : 1) : 0, duration: 0.6, ease: 'power2.inOut' });
+  }, [visible, muted, satMat, activeMat]);
 
   useEffect(
     () => () => {
@@ -454,7 +481,7 @@ const OrbitalRing = ({
                   with a dossier open the ledger sits over the instrument, and
                   labels behind text read as clutter (the panel header and the
                   accent row already name the subject). */}
-              {visible && openIndex === null && (
+              {visible && openIndex === null && !muted && (
                 <Html center distanceFactor={12} style={{ pointerEvents: 'none' }} zIndexRange={[5, 0]}>
                   <div className="t-readout whitespace-nowrap text-center" style={{ transform: 'translateY(-1.5rem)' }}>
                     <p className={isActive ? 'text-ember-300' : 'text-aluminum-400'}>05.{i + 1}</p>
@@ -572,23 +599,33 @@ const Scene = ({
   const activeRole = typeof focus === 'number' ? focus : null;
   // Role 0 is the remote posting: its focus lights BOTH ends of the link.
   const homeActive = focus === 'home' || focus === 0;
+  // Mobile: content sits over the globe everywhere, so accent elements
+  // soften and pulses/labels stop — backdrop, never foreground.
+  const muted = !isDesktop;
 
   return (
     <group ref={offsetRef}>
       <group ref={groupRef}>
         <GlobeMap radius={RADIUS} mode={state.mode} />
         {Array.from({ length: 8 }, (_, i) => (
-          <Constellation key={i} index={i} active={state.mode === 'matrix' && activeCapability === i} color={accentCss} />
+          <Constellation
+            key={i}
+            index={i}
+            active={state.mode === 'matrix' && activeCapability === i}
+            color={accentCss}
+            muted={muted}
+          />
         ))}
         {/* Geography layer — markers and arcs exist only in map mode */}
         <group visible={state.mode === 'map'}>
-          <CareerPath color={accentCss} stations={stations} emphasised={activeRole !== null} />
+          <CareerPath color={accentCss} stations={stations} emphasised={activeRole !== null} muted={muted} />
           <RemoteLink
             from={homeGeo}
             to={roles[0].geo}
             color={accentCss}
             active={focus === 0}
             reducedMotion={reducedMotion}
+            muted={muted}
           />
           {sites.map(({ geo, roleIndices }) => {
             const pos = latLongToVector3(geo.lat, geo.lng, RADIUS).multiplyScalar(MARKER_ALTITUDE);
@@ -602,6 +639,7 @@ const Scene = ({
                 dimmed={!isActive}
                 pulse={!reducedMotion}
                 sizeScale={markerScale}
+                muted={muted}
               />
             );
           })}
@@ -612,6 +650,7 @@ const Scene = ({
             dimmed={!homeActive}
             pulse={!reducedMotion}
             sizeScale={markerScale}
+            muted={muted}
           />
           {/* Education institutions — lit only during /04 */}
           <group visible={focus === 'edu'}>
@@ -624,6 +663,7 @@ const Scene = ({
                 dimmed={focus !== 'edu'}
                 pulse={false}
                 sizeScale={markerScale}
+                muted={muted}
               />
             ))}
           </group>
@@ -636,6 +676,7 @@ const Scene = ({
         names={projectNames}
         color={accentCss}
         reducedMotion={reducedMotion}
+        muted={muted}
       />
     </group>
   );
@@ -1296,6 +1337,34 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
                     GITHUB ↗
                   </a>
                 )}
+              </div>
+
+              {/* Closing credits — replaces the site footer on this page */}
+              <div className="t-readout mt-24 border-t border-aluminum-500 pt-6 text-aluminum-400">
+                <p>© {new Date().getFullYear()} LIAM DAY. ALL RIGHTS RESERVED.</p>
+                <p className="mt-2">
+                  BUILT WITH{' '}
+                  <a href="https://astro.build/" className="text-aluminum-300 no-underline hover:text-ember-300">
+                    ASTRO
+                  </a>
+                  {' · '}
+                  <a href="https://react.dev/" className="text-aluminum-300 no-underline hover:text-ember-300">
+                    REACT
+                  </a>
+                  {' · '}
+                  <a href="https://tailwindcss.com/" className="text-aluminum-300 no-underline hover:text-ember-300">
+                    TAILWIND CSS
+                  </a>
+                  {' · '}
+                  <a href="https://gsap.com/" className="text-aluminum-300 no-underline hover:text-ember-300">
+                    GSAP
+                  </a>
+                </p>
+                <p className="mt-2">
+                  <a href={`mailto:${contact.email}`} className="text-aluminum-300 no-underline hover:text-ember-300">
+                    {contact.email.toUpperCase()}
+                  </a>
+                </p>
               </div>
             </div>
           </Half>
