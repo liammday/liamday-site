@@ -1,5 +1,6 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import * as THREE from 'three';
+import { Line } from '@react-three/drei';
 import countriesGeoJSON from '../data/countries.geo.json';
 
 /* NOTE: THREE materials never see CSS custom properties — THREE.Color cannot
@@ -57,33 +58,33 @@ export function greatCircleArcPoints(
   return points;
 }
 
-/** Polyline → line-segment pairs, ready for a merged LineSegments buffer. */
-export function polylineToSegments(points: THREE.Vector3[], out: number[]): void {
-  for (let i = 0; i < points.length - 1; i++) {
-    out.push(points[i].x, points[i].y, points[i].z, points[i + 1].x, points[i + 1].y, points[i + 1].z);
-  }
-}
-
 interface GlobeMapProps {
   radius?: number;
   /** THREE-parseable literal (hex/rgb) — never a CSS var. */
   color?: string;
   opacity?: number;
+  /** Stroke width in PIXELS (drei fat lines), not world units. */
+  lineWidth?: number;
 }
 
 export const GlobeMap: React.FC<GlobeMapProps> = ({
   radius = 5,
-  color = '#565b63',
-  opacity = 0.4,
+  color = '#aab2ba',
+  opacity = 0.55,
+  lineWidth = 1.1,
 }) => {
-  // Every country outline merged into ONE LineSegments geometry — a single
-  // draw call, versus ~800 for the per-ring <line> approach.
-  const geometry = useMemo(() => {
-    const positions: number[] = [];
+  // Every country outline merged into ONE segment list. Rendered via drei's
+  // <Line segments> (LineSegments2 fat lines): gl.LINES hairlines are locked
+  // to 1 physical px in WebGL, which made the map invisible on 2x displays —
+  // fat lines rasterise as screen-space quads with a real pixel width.
+  const points = useMemo(() => {
+    const segments: [number, number, number][] = [];
 
     const pushRing = (ring: number[][]) => {
-      const points = ring.map(([lng, lat]) => latLongToVector3(lat, lng, radius));
-      polylineToSegments(points, positions);
+      const pts = ring.map(([lng, lat]) => latLongToVector3(lat, lng, radius));
+      for (let i = 0; i < pts.length - 1; i++) {
+        segments.push([pts[i].x, pts[i].y, pts[i].z], [pts[i + 1].x, pts[i + 1].y, pts[i + 1].z]);
+      }
     };
 
     (countriesGeoJSON.features as GeoFeature[]).forEach((feature) => {
@@ -95,18 +96,20 @@ export const GlobeMap: React.FC<GlobeMapProps> = ({
       }
     });
 
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-    return geo;
+    return segments;
   }, [radius]);
-
-  useEffect(() => () => geometry.dispose(), [geometry]);
 
   return (
     <group>
-      <lineSegments geometry={geometry}>
-        <lineBasicMaterial color={color} transparent opacity={opacity} depthWrite={false} />
-      </lineSegments>
+      <Line
+        points={points}
+        segments
+        color={color}
+        lineWidth={lineWidth}
+        transparent
+        opacity={opacity}
+        depthWrite={false}
+      />
       {/* Opaque near-black sphere just under the wireframe: writes depth so the
           far hemisphere's outlines self-occlude and the globe reads as solid. */}
       <mesh>

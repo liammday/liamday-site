@@ -1,7 +1,8 @@
 import React, { useRef, useState, useEffect, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
+import { Line } from '@react-three/drei';
 import * as THREE from 'three';
-import { GlobeMap, latLongToVector3, greatCircleArcPoints, polylineToSegments } from './DefenseMap';
+import { GlobeMap, latLongToVector3, greatCircleArcPoints } from './DefenseMap';
 import { useTacticalAccent, accentToCss } from '../lib/useTacticalAccent';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -131,24 +132,29 @@ const RadarPing = ({ position, color, active, dimmed, pulse }: RadarPingProps) =
 
 /** Career path — great-circle arcs joining the postings in chronological order. */
 const CareerPath = ({ color }: { color: string }) => {
-  const geometry = useMemo(() => {
-    const positions: number[] = [];
+  const points = useMemo(() => {
+    const segments: [number, number, number][] = [];
     // ROLES is newest-first; the path travels oldest → newest.
     const chronological = [...ROLES].reverse();
     for (let i = 0; i < chronological.length - 1; i++) {
-      polylineToSegments(greatCircleArcPoints(chronological[i], chronological[i + 1], RADIUS), positions);
+      const arc = greatCircleArcPoints(chronological[i], chronological[i + 1], RADIUS);
+      for (let j = 0; j < arc.length - 1; j++) {
+        segments.push([arc[j].x, arc[j].y, arc[j].z], [arc[j + 1].x, arc[j + 1].y, arc[j + 1].z]);
+      }
     }
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-    return geo;
+    return segments;
   }, []);
 
-  useEffect(() => () => geometry.dispose(), [geometry]);
-
   return (
-    <lineSegments geometry={geometry}>
-      <lineBasicMaterial color={color} transparent opacity={0.35} depthWrite={false} />
-    </lineSegments>
+    <Line
+      points={points}
+      segments
+      color={color}
+      lineWidth={1.4}
+      transparent
+      opacity={0.45}
+      depthWrite={false}
+    />
   );
 };
 
