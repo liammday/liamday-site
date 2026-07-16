@@ -136,4 +136,15 @@ const projects = appProjects.map((p) => ({
   [data-tactical] button {
     border-radius: 0;
   }
+
+  /* Dossier viewer: injected case-study content (built from the same MDX as
+     the standalone pages) squares off and calms down inside the instrument. */
+  [data-tactical] .dossier-article img,
+  [data-tactical] .dossier-article figure,
+  [data-tactical] .dossier-article picture {
+    border-radius: 0;
+  }
+  [data-tactical] .dossier-article .surface-panel {
+    border-radius: 0;
+  }
 </style>

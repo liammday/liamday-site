@@ -44,13 +44,13 @@ function monthValue(started?: string): number {
 }
 
 /** "/projects/open-defence-radar/" → "open-defence-radar" */
-function slugFromLink(link?: string): string {
+export function slugFromLink(link?: string): string {
   if (!link) return '';
   const m = link.match(/\/projects\/([^/]+)\/?$/);
   return m ? m[1] : '';
 }
 
-function designationChip(p: LedgerProject): string {
+export function designationChip(p: LedgerProject): string {
   const platform = (p.platform ?? '').toLowerCase();
   if (platform.includes('ios') || platform.includes('watch')) return 'IOS';
   const tech = [...(p.technologies ?? []), ...(p.tags ?? [])].join(' ').toLowerCase();
@@ -84,9 +84,12 @@ interface DefenceLedgerProps {
   /** Reports the hovered/focused project's index in the ORIGINAL array
       (= its orbital satellite id), or null. */
   onActiveProject: (index: number | null) => void;
+  /** Plain left-click on a row opens the in-page dossier instead of
+      navigating (modified clicks still reach the standalone page). */
+  onOpenProject: (index: number) => void;
 }
 
-export function DefenceLedger({ projects, onActiveProject }: DefenceLedgerProps) {
+export function DefenceLedger({ projects, onActiveProject, onOpenProject }: DefenceLedgerProps) {
   const [sort, setSort] = useState<SortKey>('featured');
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
 
@@ -157,8 +160,10 @@ export function DefenceLedger({ projects, onActiveProject }: DefenceLedgerProps)
           const slug = slugFromLink(p.link);
           const inner = (
             <div className="grid grid-cols-[2.5rem_1fr] items-start gap-4 py-5 md:grid-cols-[6rem_2.5rem_4.5rem_1fr_1.6fr] md:items-center md:gap-6">
-              {/* Decimalised sub-clause of section /05 (position in the current view) */}
-              <p className="t-readout hidden text-aluminum-400 md:block">05.{row + 1}</p>
+              {/* Identity clause: each asset KEEPS its number under sort/filter
+                  (clauses cite, they don't renumber) — and it always matches
+                  the same-numbered satellite on the orbital ring. */}
+              <p className="t-readout hidden text-aluminum-400 md:block">05.{originalIndex + 1}</p>
               <DefenceProjectIcon slug={slug} className="h-10 w-10 shrink-0" />
               <div className="md:contents">
                 <p className="t-readout text-ember-400">[{designationChip(p)}]</p>
@@ -182,6 +187,13 @@ export function DefenceLedger({ projects, onActiveProject }: DefenceLedgerProps)
               key={p.name}
               href={p.link}
               {...rowProps}
+              onClick={(e) => {
+                // Plain left-click opens the in-page dossier; cmd/ctrl/shift/
+                // middle-click keep their native new-tab/window behaviour.
+                if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+                e.preventDefault();
+                onOpenProject(originalIndex);
+              }}
               className="group block border-t border-aluminum-500 no-underline transition-colors duration-150 hover:border-ember-400/60"
             >
               {inner}

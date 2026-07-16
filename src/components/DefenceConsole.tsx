@@ -13,7 +13,7 @@ import {
   getGlobeGeometry,
   type GlobeMode,
 } from './DefenceGlobe';
-import { DefenceLedger, type LedgerProject } from './DefenceLedger';
+import { DefenceLedger, slugFromLink, designationChip, type LedgerProject } from './DefenceLedger';
 import { useTacticalAccent, accentToCss } from '../lib/useTacticalAccent';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -92,6 +92,9 @@ interface GlobeState {
   mode: GlobeMode;
   dim: number; // canvas wrapper opacity
   split: boolean; // true = pin centred in the right half (desktop)
+  /** Vertical frame offset (world units) — the dossier view drops the globe
+      so the ring's near point rides centre-right instead of the top edge. */
+  gy?: number;
   focus: Focus;
 }
 
@@ -328,17 +331,22 @@ const Constellation = ({ index, active, color }: { index: number; active: boolea
   );
 };
 
-/** Projects mode: tilted dashed orbital ring with one satellite per project;
-    the focused ledger row's satellite lights + labels. */
+/** Projects mode: tilted dashed orbital ring with one satellite per project.
+    Every satellite carries its identity clause (05.n — matching its ledger
+    row under any sort/filter); the focused row's satellite lights + names.
+    Opening a dossier pauses the idle spin and swings that satellite to the
+    ring's near point. */
 const OrbitalRing = ({
   visible,
   activeIndex,
+  openIndex,
   names,
   color,
   reducedMotion,
 }: {
   visible: boolean;
   activeIndex: number | null;
+  openIndex: number | null;
   names: string[];
   color: string;
   reducedMotion: boolean;
@@ -346,7 +354,7 @@ const OrbitalRing = ({
   const spinRef = useRef<THREE.Group>(null);
   const ringRef = useRef<{ material: { opacity: number } }>(null);
   const satMat = useMemo(
-    () => new THREE.MeshBasicMaterial({ color: '#a3a4af', transparent: true, opacity: 0, depthWrite: false }),
+    () => new THREE.MeshBasicMaterial({ color: '#c8c9d2', transparent: true, opacity: 0, depthWrite: false }),
     [],
   );
   const activeMat = useMemo(
@@ -373,14 +381,33 @@ const OrbitalRing = ({
     [names],
   );
 
+  // Idle spin — held while a dossier is open so the subject stays on station.
   useFrame((_, delta) => {
-    if (!reducedMotion && visible && spinRef.current) spinRef.current.rotation.z += delta * 0.04;
+    if (!reducedMotion && visible && openIndex === null && spinRef.current) {
+      spinRef.current.rotation.z += delta * 0.04;
+    }
   });
+
+  // Dossier open: swing the subject satellite to the ring's near point
+  // (local +Y after the X-tilt), shortest way round.
+  useEffect(() => {
+    if (openIndex === null || !spinRef.current) return;
+    const theta = (openIndex / names.length) * Math.PI * 2;
+    const target = Math.PI / 2 - theta;
+    const current = spinRef.current.rotation.z;
+    const delta = ((((target - current) % (Math.PI * 2)) + Math.PI * 3) % (Math.PI * 2)) - Math.PI;
+    gsap.to(spinRef.current.rotation, {
+      z: current + delta,
+      duration: reducedMotion ? 0 : 1.2,
+      ease: 'power2.inOut',
+      overwrite: 'auto',
+    });
+  }, [openIndex, names.length, reducedMotion]);
 
   useEffect(() => {
     const ringMat = ringRef.current?.material;
-    if (ringMat) gsap.to(ringMat, { opacity: visible ? 0.45 : 0, duration: 0.6, ease: 'power2.inOut' });
-    gsap.to(satMat, { opacity: visible ? 0.85 : 0, duration: 0.6, ease: 'power2.inOut' });
+    if (ringMat) gsap.to(ringMat, { opacity: visible ? 0.65 : 0, duration: 0.6, ease: 'power2.inOut' });
+    gsap.to(satMat, { opacity: visible ? 0.95 : 0, duration: 0.6, ease: 'power2.inOut' });
     gsap.to(activeMat, { opacity: visible ? 1 : 0, duration: 0.6, ease: 'power2.inOut' });
   }, [visible, satMat, activeMat]);
 
@@ -399,8 +426,8 @@ const OrbitalRing = ({
         <Line
           ref={ringRef as any}
           points={ringPoints}
-          color="#71727d"
-          lineWidth={1}
+          color="#8b8f9c"
+          lineWidth={1.4}
           dashed
           dashSize={0.18}
           gapSize={0.12}
@@ -409,17 +436,18 @@ const OrbitalRing = ({
           depthWrite={false}
         />
         {satPositions.map((pos, i) => {
-          const isActive = visible && activeIndex === i;
+          const isActive = visible && (activeIndex === i || openIndex === i);
           return (
             <group key={names[i]} position={pos}>
-              <mesh material={isActive ? activeMat : satMat} scale={isActive ? 1.8 : 1}>
-                <sphereGeometry args={[0.055, 12, 12]} />
+              <mesh material={isActive ? activeMat : satMat} scale={isActive ? 1.9 : 1}>
+                <sphereGeometry args={[0.085, 12, 12]} />
               </mesh>
-              {isActive && (
+              {visible && (
                 <Html center distanceFactor={12} style={{ pointerEvents: 'none' }} zIndexRange={[5, 0]}>
-                  <p className="t-readout whitespace-nowrap text-aluminum-100" style={{ transform: 'translateY(-1.4rem)' }}>
-                    {names[i].toUpperCase()}
-                  </p>
+                  <div className="t-readout whitespace-nowrap text-center" style={{ transform: 'translateY(-1.5rem)' }}>
+                    <p className={isActive ? 'text-ember-300' : 'text-aluminum-400'}>05.{i + 1}</p>
+                    {isActive && <p className="text-aluminum-100">{names[i].toUpperCase()}</p>}
+                  </div>
                 </Html>
               )}
             </group>
@@ -440,6 +468,7 @@ interface SceneProps {
   educationSites: GeoPoint[];
   activeCapability: number;
   activeProject: number | null;
+  openProject: number | null;
   projectNames: string[];
   onRotationUpdate: (lat: number, lng: number) => void;
 }
@@ -454,6 +483,7 @@ const Scene = ({
   educationSites,
   activeCapability,
   activeProject,
+  openProject,
   projectNames,
   onRotationUpdate,
 }: SceneProps) => {
@@ -461,7 +491,7 @@ const Scene = ({
   const groupRef = useRef<THREE.Group>(null);
   const { camera, size } = useThree();
   // The orientation/zoom we've animated to, so `geo: null` sections hold.
-  const current = useRef({ lat: homeGeo.lat, lng: homeGeo.lng, camZ: 10, gx: 0 });
+  const current = useRef({ lat: homeGeo.lat, lng: homeGeo.lng, camZ: 10, gx: 0, gy: 0 });
 
   useEffect(() => {
     if (!groupRef.current) return;
@@ -474,6 +504,7 @@ const Scene = ({
       // (world x = gx, depth camZ − R from camera) must project to 75% of
       // viewport width → gx = 0.5 · tan(fov/2) · (camZ − R) · aspect.
       gx: state.split && isDesktop ? 0.5 * Math.tan((FOV / 2) * DEG) * (state.camZ - RADIUS) * (size.width / size.height) : 0,
+      gy: state.gy ?? 0,
     };
 
     const anim = { t: 0 };
@@ -488,18 +519,22 @@ const Scene = ({
         const lng = lerp(from.lng, target.lng);
         const camZ = lerp(from.camZ, target.camZ);
         const gx = lerp(from.gx, target.gx);
+        const gy = lerp(from.gy, target.gy);
         if (groupRef.current) {
           // Euler XYZ: Y spin first (meridian to front), then X tilt (latitude up).
           groupRef.current.rotation.x = lat * DEG;
           groupRef.current.rotation.y = -(lng + 90) * DEG;
         }
-        if (offsetRef.current) offsetRef.current.position.x = gx;
+        if (offsetRef.current) {
+          offsetRef.current.position.x = gx;
+          offsetRef.current.position.y = gy;
+        }
         camera.position.z = camZ;
-        current.current = { lat, lng, camZ, gx };
+        current.current = { lat, lng, camZ, gx, gy };
         onRotationUpdate(lat, lng);
       },
     });
-  }, [state.geo, state.camZ, state.split, isDesktop, reducedMotion, camera, size.width, size.height, onRotationUpdate]);
+  }, [state.geo, state.camZ, state.split, state.gy, isDesktop, reducedMotion, camera, size.width, size.height, onRotationUpdate]);
 
   const stations = useMemo(() => [...roles].reverse().map((r) => r.geo), [roles]);
 
@@ -578,7 +613,8 @@ const Scene = ({
       </group>
       <OrbitalRing
         visible={state.mode === 'orbital'}
-        activeIndex={activeProject}
+        activeIndex={openProject ?? activeProject}
+        openIndex={openProject}
         names={projectNames}
         color={accentCss}
         reducedMotion={reducedMotion}
@@ -628,6 +664,9 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
   const [isDesktop, setIsDesktop] = useState(true);
   const [activeCapability, setActiveCapability] = useState(-1);
   const [activeProject, setActiveProject] = useState<number | null>(null);
+  const [openProject, setOpenProject] = useState<number | null>(null);
+  const [dossiers, setDossiers] = useState<Record<string, string>>({});
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
   const [globeState, setGlobeState] = useState<GlobeState>({
     designation: 'SEC /01 — INDEX',
     geo: homeGeo,
@@ -653,11 +692,12 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
     };
   }, []);
 
-  // Canvas dim per section.
+  // Canvas dim per section (dossier override wins while open).
+  const effectiveDim = openProject !== null ? 1 : globeState.dim;
   useEffect(() => {
     if (!canvasWrapRef.current) return;
-    gsap.to(canvasWrapRef.current, { opacity: globeState.dim, duration: 0.6, ease: EASE });
-  }, [globeState.dim]);
+    gsap.to(canvasWrapRef.current, { opacity: effectiveDim, duration: 0.6, ease: EASE });
+  }, [effectiveDim]);
 
   // Live coordinate readout — written straight to the DOM (60fps-safe).
   const onRotationUpdate = useMemo(
@@ -672,6 +712,89 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
     () => education.map((q) => q.geo).filter((g): g is GeoPoint => Boolean(g)),
     [education],
   );
+
+  /* ── Dossier viewer (briefing takeover) ──────────────────────────────────
+     The location hash is the source of truth: /defence/#peaking opens the
+     Peaking dossier, back/forward and shared links all work. Rows set the
+     hash; the hashchange listener drives state. */
+
+  const openBySlug = useMemo(
+    () => (slug: string) => projects.findIndex((p) => slugFromLink(p.link) === slug),
+    [projects],
+  );
+
+  useEffect(() => {
+    const sync = () => {
+      const slug = window.location.hash.replace(/^#/, '');
+      const idx = slug ? openBySlug(slug) : -1;
+      setOpenProject(idx >= 0 ? idx : null);
+    };
+    sync(); // deep link on load
+    window.addEventListener('hashchange', sync);
+    return () => window.removeEventListener('hashchange', sync);
+  }, [openBySlug]);
+
+  const openDossier = (index: number) => {
+    const slug = slugFromLink(projects[index].link);
+    if (slug) window.location.hash = slug;
+  };
+
+  const closeDossier = () => {
+    // Clear the hash without adding a history entry mid-session; back
+    // returns to the dossier (hashchange reopens it).
+    history.pushState(null, '', window.location.pathname + window.location.search);
+    setOpenProject(null);
+  };
+
+  const openSlug = openProject !== null ? slugFromLink(projects[openProject].link) : null;
+
+  // Fetch the build-time partial on first open; cache thereafter.
+  useEffect(() => {
+    if (!openSlug || dossiers[openSlug]) return;
+    let cancelled = false;
+    fetch(`/defence/dossier/${openSlug}/`)
+      .then((r) => {
+        if (!r.ok) throw new Error(String(r.status));
+        return r.text();
+      })
+      .then((html) => {
+        if (!cancelled) setDossiers((d) => ({ ...d, [openSlug]: html }));
+      })
+      .catch(() => {
+        // Partial unavailable — fall back to the standalone page.
+        if (!cancelled && openProject !== null && projects[openProject].link) {
+          window.location.href = projects[openProject].link!;
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [openSlug, dossiers, openProject, projects]);
+
+  // Scroll lock + ESC + focus while the dossier is open.
+  useEffect(() => {
+    if (openProject === null) return;
+    const prevOverflow = document.documentElement.style.overflow;
+    document.documentElement.style.overflow = 'hidden';
+    closeBtnRef.current?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeDossier();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => {
+      document.documentElement.style.overflow = prevOverflow;
+      window.removeEventListener('keydown', onKey);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openProject]);
+
+  // While a dossier is open the instrument overrides the scroll-driven state:
+  // full strength, pulled back far enough to hold the whole ring, subject
+  // satellite on station in the right half.
+  const effectiveGlobeState: GlobeState =
+    openProject !== null
+      ? { ...globeState, geo: null, camZ: 16, mode: 'orbital', dim: 1, split: true, gy: -2.5, focus: 'none' }
+      : globeState;
 
   // Section triggers.
   useGSAP(
@@ -720,9 +843,9 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
           state: {
             designation: 'SEC /05 — SHIPPED WORK',
             geo: null,
-            camZ: 10,
+            camZ: 12, // pulled back so more of the orbital ring sits in frame
             mode: 'orbital',
-            dim: 0.55,
+            dim: 0.8, // the ring is this section's co-star — keep it present
             split: false,
             focus: 'none',
           },
@@ -821,7 +944,7 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
       <div ref={canvasWrapRef} className="fixed inset-0 z-0 pointer-events-none" aria-hidden="true">
         <Canvas camera={{ position: [0, 0, 10], fov: FOV }}>
           <Scene
-            state={globeState}
+            state={effectiveGlobeState}
             accentCss={accentCss}
             reducedMotion={reducedMotion}
             isDesktop={isDesktop}
@@ -830,6 +953,7 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
             educationSites={educationSites}
             activeCapability={activeCapability}
             activeProject={activeProject}
+            openProject={openProject}
             projectNames={projectNames}
             onRotationUpdate={onRotationUpdate}
           />
@@ -845,18 +969,25 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
       {/* ── Live readout: real coordinates, real section state ── */}
       <div className="fixed bottom-6 left-6 z-20 hidden md:block t-readout select-none" aria-hidden="true">
         <p className="text-aluminum-400">
-          {/* Capabilities sub-clause tracks the focused row live */}
-          {globeState.mode === 'matrix' && activeCapability >= 0
-            ? `SEC /03.${activeCapability + 1} — CAPABILITIES`
-            : globeState.designation}
+          {/* Dossier and capabilities sub-clauses track the focused item live */}
+          {openProject !== null
+            ? `SEC /05.${openProject + 1} — DOSSIER · ${projects[openProject].name.toUpperCase()}`
+            : globeState.mode === 'matrix' && activeCapability >= 0
+              ? `SEC /03.${activeCapability + 1} — CAPABILITIES`
+              : globeState.designation}
         </p>
         <p className="text-aluminum-300">
           <span ref={coordsRef}>{formatCoords(homeGeo.lat, homeGeo.lng)}</span>
         </p>
       </div>
 
-      {/* ── Content ── */}
-      <div className="relative z-10 w-full">
+      {/* ── Content (fades while a dossier is open so the instrument half of
+             the takeover shows only the canvas) ── */}
+      <div
+        className={`relative z-10 w-full transition-opacity duration-300 ${
+          openProject !== null ? 'pointer-events-none opacity-0' : 'opacity-100'
+        }`}
+      >
         {/* /01 — HERO */}
         <section data-sec="hero">
           <Half>
@@ -991,7 +1122,7 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
         <section data-sec="projects" className="border-t border-aluminum-500">
           <div className="mx-auto w-full max-w-6xl px-6 py-24">
             <Kicker num="05">SHIPPED WORK</Kicker>
-            <DefenceLedger projects={projects} onActiveProject={setActiveProject} />
+            <DefenceLedger projects={projects} onActiveProject={setActiveProject} onOpenProject={openDossier} />
           </div>
         </section>
 
@@ -1023,6 +1154,74 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
           </Half>
         </section>
       </div>
+
+      {/* ── /05.n dossier — briefing takeover ── */}
+      {openProject !== null && (
+        <div
+          className="fixed inset-0 z-[15]"
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${projects[openProject].name} — project dossier`}
+        >
+          <div className="grid h-full md:grid-cols-2">
+            {/* Reading column — rides the centre split like every section */}
+            <div className="h-full overflow-y-auto border-r border-aluminum-500 bg-charcoal-900">
+              <div className="flex md:justify-end">
+                <div className="w-full max-w-xl px-6 py-20 md:pr-14">
+                  <p className="t-kicker">
+                    <span className="text-ember-400">DOSSIER 05.{openProject + 1}</span>
+                    {'  —  '}[{designationChip(projects[openProject])}]
+                  </p>
+                  <h2 className="t-display mt-5 text-4xl md:text-5xl">{projects[openProject].name}</h2>
+                  {projects[openProject].platform && (
+                    <p className="mt-3 text-aluminum-300">{projects[openProject].platform}</p>
+                  )}
+                  {(projects[openProject].technologies ?? []).length > 0 && (
+                    <p className="t-readout mt-4 text-aluminum-400">
+                      {(projects[openProject].technologies ?? []).map((t) => `[${t.toUpperCase()}]`).join('  ')}
+                    </p>
+                  )}
+                  <div className="mt-10 border-t border-aluminum-500 pt-10">
+                    {openSlug && dossiers[openSlug] ? (
+                      // Build-time partial composed from the same MDX/yml as the
+                      // standalone page; all injected content is our own static
+                      // build output and contains no scripts.
+                      <div dangerouslySetInnerHTML={{ __html: dossiers[openSlug] }} />
+                    ) : (
+                      <p className="t-readout text-aluminum-400 motion-safe:animate-pulse">RETRIEVING DOSSIER…</p>
+                    )}
+                  </div>
+                  {projects[openProject].link && (
+                    <p className="mt-14 border-t border-aluminum-500 pt-6">
+                      <a
+                        href={projects[openProject].link}
+                        className="t-readout text-aluminum-300 no-underline hover:text-ember-300"
+                      >
+                        STANDALONE PAGE ↗
+                      </a>
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+            {/* The instrument half — click to close */}
+            <button
+              type="button"
+              aria-label="Close dossier"
+              onClick={closeDossier}
+              className="hidden h-full w-full cursor-default border-0 bg-transparent p-0 md:block"
+            ></button>
+          </div>
+          <button
+            ref={closeBtnRef}
+            type="button"
+            onClick={closeDossier}
+            className="t-readout fixed right-6 top-6 z-[16] cursor-pointer border border-aluminum-500 bg-charcoal-900/80 px-4 py-2 text-aluminum-300 transition-colors duration-150 hover:border-ember-400 hover:text-ember-300"
+          >
+            [ESC] CLOSE
+          </button>
+        </div>
+      )}
     </div>
   );
 }
