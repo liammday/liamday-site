@@ -87,9 +87,15 @@ interface DefenceLedgerProps {
   /** Plain left-click on a row opens the in-page dossier instead of
       navigating (modified clicks still reach the standalone page). */
   onOpenProject: (index: number) => void;
+  /** Dossier open: the ledger morphs (via Flip in the console) into the
+      takeover's asset index — a compact fixed column in the left half.
+      Rows keep their DOM identity so the transition is a true shared-element
+      move; clicking a row switches dossiers. */
+  indexMode: boolean;
+  openIndex: number | null;
 }
 
-export function DefenceLedger({ projects, onActiveProject, onOpenProject }: DefenceLedgerProps) {
+export function DefenceLedger({ projects, onActiveProject, onOpenProject, indexMode, openIndex }: DefenceLedgerProps) {
   const [sort, setSort] = useState<SortKey>('featured');
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
 
@@ -128,8 +134,12 @@ export function DefenceLedger({ projects, onActiveProject, onOpenProject }: Defe
 
   return (
     <div>
-      {/* ── Bracket chip rail ── */}
-      <div className="mt-10 space-y-3">
+      {/* ── Bracket chip rail (hidden while the ledger serves as the index) ── */}
+      <div
+        className={`mt-10 space-y-3 transition-opacity duration-300 ${
+          indexMode ? 'pointer-events-none opacity-0' : 'opacity-100'
+        }`}
+      >
         <div className="flex flex-wrap items-baseline gap-x-4 gap-y-2">
           <span className="t-kicker w-12">SORT</span>
           {SORTS.map((s) => (
@@ -154,57 +164,101 @@ export function DefenceLedger({ projects, onActiveProject, onOpenProject }: Defe
         </p>
       </div>
 
-      {/* ── Ledger rows ── */}
-      <div className="mt-8">
-        {visible.map(({ p, originalIndex }, row) => {
-          const slug = slugFromLink(p.link);
-          const inner = (
-            <div className="grid grid-cols-[2.5rem_1fr] items-start gap-4 py-5 md:grid-cols-[6rem_2.5rem_4.5rem_1fr_1.6fr] md:items-center md:gap-6">
-              {/* Identity clause: each asset KEEPS its number under sort/filter
-                  (clauses cite, they don't renumber) — and it always matches
-                  the same-numbered satellite on the orbital ring. */}
-              <p className="t-readout hidden text-aluminum-400 md:block">05.{originalIndex + 1}</p>
-              <DefenceProjectIcon slug={slug} className="h-10 w-10 shrink-0" />
-              <div className="md:contents">
-                <p className="t-readout text-ember-400">[{designationChip(p)}]</p>
-                <h3 className="mt-1 text-lg font-medium text-aluminum-100 transition-colors duration-150 group-hover:text-ember-300 md:mt-0">
-                  {p.name}
-                </h3>
-                <p className="mt-1 text-sm leading-relaxed text-aluminum-300 md:mt-0">
-                  {(p.summary ?? '').split('. ')[0].replace(/\.$/, '')}.
+      {/* ── Ledger rows — the ops log in page flow; the fixed left-half
+             asset index while a dossier is open. Same DOM nodes both ways
+             (Flip morphs between the layouts). ── */}
+      <div
+        className={
+          indexMode
+            ? 'fixed inset-y-0 left-0 z-[16] hidden w-1/2 flex-col justify-center overflow-y-auto px-6 md:flex md:pl-10'
+            : 'mt-8'
+        }
+      >
+        <div className={indexMode ? 'w-full max-w-md' : ''}>
+          {indexMode && (
+            <p className="t-kicker mb-6">
+              <span className="text-ember-400">/05</span>
+              {'  '}ASSET INDEX
+            </p>
+          )}
+          {visible.map(({ p, originalIndex }) => {
+            const slug = slugFromLink(p.link);
+            const isOpen = indexMode && openIndex === originalIndex;
+            const inner = (
+              <div
+                className={
+                  indexMode
+                    ? 'flex items-baseline gap-3 py-2'
+                    : 'grid grid-cols-[2.5rem_1fr] items-start gap-4 py-5 md:grid-cols-[6rem_2.5rem_4.5rem_1fr_1.6fr] md:items-center md:gap-6'
+                }
+              >
+                {/* Identity clause: each asset KEEPS its number under sort/filter
+                    (clauses cite, they don't renumber) — and it always matches
+                    the same-numbered satellite on the orbital ring. */}
+                <p
+                  className={`t-readout hidden md:block ${
+                    isOpen ? 'text-ember-400' : 'text-aluminum-400'
+                  }`}
+                >
+                  05.{originalIndex + 1}
                 </p>
+                {!indexMode && <DefenceProjectIcon slug={slug} className="h-10 w-10 shrink-0" />}
+                <div className="md:contents">
+                  {!indexMode && <p className="t-readout text-ember-400">[{designationChip(p)}]</p>}
+                  <h3
+                    className={`transition-colors duration-150 ${
+                      indexMode
+                        ? `text-sm font-medium ${isOpen ? 'text-aluminum-100' : 'text-aluminum-400 group-hover:text-aluminum-200'}`
+                        : 'mt-1 text-lg font-medium text-aluminum-100 group-hover:text-ember-300 md:mt-0'
+                    }`}
+                  >
+                    {p.name}
+                  </h3>
+                  {!indexMode && (
+                    <p className="mt-1 text-sm leading-relaxed text-aluminum-300 md:mt-0">
+                      {(p.summary ?? '').split('. ')[0].replace(/\.$/, '')}.
+                    </p>
+                  )}
+                </div>
               </div>
-            </div>
-          );
-          const rowProps = {
-            onMouseEnter: () => onActiveProject(originalIndex),
-            onMouseLeave: () => onActiveProject(null),
-            onFocus: () => onActiveProject(originalIndex),
-            onBlur: () => onActiveProject(null),
-          };
-          return p.link ? (
-            <a
-              key={p.name}
-              href={p.link}
-              {...rowProps}
-              onClick={(e) => {
-                // Plain left-click opens the in-page dossier; cmd/ctrl/shift/
-                // middle-click keep their native new-tab/window behaviour.
-                if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
-                e.preventDefault();
-                onOpenProject(originalIndex);
-              }}
-              className="group block border-t border-aluminum-500 no-underline transition-colors duration-150 hover:border-ember-400/60"
-            >
-              {inner}
-            </a>
-          ) : (
-            <div key={p.name} {...rowProps} className="group border-t border-aluminum-500">
-              {inner}
-            </div>
-          );
-        })}
-        <div className="border-t border-aluminum-500"></div>
+            );
+            const rowProps = {
+              onMouseEnter: () => onActiveProject(originalIndex),
+              onMouseLeave: () => onActiveProject(null),
+              onFocus: () => onActiveProject(originalIndex),
+              onBlur: () => onActiveProject(null),
+            };
+            const rowClass = indexMode
+              ? `group block border-l-2 pl-4 no-underline transition-colors duration-150 ${
+                  isOpen ? 'border-l-ember-400' : 'border-l-transparent hover:border-l-aluminum-500'
+                }`
+              : 'group block border-t border-aluminum-500 no-underline transition-colors duration-150 hover:border-ember-400/60';
+            return p.link ? (
+              <a
+                key={p.name}
+                data-ledger-row
+                href={p.link}
+                aria-current={isOpen ? 'true' : undefined}
+                {...rowProps}
+                onClick={(e) => {
+                  // Plain left-click opens/switches the in-page dossier;
+                  // cmd/ctrl/shift/middle-click keep native new-tab behaviour.
+                  if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+                  e.preventDefault();
+                  onOpenProject(originalIndex);
+                }}
+                className={rowClass}
+              >
+                {inner}
+              </a>
+            ) : (
+              <div key={p.name} data-ledger-row {...rowProps} className={rowClass}>
+                {inner}
+              </div>
+            );
+          })}
+          {!indexMode && <div className="border-t border-aluminum-500"></div>}
+        </div>
       </div>
     </div>
   );

@@ -1,10 +1,11 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Line, Html } from '@react-three/drei';
 import type { Line2 } from 'three-stdlib';
 import * as THREE from 'three';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { Flip } from 'gsap/Flip';
 import { useGSAP } from '@gsap/react';
 import {
   GlobeMap,
@@ -16,7 +17,7 @@ import {
 import { DefenceLedger, slugFromLink, designationChip, type LedgerProject } from './DefenceLedger';
 import { useTacticalAccent, accentToCss } from '../lib/useTacticalAccent';
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, Flip);
 
 /* ──────────────────────────────────────────────────────────────────────────
    DefenceConsole — the /defence exploration as a full-content page.
@@ -743,25 +744,54 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
     [projects],
   );
 
+  // Shared-element morph: the ledger ITSELF becomes the dossier's asset
+  // index. Capture the rows' layout state immediately before any open/close
+  // transition; after React re-lays them out, Flip animates the delta.
+  const openProjectRef = useRef<number | null>(null);
+  openProjectRef.current = openProject;
+  const flipStateRef = useRef<ReturnType<typeof Flip.getState> | null>(null);
+
+  const captureLedgerFlip = (willBeOpen: boolean) => {
+    const isOpen = openProjectRef.current !== null;
+    if (willBeOpen === isOpen) return; // dossier→dossier switch: no re-layout
+    if (!window.matchMedia('(min-width: 768px)').matches) return; // index is desktop-only
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    flipStateRef.current = Flip.getState('[data-ledger-row]');
+  };
+
+  useLayoutEffect(() => {
+    if (!flipStateRef.current) return;
+    Flip.from(flipStateRef.current, {
+      duration: 0.55,
+      ease: 'power2.inOut',
+      absolute: true,
+      nested: true,
+    });
+    flipStateRef.current = null;
+  }, [openProject !== null]); // eslint-disable-line react-hooks/exhaustive-deps
+
   useEffect(() => {
     const sync = () => {
       const slug = window.location.hash.replace(/^#/, '');
       const idx = slug ? openBySlug(slug) : -1;
+      captureLedgerFlip(idx >= 0);
       setOpenProject(idx >= 0 ? idx : null);
     };
     sync(); // deep link on load
     window.addEventListener('hashchange', sync);
     return () => window.removeEventListener('hashchange', sync);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openBySlug]);
 
   const openDossier = (index: number) => {
     const slug = slugFromLink(projects[index].link);
-    if (slug) window.location.hash = slug;
+    if (slug) window.location.hash = slug; // hashchange handles capture + state
   };
 
   const closeDossier = () => {
     // Clear the hash without adding a history entry mid-session; back
     // returns to the dossier (hashchange reopens it).
+    captureLedgerFlip(false);
     history.pushState(null, '', window.location.pathname + window.location.search);
     setOpenProject(null);
   };
@@ -1011,10 +1041,12 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
         </p>
       </div>
 
-      {/* ── Content (fades while a dossier is open so the instrument half of
-             the takeover shows only the canvas) ── */}
+      {/* ── Content. While a dossier is open everything fades EXCEPT the
+             ledger, which morphs (Flip) into the asset index in the left
+             half of the takeover. ── */}
+      <div className="relative z-10 w-full">
       <div
-        className={`relative z-10 w-full transition-opacity duration-300 ${
+        className={`transition-opacity duration-300 ${
           openProject !== null ? 'pointer-events-none opacity-0' : 'opacity-100'
         }`}
       >
@@ -1148,14 +1180,35 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
           </Half>
         </section>
 
-        {/* /05 — PROJECTS: the ops log (full width; orbital instrument) */}
-        <section data-sec="projects" className="border-t border-aluminum-500">
-          <div className="mx-auto w-full max-w-6xl px-6 py-24">
-            <Kicker num="05">SHIPPED WORK</Kicker>
-            <DefenceLedger projects={projects} onActiveProject={setActiveProject} onOpenProject={openDossier} />
-          </div>
-        </section>
+      </div>
 
+      {/* /05 — PROJECTS: the ops log (full width; orbital instrument).
+          OUTSIDE the fading wrapper: when a dossier opens, the ledger rows
+          Flip-morph into the takeover's asset index instead of fading. */}
+      <section data-sec="projects" className="border-t border-aluminum-500">
+        <div className="mx-auto w-full max-w-6xl px-6 py-24">
+          <div
+            className={`transition-opacity duration-300 ${
+              openProject !== null ? 'pointer-events-none opacity-0' : 'opacity-100'
+            }`}
+          >
+            <Kicker num="05">SHIPPED WORK</Kicker>
+          </div>
+          <DefenceLedger
+            projects={projects}
+            onActiveProject={setActiveProject}
+            onOpenProject={openDossier}
+            indexMode={openProject !== null}
+            openIndex={openProject}
+          />
+        </div>
+      </section>
+
+      <div
+        className={`transition-opacity duration-300 ${
+          openProject !== null ? 'pointer-events-none opacity-0' : 'opacity-100'
+        }`}
+      >
         {/* /06 — CONTACT */}
         <section data-sec="contact" className="border-t border-aluminum-500">
           <Half>
@@ -1184,50 +1237,20 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
           </Half>
         </section>
       </div>
+      </div>
 
       {/* ── /05.n dossier — briefing takeover. Reading panel owns the RIGHT
-             half; the LEFT half keeps the instrument (ring + subject) with a
-             clickable asset index for switching between dossiers. ── */}
+             half; the LEFT half keeps the instrument plus the ledger, which
+             has morphed into the asset index (click to switch dossiers). ── */}
       {openProject !== null && (
         <div
-          className="fixed inset-0 z-[15]"
+          className="fixed inset-y-0 right-0 z-[15] w-full md:w-1/2"
           role="dialog"
-          aria-modal="true"
           aria-label={`${projects[openProject].name} — project dossier`}
         >
-          <div className="grid h-full md:grid-cols-2">
-            {/* Asset index over the instrument — click to switch dossiers */}
-            <div className="hidden h-full flex-col justify-center md:flex">
-              <nav className="w-full max-w-md px-6 md:pl-10" aria-label="Project dossiers">
-                <p className="t-kicker mb-6">
-                  <span className="text-ember-400">/05</span>
-                  {'  '}ASSET INDEX
-                </p>
-                {projects.map((p, i) => {
-                  const isOpen = i === openProject;
-                  return (
-                    <button
-                      key={p.name}
-                      type="button"
-                      onClick={() => openDossier(i)}
-                      aria-current={isOpen ? 'true' : undefined}
-                      className={`block w-full cursor-pointer border-0 border-l-2 bg-transparent px-4 py-2 text-left transition-colors duration-150 ${
-                        isOpen
-                          ? 'border-l-ember-400 text-aluminum-100'
-                          : 'border-l-transparent text-aluminum-400 hover:border-l-aluminum-500 hover:text-aluminum-200'
-                      }`}
-                    >
-                      <span className={`t-readout mr-3 ${isOpen ? 'text-ember-400' : 'text-aluminum-400'}`}>
-                        05.{i + 1}
-                      </span>
-                      <span className="text-sm font-medium">{p.name}</span>
-                    </button>
-                  );
-                })}
-              </nav>
-            </div>
-            {/* Reading panel — rides the centre split from the right */}
-            <div ref={panelRef} className="h-full overflow-y-auto border-l border-aluminum-500 bg-charcoal-900">
+          {/* Reading panel — rides the centre split from the right; the
+              morphed ledger serves as the index in the left half. */}
+          <div ref={panelRef} className="h-full overflow-y-auto border-l border-aluminum-500 bg-charcoal-900">
               <div className="w-full max-w-xl px-6 py-20 md:pl-14">
                 <p className="t-kicker">
                   <span className="text-ember-400">DOSSIER 05.{openProject + 1}</span>
@@ -1263,7 +1286,6 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
                   </p>
                 )}
               </div>
-            </div>
           </div>
           <button
             ref={closeBtnRef}
