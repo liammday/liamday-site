@@ -93,8 +93,11 @@ interface GlobeState {
   dim: number; // canvas wrapper opacity
   split: boolean; // true = pin centred in the right half (desktop)
   /** Vertical frame offset (world units) — the dossier view drops the globe
-      so the ring's near point rides centre-right instead of the top edge. */
+      so the ring's near point rides centre-height instead of the top edge. */
   gy?: number;
+  /** Mirror the split: centre the focus in the LEFT half (dossier view,
+      where the reading panel owns the right half). */
+  splitLeft?: boolean;
   focus: Focus;
 }
 
@@ -186,9 +189,14 @@ const Marker = ({
   );
 };
 
-/** Markers float at 1.02R; arcs launch from the same altitude so their ends
-    meet the marker cores exactly (they previously started on the surface). */
-const MARKER_ALTITUDE = 1.02;
+/** Markers sit JUST above the surface (arcs launch from the same altitude so
+    their ends meet the marker cores). Kept minimal deliberately: any real
+    altitude gives perspective parallax — a raised point projects displaced
+    from its ground position by an amount that changes with camera distance
+    and frame offset, which read as pins sliding across the map between
+    scroll positions. 1.004R clears the outlines (1.0R) and the occluder
+    sphere (0.99R) without visible parallax. */
+const MARKER_ALTITUDE = 1.004;
 
 const CareerPath = ({
   color,
@@ -503,7 +511,13 @@ const Scene = ({
       // Split sections centre the pin in the right half: the facing point
       // (world x = gx, depth camZ − R from camera) must project to 75% of
       // viewport width → gx = 0.5 · tan(fov/2) · (camZ − R) · aspect.
-      gx: state.split && isDesktop ? 0.5 * Math.tan((FOV / 2) * DEG) * (state.camZ - RADIUS) * (size.width / size.height) : 0,
+      gx:
+        state.split && isDesktop
+          ? (state.splitLeft ? -0.5 : 0.5) *
+            Math.tan((FOV / 2) * DEG) *
+            (state.camZ - RADIUS) *
+            (size.width / size.height)
+          : 0,
       gy: state.gy ?? 0,
     };
 
@@ -534,7 +548,7 @@ const Scene = ({
         onRotationUpdate(lat, lng);
       },
     });
-  }, [state.geo, state.camZ, state.split, state.gy, isDesktop, reducedMotion, camera, size.width, size.height, onRotationUpdate]);
+  }, [state.geo, state.camZ, state.split, state.splitLeft, state.gy, isDesktop, reducedMotion, camera, size.width, size.height, onRotationUpdate]);
 
   const stations = useMemo(() => [...roles].reverse().map((r) => r.geo), [roles]);
 
@@ -667,6 +681,12 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
   const [openProject, setOpenProject] = useState<number | null>(null);
   const [dossiers, setDossiers] = useState<Record<string, string>>({});
   const closeBtnRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  // Switching dossiers via the asset index: fresh document, fresh scroll.
+  useEffect(() => {
+    if (openProject !== null) panelRef.current?.scrollTo({ top: 0 });
+  }, [openProject]);
   const [globeState, setGlobeState] = useState<GlobeState>({
     designation: 'SEC /01 — INDEX',
     geo: homeGeo,
@@ -793,7 +813,17 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
   // satellite on station in the right half.
   const effectiveGlobeState: GlobeState =
     openProject !== null
-      ? { ...globeState, geo: null, camZ: 16, mode: 'orbital', dim: 1, split: true, gy: -2.5, focus: 'none' }
+      ? {
+          ...globeState,
+          geo: null,
+          camZ: 16,
+          mode: 'orbital',
+          dim: 1,
+          split: true,
+          splitLeft: true, // reading panel owns the right half — ring rides left
+          gy: -2.5,
+          focus: 'none',
+        }
       : globeState;
 
   // Section triggers.
@@ -1155,7 +1185,9 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
         </section>
       </div>
 
-      {/* ── /05.n dossier — briefing takeover ── */}
+      {/* ── /05.n dossier — briefing takeover. Reading panel owns the RIGHT
+             half; the LEFT half keeps the instrument (ring + subject) with a
+             clickable asset index for switching between dossiers. ── */}
       {openProject !== null && (
         <div
           className="fixed inset-0 z-[15]"
@@ -1164,53 +1196,74 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
           aria-label={`${projects[openProject].name} — project dossier`}
         >
           <div className="grid h-full md:grid-cols-2">
-            {/* Reading column — rides the centre split like every section */}
-            <div className="h-full overflow-y-auto border-r border-aluminum-500 bg-charcoal-900">
-              <div className="flex md:justify-end">
-                <div className="w-full max-w-xl px-6 py-20 md:pr-14">
-                  <p className="t-kicker">
-                    <span className="text-ember-400">DOSSIER 05.{openProject + 1}</span>
-                    {'  —  '}[{designationChip(projects[openProject])}]
+            {/* Asset index over the instrument — click to switch dossiers */}
+            <div className="hidden h-full flex-col justify-center md:flex">
+              <nav className="w-full max-w-md px-6 md:pl-10" aria-label="Project dossiers">
+                <p className="t-kicker mb-6">
+                  <span className="text-ember-400">/05</span>
+                  {'  '}ASSET INDEX
+                </p>
+                {projects.map((p, i) => {
+                  const isOpen = i === openProject;
+                  return (
+                    <button
+                      key={p.name}
+                      type="button"
+                      onClick={() => openDossier(i)}
+                      aria-current={isOpen ? 'true' : undefined}
+                      className={`block w-full cursor-pointer border-0 border-l-2 bg-transparent px-4 py-2 text-left transition-colors duration-150 ${
+                        isOpen
+                          ? 'border-l-ember-400 text-aluminum-100'
+                          : 'border-l-transparent text-aluminum-400 hover:border-l-aluminum-500 hover:text-aluminum-200'
+                      }`}
+                    >
+                      <span className={`t-readout mr-3 ${isOpen ? 'text-ember-400' : 'text-aluminum-400'}`}>
+                        05.{i + 1}
+                      </span>
+                      <span className="text-sm font-medium">{p.name}</span>
+                    </button>
+                  );
+                })}
+              </nav>
+            </div>
+            {/* Reading panel — rides the centre split from the right */}
+            <div ref={panelRef} className="h-full overflow-y-auto border-l border-aluminum-500 bg-charcoal-900">
+              <div className="w-full max-w-xl px-6 py-20 md:pl-14">
+                <p className="t-kicker">
+                  <span className="text-ember-400">DOSSIER 05.{openProject + 1}</span>
+                  {'  —  '}[{designationChip(projects[openProject])}]
+                </p>
+                <h2 className="t-display mt-5 text-4xl md:text-5xl">{projects[openProject].name}</h2>
+                {projects[openProject].platform && (
+                  <p className="mt-3 text-aluminum-300">{projects[openProject].platform}</p>
+                )}
+                {(projects[openProject].technologies ?? []).length > 0 && (
+                  <p className="t-readout mt-4 text-aluminum-400">
+                    {(projects[openProject].technologies ?? []).map((t) => `[${t.toUpperCase()}]`).join('  ')}
                   </p>
-                  <h2 className="t-display mt-5 text-4xl md:text-5xl">{projects[openProject].name}</h2>
-                  {projects[openProject].platform && (
-                    <p className="mt-3 text-aluminum-300">{projects[openProject].platform}</p>
-                  )}
-                  {(projects[openProject].technologies ?? []).length > 0 && (
-                    <p className="t-readout mt-4 text-aluminum-400">
-                      {(projects[openProject].technologies ?? []).map((t) => `[${t.toUpperCase()}]`).join('  ')}
-                    </p>
-                  )}
-                  <div className="mt-10 border-t border-aluminum-500 pt-10">
-                    {openSlug && dossiers[openSlug] ? (
-                      // Build-time partial composed from the same MDX/yml as the
-                      // standalone page; all injected content is our own static
-                      // build output and contains no scripts.
-                      <div dangerouslySetInnerHTML={{ __html: dossiers[openSlug] }} />
-                    ) : (
-                      <p className="t-readout text-aluminum-400 motion-safe:animate-pulse">RETRIEVING DOSSIER…</p>
-                    )}
-                  </div>
-                  {projects[openProject].link && (
-                    <p className="mt-14 border-t border-aluminum-500 pt-6">
-                      <a
-                        href={projects[openProject].link}
-                        className="t-readout text-aluminum-300 no-underline hover:text-ember-300"
-                      >
-                        STANDALONE PAGE ↗
-                      </a>
-                    </p>
+                )}
+                <div className="mt-10 border-t border-aluminum-500 pt-10">
+                  {openSlug && dossiers[openSlug] ? (
+                    // Build-time partial composed from the same MDX/yml as the
+                    // standalone page; all injected content is our own static
+                    // build output and contains no scripts.
+                    <div dangerouslySetInnerHTML={{ __html: dossiers[openSlug] }} />
+                  ) : (
+                    <p className="t-readout text-aluminum-400 motion-safe:animate-pulse">RETRIEVING DOSSIER…</p>
                   )}
                 </div>
+                {projects[openProject].link && (
+                  <p className="mt-14 border-t border-aluminum-500 pt-6">
+                    <a
+                      href={projects[openProject].link}
+                      className="t-readout text-aluminum-300 no-underline hover:text-ember-300"
+                    >
+                      STANDALONE PAGE ↗
+                    </a>
+                  </p>
+                )}
               </div>
             </div>
-            {/* The instrument half — click to close */}
-            <button
-              type="button"
-              aria-label="Close dossier"
-              onClick={closeDossier}
-              className="hidden h-full w-full cursor-default border-0 bg-transparent p-0 md:block"
-            ></button>
           </div>
           <button
             ref={closeBtnRef}
