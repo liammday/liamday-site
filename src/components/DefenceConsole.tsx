@@ -438,13 +438,28 @@ const OrbitalRing = ({
     });
   }, [openIndex, names.length, reducedMotion]);
 
+  // With a dossier open the ledger reads OVER this layer — everything steps
+  // down, and the subject satellite especially must never blob behind text.
+  const docked = openIndex !== null;
   useEffect(() => {
     const ringMat = ringRef.current?.material;
     if (ringMat)
-      gsap.to(ringMat, { opacity: visible ? (muted ? 0.4 : 0.65) : 0, duration: 0.6, ease: 'power2.inOut' });
-    gsap.to(satMat, { opacity: visible ? (muted ? 0.5 : 0.95) : 0, duration: 0.6, ease: 'power2.inOut' });
-    gsap.to(activeMat, { opacity: visible ? (muted ? 0.55 : 1) : 0, duration: 0.6, ease: 'power2.inOut' });
-  }, [visible, muted, satMat, activeMat]);
+      gsap.to(ringMat, {
+        opacity: visible ? (muted ? 0.4 : docked ? 0.45 : 0.65) : 0,
+        duration: 0.6,
+        ease: 'power2.inOut',
+      });
+    gsap.to(satMat, {
+      opacity: visible ? (muted ? 0.5 : docked ? 0.55 : 0.95) : 0,
+      duration: 0.6,
+      ease: 'power2.inOut',
+    });
+    gsap.to(activeMat, {
+      opacity: visible ? (muted ? 0.55 : docked ? 0.4 : 1) : 0,
+      duration: 0.6,
+      ease: 'power2.inOut',
+    });
+  }, [visible, muted, docked, satMat, activeMat]);
 
   useEffect(
     () => () => {
@@ -474,7 +489,7 @@ const OrbitalRing = ({
           const isActive = visible && (activeIndex === i || openIndex === i);
           return (
             <group key={names[i]} position={pos}>
-              <mesh material={isActive ? activeMat : satMat} scale={isActive ? 1.9 : 1}>
+              <mesh material={isActive ? activeMat : satMat} scale={isActive ? (docked ? 1.25 : 1.9) : 1}>
                 <sphereGeometry args={[0.085, 12, 12]} />
               </mesh>
               {/* Clause labels only while the ring is the SECTION's co-star;
