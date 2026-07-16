@@ -1470,7 +1470,9 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
             aria-label={expanded ? 'Collapse dossier to half width' : 'Expand dossier to full width'}
             className="t-readout absolute left-6 top-6 z-[16] hidden cursor-pointer border border-aluminum-500 bg-charcoal-900/80 px-4 py-2 text-aluminum-300 transition-colors duration-150 hover:border-ember-400 hover:text-ember-300 md:block"
           >
-            {expanded ? '[→] COLLAPSE' : '[←] EXPAND'}
+            {/* Solid triangles, not thin-stroke arrows — hairline glyphs
+                vanish at 11px mono; these match the site's ▸ accents. */}
+            {expanded ? '[▶] COLLAPSE' : '[◀] EXPAND'}
           </button>
           <button
             ref={closeBtnRef}
