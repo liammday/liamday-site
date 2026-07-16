@@ -683,15 +683,67 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
   const [activeCapability, setActiveCapability] = useState(-1);
   const [activeProject, setActiveProject] = useState<number | null>(null);
   const [openProject, setOpenProject] = useState<number | null>(null);
+  // The panel renders from displayProject, which lags openProject just long
+  // enough to play the exit slide before unmounting.
+  const [displayProject, setDisplayProject] = useState<number | null>(null);
   const [dossiers, setDossiers] = useState<Record<string, string>>({});
   const closeBtnRef = useRef<HTMLButtonElement>(null);
+  const panelWrapRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+  const panelContentRef = useRef<HTMLDivElement>(null);
   const scrimRef = useRef<HTMLDivElement>(null);
 
-  // Switching dossiers via the asset index: fresh document, fresh scroll.
   useEffect(() => {
-    if (openProject !== null) panelRef.current?.scrollTo({ top: 0 });
+    if (openProject !== null) setDisplayProject(openProject);
   }, [openProject]);
+
+  // Entrance + switch choreography (exit lives in its own effect below).
+  const prevDisplayRef = useRef<number | null>(null);
+  useEffect(() => {
+    const prev = prevDisplayRef.current;
+    prevDisplayRef.current = displayProject;
+    if (displayProject === null) return;
+    panelRef.current?.scrollTo({ top: 0 }); // fresh document, fresh scroll
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (prev === null && panelWrapRef.current) {
+      // OPEN: the sheet slides in from the right; the header blocks rise in
+      // behind it (the brief's mechanical reveal — 12px, one ease, 75ms steps).
+      gsap.fromTo(
+        panelWrapRef.current,
+        { xPercent: 100 },
+        { xPercent: 0, duration: 0.35, ease: EASE, overwrite: 'auto' },
+      );
+      gsap.fromTo(
+        panelWrapRef.current.querySelectorAll('[data-dossier-reveal]'),
+        { autoAlpha: 0, y: 12 },
+        { autoAlpha: 1, y: 0, duration: 0.25, ease: EASE, stagger: 0.075, delay: 0.18, overwrite: 'auto' },
+      );
+    } else if (prev !== null && prev !== displayProject && panelContentRef.current) {
+      // SWITCH: the sheet holds station; the document snaps over (the
+      // satellite swing carries the cinematic part of the transition).
+      gsap.fromTo(
+        panelContentRef.current,
+        { autoAlpha: 0, y: 10 },
+        { autoAlpha: 1, y: 0, duration: 0.25, ease: EASE, overwrite: 'auto' },
+      );
+    }
+  }, [displayProject]);
+
+  // CLOSE: slide the sheet out, then unmount it.
+  useEffect(() => {
+    if (openProject !== null || displayProject === null) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !panelWrapRef.current) {
+      setDisplayProject(null);
+      return;
+    }
+    gsap.to(panelWrapRef.current, {
+      xPercent: 100,
+      duration: 0.28,
+      ease: 'power2.in',
+      overwrite: 'auto',
+      onComplete: () => setDisplayProject(null),
+    });
+  }, [openProject, displayProject]);
   const [globeState, setGlobeState] = useState<GlobeState>({
     designation: 'SEC /01 — INDEX',
     geo: homeGeo,
@@ -781,6 +833,7 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
   };
 
   const openSlug = openProject !== null ? slugFromLink(projects[openProject].link) : null;
+  const displaySlug = displayProject !== null ? slugFromLink(projects[displayProject].link) : null;
 
   // Fetch the build-time partial on first open; cache thereafter.
   useEffect(() => {
@@ -1245,42 +1298,47 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
       </div>
 
       {/* ── /05.n dossier — briefing takeover. Reading panel owns the RIGHT
-             half; the LEFT half keeps the instrument plus the ledger, which
-             has morphed into the asset index (click to switch dossiers). ── */}
-      {openProject !== null && (
+             half; the LEFT half keeps the instrument plus the ledger as the
+             asset index. Rendered from displayProject so the sheet can play
+             its exit slide after openProject clears. ── */}
+      {displayProject !== null && (
         <div
+          ref={panelWrapRef}
           className="fixed inset-y-0 right-0 z-[15] w-full md:w-1/2"
           role="dialog"
-          aria-label={`${projects[openProject].name} — project dossier`}
+          aria-label={`${projects[displayProject].name} — project dossier`}
         >
-          {/* Reading panel — rides the centre split from the right; the
-              morphed ledger serves as the index in the left half. */}
+          {/* Reading panel — rides the centre split from the right */}
           <div ref={panelRef} className="h-full overflow-y-auto border-l border-aluminum-500 bg-charcoal-900">
-              <div className="w-full max-w-xl px-6 py-20 md:pl-14">
-                <p className="t-kicker">
-                  <span className="text-ember-400">DOSSIER 05.{openProject + 1}</span>
-                  {'  —  '}[{designationChip(projects[openProject])}]
+            <div ref={panelContentRef} className="w-full max-w-xl px-6 py-20 md:pl-14">
+              <p data-dossier-reveal className="t-kicker">
+                <span className="text-ember-400">DOSSIER 05.{displayProject + 1}</span>
+                {'  —  '}[{designationChip(projects[displayProject])}]
+              </p>
+              <h2 data-dossier-reveal className="t-display mt-5 text-4xl md:text-5xl">
+                {projects[displayProject].name}
+              </h2>
+              {projects[displayProject].platform && (
+                <p data-dossier-reveal className="mt-3 text-aluminum-300">
+                  {projects[displayProject].platform}
                 </p>
-                <h2 className="t-display mt-5 text-4xl md:text-5xl">{projects[openProject].name}</h2>
-                {projects[openProject].platform && (
-                  <p className="mt-3 text-aluminum-300">{projects[openProject].platform}</p>
+              )}
+              {(projects[displayProject].technologies ?? []).length > 0 && (
+                <p data-dossier-reveal className="t-readout mt-4 text-aluminum-400">
+                  {(projects[displayProject].technologies ?? []).map((t) => `[${t.toUpperCase()}]`).join('  ')}
+                </p>
+              )}
+              <div data-dossier-reveal className="mt-10 border-t border-aluminum-500 pt-10">
+                {displaySlug && dossiers[displaySlug] ? (
+                  // Build-time partial composed from the same MDX/yml as the
+                  // standalone page; all injected content is our own static
+                  // build output and contains no scripts.
+                  <div dangerouslySetInnerHTML={{ __html: dossiers[displaySlug] }} />
+                ) : (
+                  <p className="t-readout text-aluminum-400 motion-safe:animate-pulse">RETRIEVING DOSSIER…</p>
                 )}
-                {(projects[openProject].technologies ?? []).length > 0 && (
-                  <p className="t-readout mt-4 text-aluminum-400">
-                    {(projects[openProject].technologies ?? []).map((t) => `[${t.toUpperCase()}]`).join('  ')}
-                  </p>
-                )}
-                <div className="mt-10 border-t border-aluminum-500 pt-10">
-                  {openSlug && dossiers[openSlug] ? (
-                    // Build-time partial composed from the same MDX/yml as the
-                    // standalone page; all injected content is our own static
-                    // build output and contains no scripts.
-                    <div dangerouslySetInnerHTML={{ __html: dossiers[openSlug] }} />
-                  ) : (
-                    <p className="t-readout text-aluminum-400 motion-safe:animate-pulse">RETRIEVING DOSSIER…</p>
-                  )}
-                </div>
               </div>
+            </div>
           </div>
           <button
             ref={closeBtnRef}
