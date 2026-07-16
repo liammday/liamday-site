@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="smcp-icon-title">
+  <title id="smcp-icon-title">Sainsbury's Groceries MCP icon</title>
+  <defs>
+    <radialGradient id="smcp-icon-bg" cx="42%" cy="40%" r="78%">
+      <stop offset="0%" stop-color="#33251f"/>
+      <stop offset="64%" stop-color="#221a16"/>
+      <stop offset="100%" stop-color="#181210"/>
+    </radialGradient>
+    <radialGradient id="smcp-icon-gate" cx="38%" cy="34%" r="72%">
+      <stop offset="0%" stop-color="#fce3c8"/>
+      <stop offset="36%" stop-color="#f3b184"/>
+      <stop offset="66%" stop-color="#cc785c"/>
+      <stop offset="100%" stop-color="#9c5236"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="256" height="256" rx="56" fill="url(#smcp-icon-bg)"/>
+
+  <!-- Items flowing toward the gate -->
+  <circle cx="48" cy="128" r="5.5" fill="#f3ebde" fill-opacity="0.6"/>
+  <circle cx="76" cy="128" r="7" fill="#f0b48c" fill-opacity="0.85"/>
+
+  <!-- One item lit and ringed for review -->
+  <circle cx="110" cy="128" r="6.5" fill="#fbeede"/>
+  <circle cx="110" cy="128" r="11.5" fill="none" stroke="#f0b48c" stroke-opacity="0.85" stroke-width="2"/>
+
+  <!-- The confirmation gate -->
+  <circle cx="172" cy="128" r="52" fill="#cc785c" opacity="0.16"/>
+  <circle cx="172" cy="128" r="36" fill="none" stroke="url(#smcp-icon-gate)" stroke-width="10"/>
+  <path d="M140.8 110 A36 36 0 0 1 159.7 94.2" fill="none" stroke="#fdeee0" stroke-opacity="0.55" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- Checkout arc beyond the gate, unlit -->
+  <path d="M213 87 A58 58 0 0 1 213 169" fill="none" stroke="#9da1a9" stroke-opacity="0.3" stroke-width="3"/>
+</svg>

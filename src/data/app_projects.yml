@@ -196,10 +196,45 @@
     - "Honest by design: a colour-coded two-clock menu bar readout, and a hard rule that it shows a dash rather than a wrong number when its undocumented data source breaks."
     - "Caught by a test, not in production: a fixed-clock scenario test caught a burn-rate projection bug that flipped the status to over at eight percent of the week; the fix refuses to trust a rate until an hour of history backs it."
 
+- name: Sainsbury's Groceries MCP
+  platform: Personal Applied AI · Agentic commerce
+  status: Live, human-confirmed checkout
+  order: 7
+  date_started: "2026-07"
+  tags: [applied-ai, mcp, python, personal]
+  icon: /assets/images/projects/sainsburys-mcp-icon.svg
+  icon_light: /assets/images/projects/sainsburys-mcp-icon-light.svg
+  link: /projects/sainsburys-mcp/
+  link_label: Read the case study
+  audience: An MCP connector that lets Claude do the food shop — meal plan in, staged and priced Sainsbury's basket out — with every money-moving action held behind guardrails enforced in code, not left to the model.
+  summary: >
+    Sainsbury's has no developer API, so this connector wraps the shop as a hybrid:
+    a fast JSON tier for the reads a shop involves (search, favourites, basket,
+    orders, Nectar offers) and a real-browser tier for the moments that need one,
+    like login with SMS 2FA. A meal plan flows into a staged basket that matches
+    against my 289 real favourites before falling back to search, and reports the
+    provenance of every pick. The core rule is one sentence — the agent prepares,
+    the human confirms. Placing an order defaults to a dry run and demands a fresh
+    confirmation token bound to a hash of the exact basket, under a server-side
+    spend cap that blocks rather than warns, with idempotency so a retry can never
+    double-order.
+  technologies:
+    - Python (AI-paired)
+    - Model Context Protocol (MCP)
+    - FastMCP · httpx · Playwright
+    - Encrypted session store
+    - LifeOS Food domain
+  features:
+    - "The agent prepares, the human confirms: the one tool that spends money defaults to dry-run and needs a server-minted confirmation token no model can manufacture."
+    - "Guardrails in code, not prompts: a spend cap that blocks rather than warns, a token bound to the exact basket so any change kills it, idempotency on anything that could double-fire, and an explicit substitutions policy on every order."
+    - "Favourites-first matching: ingredients map to my 289 real favourites before search, and every basket line reports where it came from."
+    - "Honest about auth: identity turned out to live in a short-lived cookie session, not the bearer token — so the design surfaces \"re-login needed\" loudly rather than ever silently downgrading to a guest."
+    - "No API, no assumptions: a drift check re-verifies the connector's expectations of the site before the tools trust them."
+
 - name: Peaking
   platform: iOS
   status: Active development
-  order: 7
+  order: 8
   date_started: "2024-06"
   tags: [swift, ios, mapkit, cloudkit, personal]
   audience: For hikers and mountaineers who track summits, routes, and collection progress.
@@ -231,7 +266,7 @@
 - name: Training
   platform: iOS
   status: Active development
-  order: 8
+  order: 9
   date_started: "2025-01"
   tags: [swift, ios, healthkit, personal]
   audience: For athletes, coaches, and habit-focused users who want stronger training consistency.
@@ -261,7 +296,7 @@
 - name: Rallying
   platform: iOS & watchOS
   status: Active development · Internal TestFlight
-  order: 9
+  order: 10
   date_started: "2025-02"
   tags: [swift, ios, watchos, healthkit, cloudkit, personal]
   slug: rallying

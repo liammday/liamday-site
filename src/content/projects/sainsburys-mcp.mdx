@@ -1,0 +1,108 @@
+---
+title: Sainsbury's Groceries MCP
+description: A build case study on an MCP server that lets Claude do the food shop. Sainsbury's has no developer API, so a hybrid two-tier connector wraps the shop as tools, with every money-moving action held behind a server-side spend cap and a confirmation token bound to the exact basket. Documents the auth assumption that turned out wrong, and the posture that fixed it.
+summary: An MCP connector that turns a meal plan into a staged, priced Sainsbury's basket, matching against my real favourites first and reporting where every pick came from. The agent prepares; a human confirms. The guardrails live in code, not in the prompt — a spend cap that blocks rather than warns, a confirmation token that dies if the basket changes, idempotency on anything that could double-fire, and an explicit substitutions policy on every order.
+role: Architect, operator, and engineer (AI-paired)
+year: 2026
+client: Personal applied-AI build
+outcome: Live for the weekly shop prep; every order human-confirmed
+order: 5
+type: Case study
+image: /assets/images/projects/sainsburys-mcp-og-card.png
+hero_image: /assets/images/projects/sainsburys-mcp-hero.svg
+hero_image_light: /assets/images/projects/sainsburys-mcp-hero-light.svg
+hero_image_width: 1600
+hero_image_height: 800
+hero_image_alt: "Sainsbury's Groceries MCP mark: a row of grocery items flowing from the left into a glowing ember-orange confirmation gate, one item ringed for review, with a checkout arc beyond the gate left deliberately unlit."
+nav:
+  - id: lede
+    label: What it does
+  - id: problem
+    label: The problem
+  - id: tiers
+    label: Two tiers
+  - id: guardrails
+    label: Prepare, then confirm
+  - id: failure
+    label: Failure and fix
+  - id: lifeos
+    label: Part of LifeOS
+  - id: open
+    label: Open work
+---
+
+<h2 id="lede" class="scroll-mt-32">What it does</h2>
+
+This is the food shop, done by an agent. I keep a meal plan; the connector turns it into a staged Sainsbury's basket. It searches the range, matches ingredients against my 289 real favourites before it ever falls back to search, prices the result, and stops. The stopping is the point. Every tool that only reads — search, favourites, the basket, order history, Nectar offers — runs freely. The one action that spends money sits behind a confirmation that no model can manufacture.
+
+It runs as an ordinary MCP connector, so the same Claude conversation that plans the week's meals can build the basket for them. Today the preparation is live end to end: basket staged, priced, capped, every pick traceable to a favourite or a search. The slot-booking and checkout tier exists behind the same guardrails but is still being verified against the live site, so for now the last mile happens by hand — and the write-up says so, because the honest version of "an agent does my shopping" is that it does the ninety percent that is drudgery and hands me the one percent that is money.
+
+<h2 id="problem" class="scroll-mt-32">The problem</h2>
+
+Two problems, one obvious and one more interesting. The obvious one: Sainsbury's has no developer API. There is nothing to sign up for, no documented surface, no sanctioned way in. Whatever this build speaks to, it speaks to unofficially, which means it must expect the ground to move and check its own footing rather than trust it.
+
+The more interesting one: this agent spends money. An agent that mis-reads an email is embarrassing; an agent that orders £300 of groceries because a meal plan parsed strangely is expensive, and one that books two delivery slots because a call timed out and retried is worse. Most of what is written about agent safety concerns what a model should be allowed to say. This build is about what a server should let one do — and the answer has to hold however confused the model gets, which means it cannot live in the prompt.
+
+<h2 id="tiers" class="scroll-mt-32">Two tiers</h2>
+
+The architecture is a hybrid, because the site itself is two different problems. Reading — search, favourites, the basket, orders — works over the same JSON the site's own front end uses, so a fast, headless client handles it. The moments that genuinely need a human's hardware — logging in with a password and an SMS code, and ultimately checkout — are driven through a real browser instead. Each tier does the thing it is honest at: the JSON tier is quick and cheap for the dozens of reads a shop involves; the browser tier is slow and heavy and reserved for the steps that deserve it.
+
+Between them sits a habit learned from the no-API reality: verify before trusting. A drift check re-confirms the connector's assumptions about the site before the tools lean on them, because an unofficial surface can change without notice and the failure I want is a loud one. The captured session is encrypted at rest, and the server holds no card details at all — payment stays where it always was, inside Sainsbury's own checkout, behind their authentication.
+
+<h2 id="guardrails" class="scroll-mt-32">Prepare, then confirm</h2>
+
+The core rule is one sentence: **the agent prepares, the human confirms.** Placing an order never fires autonomously. It defaults to a dry run, and the live path demands a fresh confirmation token that the server minted for one specific basket — the token is bound to a hash of the exact items and total, so if anything changes between my yes and the submit, the token is already dead. The model cannot invent one, and a stale one will not spend a penny.
+
+<aside class="surface-panel my-8 p-6">
+  <p class="text-xs font-semibold uppercase tracking-[0.3em] text-aluminum-400">The guardrails, enforced in code</p>
+  <div class="mt-4 overflow-x-auto">
+    <table class="w-full min-w-[560px] text-left text-sm leading-relaxed text-aluminum-300">
+      <thead class="text-xs uppercase tracking-wider text-aluminum-400">
+        <tr>
+          <th class="pr-4 pb-3 font-semibold">Guardrail</th>
+          <th class="pb-3 font-semibold">What it holds</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-aluminum-500/15">
+        <tr>
+          <td class="py-3 pr-4 text-aluminum-200">Spend cap</td>
+          <td class="py-3">A staged basket over the server-side cap is blocked, not warned about</td>
+        </tr>
+        <tr>
+          <td class="py-3 pr-4 text-aluminum-200">Confirmation token</td>
+          <td class="py-3">Bound to a hash of the exact basket; any change to items or total kills it</td>
+        </tr>
+        <tr>
+          <td class="py-3 pr-4 text-aluminum-200">Idempotency</td>
+          <td class="py-3">Slot booking and ordering dedupe on a key, so a retry cannot double-fire</td>
+        </tr>
+        <tr>
+          <td class="py-3 pr-4 text-aluminum-200">Substitutions policy</td>
+          <td class="py-3">Every order carries an explicit allow / deny / never-substitute list</td>
+        </tr>
+        <tr>
+          <td class="py-3 pr-4 text-aluminum-200">Dry-run default</td>
+          <td class="py-3">The order tool rehearses unless explicitly told otherwise</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</aside>
+
+None of this is advisory. The checks live in the server, unit-tested, and they hold regardless of what the agent decides. A spend cap in a system prompt is a suggestion; a spend cap in code is a wall. The same thinking shaped the smaller decisions: substitutions are not left to a default but declared per order, and the basket-building tool reports the provenance of every pick — this line came from your favourites, this one from a search — so the review I confirm against is a review of facts, not vibes.
+
+<h2 id="failure" class="scroll-mt-32">Failure and fix</h2>
+
+The build's best lesson came from being wrong about authentication. Login captures a standard OAuth-style bearer token, and the working assumption was that this token was what authenticated the personal calls — it looks the part, it has the right scopes, the site sends it. Then the favourites tool started returning an empty list while search worked fine, and the investigation that followed overturned the model entirely. Tested combination by combination: the bearer alone produced perfectly valid responses — as an anonymous guest. Identity was never in the token. It rides on the site's cookie session, which has a practical lifetime of about an hour, and it cannot be renewed unattended: the refresh grant is refused, and reloading a saved session silently downgrades it to a guest.
+
+Silently is the word that matters. The worst version of this system is one that looks logged in and returns confidently empty data — the favourite that is "out of stock" because the agent is nobody, the basket that stages against the wrong state. So the fix was a posture, not a workaround: **no silent fallback.** The session status tool states plainly whether the session is a real customer or a lapsed guest; a best-effort re-capture exists but is guarded so it can never persist a guest session — it raises instead, and the answer to a lapsed session is a fresh interactive login, password and SMS code, roughly weekly. I have made my peace with that. A machine that spends my money re-earning its access on a human cadence, with a human present, is not a limitation of the design. It is the design.
+
+<h2 id="lifeos" class="scroll-mt-32">Part of LifeOS</h2>
+
+The connector is an organ of [LifeOS](/projects/lifeos/) — the Food domain growing an arm. Meal plans drafted in the same workspace flow straight into the basket-building tool; a price tracker logs what staples actually cost over time, so "has this gone up" is a query rather than a feeling; Nectar offers surface at planning time, when they can still change the plan. Nothing here invented a new pattern. It repeated the one LifeOS keeps proving: take a messy real-world surface, wrap it in honest tools, put the guardrails in code, and let Claude do the orchestration it is good at while the server holds the lines that matter.
+
+<h2 id="open" class="scroll-mt-32">Open work</h2>
+
+The browser tier for slots and checkout is scaffolded but not yet live-verified; its selectors are deliberately defensive placeholders until they are confirmed against the real flow, and until then checkout stays manual. A cleaner session-renewal path may exist inside the site's own login flow — one that would stretch the weekly cadence without breaking the no-silent-fallback rule — and it is queued for the next login window. The price tracker is young and will earn a longer history before I lean on it.
+
+And one piece of open work is permanent by nature: the surface underneath all of this is unofficial and can change without notice. That is not a footnote, it is the operating condition — the reason the drift check runs, the reason every read distinguishes "empty" from "not logged in", and the reason the only irreversible action in the system will always wait for a human hand. Personal use, one household, my own account: an agent doing the boring part of the shopping, with the spending kept exactly where it belongs.
