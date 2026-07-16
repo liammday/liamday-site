@@ -157,9 +157,8 @@ export function DefenceLedger({ projects, onActiveProject }: DefenceLedgerProps)
           const slug = slugFromLink(p.link);
           const inner = (
             <div className="grid grid-cols-[2.5rem_1fr] items-start gap-4 py-5 md:grid-cols-[6rem_2.5rem_4.5rem_1fr_1.6fr] md:items-center md:gap-6">
-              <p className="t-readout hidden text-aluminum-400 md:block">
-                /{String(row + 1).padStart(2, '0')} — {String(visible.length).padStart(2, '0')}
-              </p>
+              {/* Decimalised sub-clause of section /05 (position in the current view) */}
+              <p className="t-readout hidden text-aluminum-400 md:block">05.{row + 1}</p>
               <DefenceProjectIcon slug={slug} className="h-10 w-10 shrink-0" />
               <div className="md:contents">
                 <p className="t-readout text-ember-400">[{designationChip(p)}]</p>

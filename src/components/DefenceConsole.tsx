@@ -749,7 +749,8 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
         const i = Number(el.dataset.roleIndex);
         const framing = roleFraming(roles[i], i, homeGeo);
         const state: Partial<GlobeState> = {
-          designation: `SEC /02 — EXPERIENCE · ${String(i + 1).padStart(2, '0')}/${String(roles.length).padStart(2, '0')}`,
+          // Decimalised sub-clause: the roles are clauses 02.1 … 02.5 of /02.
+          designation: `SEC /02.${i + 1} — EXPERIENCE`,
           geo: { lat: framing.lat, lng: framing.lng },
           camZ: framing.camZ,
           mode: 'map',
@@ -843,7 +844,12 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
 
       {/* ── Live readout: real coordinates, real section state ── */}
       <div className="fixed bottom-6 left-6 z-20 hidden md:block t-readout select-none" aria-hidden="true">
-        <p className="text-aluminum-400">{globeState.designation}</p>
+        <p className="text-aluminum-400">
+          {/* Capabilities sub-clause tracks the focused row live */}
+          {globeState.mode === 'matrix' && activeCapability >= 0
+            ? `SEC /03.${activeCapability + 1} — CAPABILITIES`
+            : globeState.designation}
+        </p>
         <p className="text-aluminum-300">
           <span ref={coordsRef}>{formatCoords(homeGeo.lat, homeGeo.lng)}</span>
         </p>
@@ -892,7 +898,7 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
                   >
                     <div data-reveal className="border-l-2 border-l-ember-400/70 pl-6">
                       <p className="t-readout text-ember-400">
-                        ROLE {String(i + 1).padStart(2, '0')} | {role.period.toUpperCase()}
+                        02.{i + 1} | {role.period.toUpperCase()}
                       </p>
                       <h3 className="t-heading mt-4 text-2xl md:text-3xl">{role.title}</h3>
                       <p className="mt-2 text-aluminum-300">
@@ -934,7 +940,7 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
                       activeCapability === i ? 'text-ember-400' : 'text-aluminum-400'
                     }`}
                   >
-                    /{String(i + 1).padStart(2, '0')}
+                    03.{i + 1}
                   </p>
                   <h3 className="text-lg font-medium leading-snug text-aluminum-100">{c.title}</h3>
                   <p className="text-sm leading-relaxed text-aluminum-300">{c.description}</p>
@@ -951,9 +957,11 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
             <div className="py-24">
               <Kicker num="04">EDUCATION + CERTIFICATIONS</Kicker>
               <div className="mt-12">
-                {education.map((q) => (
+                {education.map((q, i) => (
                   <div key={q.qualification} data-reveal className="border-t border-aluminum-500 py-5">
-                    <p className="t-readout text-aluminum-400">{String(q.period).toUpperCase()}</p>
+                    <p className="t-readout text-aluminum-400">
+                      <span className="text-ember-400">04.{i + 1}</span> | {String(q.period).toUpperCase()}
+                    </p>
                     <h3 className="mt-2 text-lg font-medium text-aluminum-100">{q.qualification}</h3>
                     <p className="mt-1 text-sm text-aluminum-300">{q.institution}</p>
                     {q.geo && <p className="t-readout mt-2 text-aluminum-400">{q.geo.label}</p>}
@@ -962,9 +970,13 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
               </div>
               <p className="t-kicker mt-14">CERTIFICATIONS</p>
               <div className="mt-4">
-                {certifications.map((q) => (
+                {certifications.map((q, i) => (
                   <div key={q.qualification} data-reveal className="border-t border-aluminum-500 py-5">
-                    <p className="t-readout text-aluminum-400">{String(q.period).toUpperCase()}</p>
+                    <p className="t-readout text-aluminum-400">
+                      {/* Clauses continue across the lists: certs pick up after education */}
+                      <span className="text-ember-400">04.{education.length + i + 1}</span> |{' '}
+                      {String(q.period).toUpperCase()}
+                    </p>
                     <h3 className="mt-2 text-lg font-medium text-aluminum-100">{q.qualification}</h3>
                     <p className="mt-1 text-sm text-aluminum-300">{q.institution}</p>
                   </div>
