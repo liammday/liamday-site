@@ -450,7 +450,11 @@ const OrbitalRing = ({
               <mesh material={isActive ? activeMat : satMat} scale={isActive ? 1.9 : 1}>
                 <sphereGeometry args={[0.085, 12, 12]} />
               </mesh>
-              {visible && (
+              {/* Clause labels only while the ring is the SECTION's co-star;
+                  with a dossier open the ledger sits over the instrument, and
+                  labels behind text read as clutter (the panel header and the
+                  accent row already name the subject). */}
+              {visible && openIndex === null && (
                 <Html center distanceFactor={12} style={{ pointerEvents: 'none' }} zIndexRange={[5, 0]}>
                   <div className="t-readout whitespace-nowrap text-center" style={{ transform: 'translateY(-1.5rem)' }}>
                     <p className={isActive ? 'text-ember-300' : 'text-aluminum-400'}>05.{i + 1}</p>
@@ -713,7 +717,7 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
   }, []);
 
   // Canvas dim per section (dossier override wins while open).
-  const effectiveDim = openProject !== null ? 1 : globeState.dim;
+  const effectiveDim = openProject !== null ? 0.65 : globeState.dim;
   useEffect(() => {
     if (!canvasWrapRef.current) return;
     gsap.to(canvasWrapRef.current, { opacity: effectiveDim, duration: 0.6, ease: EASE });
@@ -791,21 +795,31 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
     };
   }, [openSlug, dossiers, openProject, projects]);
 
-  // Scroll lock + ESC + focus while the dossier is open. Before locking,
-  // snap the ledger to the top of the viewport so the full asset list is
-  // visible (and clickable) beside the panel.
+  // While the dossier is open: snap the ledger into view, then keep page
+  // scroll LIVE but confined to the projects section — the list scrolls,
+  // the rest of the console stays out of reach. Plus ESC + focus.
   useEffect(() => {
     if (openProject === null) return;
     document.querySelector('[data-ledger]')?.scrollIntoView({ block: 'start' });
-    const prevOverflow = document.documentElement.style.overflow;
-    document.documentElement.style.overflow = 'hidden';
     closeBtnRef.current?.focus();
+
+    const section = document.querySelector<HTMLElement>('[data-sec="projects"]');
+    const clamp = () => {
+      if (!section) return;
+      const min = section.getBoundingClientRect().top + window.scrollY;
+      const max = Math.max(min, min + section.offsetHeight - window.innerHeight);
+      const y = window.scrollY;
+      if (y < min) window.scrollTo(0, min);
+      else if (y > max) window.scrollTo(0, max);
+    };
+    window.addEventListener('scroll', clamp, { passive: true });
+
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') closeDossier();
     };
     window.addEventListener('keydown', onKey);
     return () => {
-      document.documentElement.style.overflow = prevOverflow;
+      window.removeEventListener('scroll', clamp);
       window.removeEventListener('keydown', onKey);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -821,7 +835,9 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
           geo: null,
           camZ: 16,
           mode: 'orbital',
-          dim: 1,
+          // Recessive while open: the ledger sits over the instrument in the
+          // left half, so the ring must read as background, not foreground.
+          dim: 0.65,
           split: true,
           splitLeft: true, // reading panel owns the right half — ring rides left
           gy: -2.5,
