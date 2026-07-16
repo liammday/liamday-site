@@ -18,9 +18,13 @@ export default defineConfig({
   // Dev-only overlay (island inspector / audits); never ships to production.
   // Disabled to keep the preview — and screenshots — clean.
   devToolbar: { enabled: false },
-  // Preserve the old Jekyll date-based URL for the one migrated blog post.
+  // Preserve the old Jekyll date-based URL for the one migrated blog post,
+  // and the /defence exploration URL now that the console IS the home page
+  // (review links + the dossier hash deep-links carry over: /defence/#peaking
+  // redirects to /, and hashes survive meta-refresh in modern browsers).
   redirects: {
     '/2023/07/01/coaching-design-teams/': '/posts/coaching-design-teams/',
+    '/defence/': '/',
   },
   // Self-hosted typography via the stable Astro Fonts API. Downloaded and
   // cached at build so fonts serve from our own domain (privacy + CWV), with

@@ -1359,6 +1359,10 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
                   <a href="https://gsap.com/" className="text-aluminum-300 no-underline hover:text-ember-300">
                     GSAP
                   </a>
+                  {' · '}
+                  <a href="https://threejs.org/" className="text-aluminum-300 no-underline hover:text-ember-300">
+                    THREE.JS
+                  </a>
                 </p>
                 <p className="mt-2">
                   <a href={`mailto:${contact.email}`} className="text-aluminum-300 no-underline hover:text-ember-300">
