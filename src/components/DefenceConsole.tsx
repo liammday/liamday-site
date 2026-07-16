@@ -812,8 +812,14 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
   useEffect(() => {
     const sync = () => {
       const slug = window.location.hash.replace(/^#/, '');
-      const idx = slug ? openBySlug(slug) : -1;
-      setOpenProject(idx >= 0 ? idx : null);
+      if (slug) {
+        const idx = openBySlug(slug);
+        // A hash that isn't a project slug (e.g. an in-content anchor inside
+        // an open dossier) is not a command — leave the viewer state alone.
+        if (idx >= 0) setOpenProject(idx);
+      } else {
+        setOpenProject(null);
+      }
     };
     sync(); // deep link on load
     window.addEventListener('hashchange', sync);

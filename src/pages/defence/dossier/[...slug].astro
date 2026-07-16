@@ -34,5 +34,5 @@ const updates = Array.isArray(data.updates) ? data.updates : [];
   <div class="detail-content prose prose-invert">
     <Content />
   </div>
-  {updates.length > 0 && <UpdateTimeline updates={updates} collapsible label="Development log" />}
+  {updates.length > 0 && <UpdateTimeline updates={updates} collapsible label="Development log" linkTitles={false} />}
 </article>
