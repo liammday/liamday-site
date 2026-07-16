@@ -3,11 +3,12 @@ import { DefenceProjectIcon } from './DefenceIcons';
 
 /**
  * /05 SHIPPED WORK — the projects ops log for the /defence exploration.
- * Full-width hairline-ruled rows with schematic line icons, plus the bracket
- * chip rail: featured/newest/oldest sort + multi-select OR category filters
- * (logic ported from ui/ProjectsShowcase.tsx, restyled to the mono
- * instrumentation contract). Row hover/focus reports the project's ORIGINAL
- * index up to the console so its orbital satellite lights.
+ * The row grid is split on the viewport centre line: clause / icon / chip /
+ * name live in the LEFT half, the summary in the RIGHT. When a dossier
+ * opens, the right-half panel simply covers the summaries — the list itself
+ * never re-lays out, so it doubles as the dossier's asset index with zero
+ * transition machinery. Bracket chip rail: featured/newest/oldest sort +
+ * multi-select OR category filters (logic ported from ui/ProjectsShowcase).
  */
 
 export interface LedgerProject {
@@ -87,15 +88,11 @@ interface DefenceLedgerProps {
   /** Plain left-click on a row opens the in-page dossier instead of
       navigating (modified clicks still reach the standalone page). */
   onOpenProject: (index: number) => void;
-  /** Dossier open: the ledger morphs (via Flip in the console) into the
-      takeover's asset index — a compact fixed column in the left half.
-      Rows keep their DOM identity so the transition is a true shared-element
-      move; clicking a row switches dossiers. */
-  indexMode: boolean;
+  /** The open dossier's project index — its row reads as the active clause. */
   openIndex: number | null;
 }
 
-export function DefenceLedger({ projects, onActiveProject, onOpenProject, indexMode, openIndex }: DefenceLedgerProps) {
+export function DefenceLedger({ projects, onActiveProject, onOpenProject, openIndex }: DefenceLedgerProps) {
   const [sort, setSort] = useState<SortKey>('featured');
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
 
@@ -133,13 +130,10 @@ export function DefenceLedger({ projects, onActiveProject, onOpenProject, indexM
     setActiveFilters((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]));
 
   return (
-    <div>
-      {/* ── Bracket chip rail (hidden while the ledger serves as the index) ── */}
-      <div
-        className={`mt-10 space-y-3 transition-opacity duration-300 ${
-          indexMode ? 'pointer-events-none opacity-0' : 'opacity-100'
-        }`}
-      >
+    <div data-ledger>
+      {/* ── Bracket chip rail — kept inside the left half so it stays fully
+             visible (and usable) while a dossier panel covers the right ── */}
+      <div className="mt-10 space-y-3 md:w-1/2 md:pr-12">
         <div className="flex flex-wrap items-baseline gap-x-4 gap-y-2">
           <span className="t-kicker w-12">SORT</span>
           {SORTS.map((s) => (
@@ -164,101 +158,75 @@ export function DefenceLedger({ projects, onActiveProject, onOpenProject, indexM
         </p>
       </div>
 
-      {/* ── Ledger rows — the ops log in page flow; the fixed left-half
-             asset index while a dossier is open. Same DOM nodes both ways
-             (Flip morphs between the layouts). ── */}
-      <div
-        className={
-          indexMode
-            ? 'fixed inset-y-0 left-0 z-[16] hidden w-1/2 flex-col justify-center overflow-y-auto px-6 md:flex md:pl-10'
-            : 'mt-8'
-        }
-      >
-        <div className={indexMode ? 'w-full max-w-md' : ''}>
-          {indexMode && (
-            <p className="t-kicker mb-6">
-              <span className="text-ember-400">/05</span>
-              {'  '}ASSET INDEX
-            </p>
-          )}
-          {visible.map(({ p, originalIndex }) => {
-            const slug = slugFromLink(p.link);
-            const isOpen = indexMode && openIndex === originalIndex;
-            const inner = (
-              <div
-                className={
-                  indexMode
-                    ? 'flex items-baseline gap-3 py-2'
-                    : 'grid grid-cols-[2.5rem_1fr] items-start gap-4 py-5 md:grid-cols-[6rem_2.5rem_4.5rem_1fr_1.6fr] md:items-center md:gap-6'
-                }
-              >
+      {/* ── Ledger rows. The two-half grid puts the title column's end on the
+             viewport centre line — exactly the dossier panel's edge. ── */}
+      <div className="mt-8">
+        {visible.map(({ p, originalIndex }) => {
+          const slug = slugFromLink(p.link);
+          const isOpen = openIndex === originalIndex;
+          const inner = (
+            <div className="md:grid md:grid-cols-2">
+              {/* Left half: clause / icon / chip / name — the standing index */}
+              <div className="grid grid-cols-[2.5rem_1fr] items-start gap-4 py-5 md:grid-cols-[6rem_2.5rem_4.5rem_1fr] md:items-center md:gap-6 md:pr-12">
                 {/* Identity clause: each asset KEEPS its number under sort/filter
                     (clauses cite, they don't renumber) — and it always matches
                     the same-numbered satellite on the orbital ring. */}
-                <p
-                  className={`t-readout hidden md:block ${
-                    isOpen ? 'text-ember-400' : 'text-aluminum-400'
-                  }`}
-                >
+                <p className={`t-readout hidden md:block ${isOpen ? 'text-ember-400' : 'text-aluminum-400'}`}>
                   05.{originalIndex + 1}
                 </p>
-                {!indexMode && <DefenceProjectIcon slug={slug} className="h-10 w-10 shrink-0" />}
+                <DefenceProjectIcon slug={slug} className="h-10 w-10 shrink-0" />
                 <div className="md:contents">
-                  {!indexMode && <p className="t-readout text-ember-400">[{designationChip(p)}]</p>}
+                  <p className="t-readout text-ember-400">[{designationChip(p)}]</p>
                   <h3
-                    className={`transition-colors duration-150 ${
-                      indexMode
-                        ? `text-sm font-medium ${isOpen ? 'text-aluminum-100' : 'text-aluminum-400 group-hover:text-aluminum-200'}`
-                        : 'mt-1 text-lg font-medium text-aluminum-100 group-hover:text-ember-300 md:mt-0'
+                    className={`mt-1 text-lg font-medium transition-colors duration-150 md:mt-0 ${
+                      isOpen ? 'text-ember-300' : 'text-aluminum-100 group-hover:text-ember-300'
                     }`}
                   >
                     {p.name}
                   </h3>
-                  {!indexMode && (
-                    <p className="mt-1 text-sm leading-relaxed text-aluminum-300 md:mt-0">
-                      {(p.summary ?? '').split('. ')[0].replace(/\.$/, '')}.
-                    </p>
-                  )}
                 </div>
               </div>
-            );
-            const rowProps = {
-              onMouseEnter: () => onActiveProject(originalIndex),
-              onMouseLeave: () => onActiveProject(null),
-              onFocus: () => onActiveProject(originalIndex),
-              onBlur: () => onActiveProject(null),
-            };
-            const rowClass = indexMode
-              ? `group block border-l-2 pl-4 no-underline transition-colors duration-150 ${
-                  isOpen ? 'border-l-ember-400' : 'border-l-transparent hover:border-l-aluminum-500'
-                }`
-              : 'group block border-t border-aluminum-500 no-underline transition-colors duration-150 hover:border-ember-400/60';
-            return p.link ? (
-              <a
-                key={p.name}
-                data-ledger-row
-                href={p.link}
-                aria-current={isOpen ? 'true' : undefined}
-                {...rowProps}
-                onClick={(e) => {
-                  // Plain left-click opens/switches the in-page dossier;
-                  // cmd/ctrl/shift/middle-click keep native new-tab behaviour.
-                  if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
-                  e.preventDefault();
-                  onOpenProject(originalIndex);
-                }}
-                className={rowClass}
-              >
-                {inner}
-              </a>
-            ) : (
-              <div key={p.name} data-ledger-row {...rowProps} className={rowClass}>
-                {inner}
+              {/* Right half: the summary — covered by an open dossier panel */}
+              <div className="pb-5 pl-[3.5rem] md:flex md:items-center md:py-5 md:pl-12 md:pb-5">
+                <p className="text-sm leading-relaxed text-aluminum-300">
+                  {(p.summary ?? '').split('. ')[0].replace(/\.$/, '')}.
+                </p>
               </div>
-            );
-          })}
-          {!indexMode && <div className="border-t border-aluminum-500"></div>}
-        </div>
+            </div>
+          );
+          const rowProps = {
+            onMouseEnter: () => onActiveProject(originalIndex),
+            onMouseLeave: () => onActiveProject(null),
+            onFocus: () => onActiveProject(originalIndex),
+            onBlur: () => onActiveProject(null),
+          };
+          const rowClass = `group block border-t no-underline transition-colors duration-150 ${
+            isOpen ? 'border-ember-400/60' : 'border-aluminum-500 hover:border-ember-400/60'
+          }`;
+          return p.link ? (
+            <a
+              key={p.name}
+              href={p.link}
+              aria-current={isOpen ? 'true' : undefined}
+              {...rowProps}
+              onClick={(e) => {
+                // Plain left-click opens/switches the in-page dossier;
+                // cmd/ctrl/shift/middle-click keep native new-tab behaviour.
+                if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+                e.preventDefault();
+                onOpenProject(originalIndex);
+              }}
+              className={rowClass}
+            >
+              {inner}
+            </a>
+          ) : (
+            <div key={p.name} {...rowProps} className={rowClass}>
+              {inner}
+            </div>
+          );
+        })}
+        <div className="border-t border-aluminum-500"></div>
       </div>
     </div>
   );

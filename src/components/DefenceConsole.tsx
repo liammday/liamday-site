@@ -1,11 +1,10 @@
-import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Line, Html } from '@react-three/drei';
 import type { Line2 } from 'three-stdlib';
 import * as THREE from 'three';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Flip } from 'gsap/Flip';
 import { useGSAP } from '@gsap/react';
 import {
   GlobeMap,
@@ -17,7 +16,7 @@ import {
 import { DefenceLedger, slugFromLink, designationChip, type LedgerProject } from './DefenceLedger';
 import { useTacticalAccent, accentToCss } from '../lib/useTacticalAccent';
 
-gsap.registerPlugin(ScrollTrigger, Flip);
+gsap.registerPlugin(ScrollTrigger);
 
 /* ──────────────────────────────────────────────────────────────────────────
    DefenceConsole — the /defence exploration as a full-content page.
@@ -744,54 +743,25 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
     [projects],
   );
 
-  // Shared-element morph: the ledger ITSELF becomes the dossier's asset
-  // index. Capture the rows' layout state immediately before any open/close
-  // transition; after React re-lays them out, Flip animates the delta.
-  const openProjectRef = useRef<number | null>(null);
-  openProjectRef.current = openProject;
-  const flipStateRef = useRef<ReturnType<typeof Flip.getState> | null>(null);
-
-  const captureLedgerFlip = (willBeOpen: boolean) => {
-    const isOpen = openProjectRef.current !== null;
-    if (willBeOpen === isOpen) return; // dossier→dossier switch: no re-layout
-    if (!window.matchMedia('(min-width: 768px)').matches) return; // index is desktop-only
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    flipStateRef.current = Flip.getState('[data-ledger-row]');
-  };
-
-  useLayoutEffect(() => {
-    if (!flipStateRef.current) return;
-    Flip.from(flipStateRef.current, {
-      duration: 0.55,
-      ease: 'power2.inOut',
-      absolute: true,
-      nested: true,
-    });
-    flipStateRef.current = null;
-  }, [openProject !== null]); // eslint-disable-line react-hooks/exhaustive-deps
-
   useEffect(() => {
     const sync = () => {
       const slug = window.location.hash.replace(/^#/, '');
       const idx = slug ? openBySlug(slug) : -1;
-      captureLedgerFlip(idx >= 0);
       setOpenProject(idx >= 0 ? idx : null);
     };
     sync(); // deep link on load
     window.addEventListener('hashchange', sync);
     return () => window.removeEventListener('hashchange', sync);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openBySlug]);
 
   const openDossier = (index: number) => {
     const slug = slugFromLink(projects[index].link);
-    if (slug) window.location.hash = slug; // hashchange handles capture + state
+    if (slug) window.location.hash = slug; // hashchange drives the state
   };
 
   const closeDossier = () => {
     // Clear the hash without adding a history entry mid-session; back
     // returns to the dossier (hashchange reopens it).
-    captureLedgerFlip(false);
     history.pushState(null, '', window.location.pathname + window.location.search);
     setOpenProject(null);
   };
@@ -821,9 +791,12 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
     };
   }, [openSlug, dossiers, openProject, projects]);
 
-  // Scroll lock + ESC + focus while the dossier is open.
+  // Scroll lock + ESC + focus while the dossier is open. Before locking,
+  // snap the ledger to the top of the viewport so the full asset list is
+  // visible (and clickable) beside the panel.
   useEffect(() => {
     if (openProject === null) return;
+    document.querySelector('[data-ledger]')?.scrollIntoView({ block: 'start' });
     const prevOverflow = document.documentElement.style.overflow;
     document.documentElement.style.overflow = 'hidden';
     closeBtnRef.current?.focus();
@@ -1183,22 +1156,16 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
       </div>
 
       {/* /05 — PROJECTS: the ops log (full width; orbital instrument).
-          OUTSIDE the fading wrapper: when a dossier opens, the ledger rows
-          Flip-morph into the takeover's asset index instead of fading. */}
+          OUTSIDE the fading wrapper: the row grid splits on the viewport
+          centre line, so an open dossier panel simply covers the summary
+          half — the title column doubles as the asset index, unchanged. */}
       <section data-sec="projects" className="border-t border-aluminum-500">
         <div className="mx-auto w-full max-w-6xl px-6 py-24">
-          <div
-            className={`transition-opacity duration-300 ${
-              openProject !== null ? 'pointer-events-none opacity-0' : 'opacity-100'
-            }`}
-          >
-            <Kicker num="05">SHIPPED WORK</Kicker>
-          </div>
+          <Kicker num="05">SHIPPED WORK</Kicker>
           <DefenceLedger
             projects={projects}
             onActiveProject={setActiveProject}
             onOpenProject={openDossier}
-            indexMode={openProject !== null}
             openIndex={openProject}
           />
         </div>
@@ -1275,16 +1242,6 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
                     <p className="t-readout text-aluminum-400 motion-safe:animate-pulse">RETRIEVING DOSSIER…</p>
                   )}
                 </div>
-                {projects[openProject].link && (
-                  <p className="mt-14 border-t border-aluminum-500 pt-6">
-                    <a
-                      href={projects[openProject].link}
-                      className="t-readout text-aluminum-300 no-underline hover:text-ember-300"
-                    >
-                      STANDALONE PAGE ↗
-                    </a>
-                  </p>
-                )}
               </div>
           </div>
           <button
