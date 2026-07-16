@@ -686,6 +686,7 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
   const [dossiers, setDossiers] = useState<Record<string, string>>({});
   const closeBtnRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+  const scrimRef = useRef<HTMLDivElement>(null);
 
   // Switching dossiers via the asset index: fresh document, fresh scroll.
   useEffect(() => {
@@ -722,6 +723,15 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
     if (!canvasWrapRef.current) return;
     gsap.to(canvasWrapRef.current, { opacity: effectiveDim, duration: 0.6, ease: EASE });
   }, [effectiveDim]);
+
+  // Content scrim rides the split state: shield the left reading column on
+  // map-costar sections; lift entirely for the full-width abstract sections
+  // and for dossier mode (instrument owns the left half there).
+  const scrimOn = openProject === null && globeState.split;
+  useEffect(() => {
+    if (!scrimRef.current) return;
+    gsap.to(scrimRef.current, { opacity: scrimOn ? 1 : 0, duration: 0.6, ease: EASE });
+  }, [scrimOn]);
 
   // Live coordinate readout — written straight to the DOM (60fps-safe).
   const onRotationUpdate = useMemo(
@@ -1011,6 +1021,18 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
           className="absolute inset-0 pointer-events-none"
           style={{
             background: 'radial-gradient(ellipse at center, transparent 45%, rgb(var(--charcoal-900) / 0.85) 100%)',
+          }}
+        ></div>
+        {/* Content scrim: on split sections the globe's left limb can drift
+            under the reading column — this shields the text half, fading to
+            nothing by the centre line so the framed side stays crisp. Off in
+            dossier mode (the instrument deliberately owns the left there). */}
+        <div
+          ref={scrimRef}
+          className="absolute inset-0 hidden pointer-events-none md:block"
+          style={{
+            background:
+              'linear-gradient(90deg, rgb(var(--charcoal-900) / 0.9) 0%, rgb(var(--charcoal-900) / 0.55) 30%, transparent 52%)',
           }}
         ></div>
       </div>
