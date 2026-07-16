@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="smcp-og-title smcp-og-desc">
+  <title id="smcp-og-title">Sainsbury's Groceries MCP — case study card</title>
+  <desc id="smcp-og-desc">A wide social card: the wordmark Sainsbury's Groceries MCP with the tagline The agent prepares, the human confirms, the guardrails live in code, and a mark on the right where grocery items flow into an ember confirmation gate with the checkout arcs beyond left unlit.</desc>
+
+  <defs>
+    <linearGradient id="smcp-og-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F2EDE3"/>
+      <stop offset="100%" stop-color="#E8DFCC"/>
+    </linearGradient>
+    <radialGradient id="smcp-og-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#CC785C" stop-opacity="0.20"/>
+      <stop offset="60%" stop-color="#CC785C" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#CC785C" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="smcp-og-gate" cx="38%" cy="34%" r="72%">
+      <stop offset="0%" stop-color="#F7D2B2"/>
+      <stop offset="44%" stop-color="#E08A63"/>
+      <stop offset="100%" stop-color="#A85C44"/>
+    </radialGradient>
+    <style>
+      .serif{font-family:"Tiempos Headline","Iowan Old Style",Georgia,"Times New Roman",serif;}
+      .sans{font-family:"Styrene B","Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;}
+      .wordmark{font-size:72px;font-weight:500;fill:#2D2A26;letter-spacing:-1.5px;}
+      .tagline{font-size:26px;font-weight:400;fill:#6B5F52;}
+      .eyebrow{font-size:13px;font-weight:500;fill:#8B7E6F;letter-spacing:4px;}
+      .footer{font-size:16px;font-weight:500;fill:#6B5F52;letter-spacing:1px;}
+    </style>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#smcp-og-bg)"/>
+  <circle cx="940" cy="315" r="300" fill="url(#smcp-og-glow)"/>
+
+  <!-- Left column: text -->
+  <text x="80" y="120" class="sans eyebrow">APPLIED AI · CASE STUDY</text>
+  <text x="80" y="212" class="serif wordmark">Sainsbury's</text>
+  <text x="80" y="292" class="serif wordmark">Groceries MCP</text>
+  <line x1="80" y1="322" x2="160" y2="322" stroke="#CC785C" stroke-width="2.5" stroke-linecap="round"/>
+  <text x="80" y="384" class="serif tagline" font-style="italic">The agent prepares.</text>
+  <text x="80" y="422" class="serif tagline" font-style="italic">The human confirms.</text>
+  <text x="80" y="460" class="serif tagline" font-style="italic">The guardrails live in code.</text>
+  <text x="80" y="560" class="sans footer">liamday.co.uk</text>
+  <line x1="80" y1="575" x2="220" y2="575" stroke="#8B7E6F" stroke-width="1" stroke-opacity="0.4"/>
+
+  <!-- Right column: gate mark (light variant) -->
+  <!-- Items flowing toward the gate -->
+  <circle cx="762" cy="315" r="5" fill="#8B7E6F" fill-opacity="0.6"/>
+  <circle cx="794" cy="315" r="6.5" fill="#CC785C" fill-opacity="0.9"/>
+
+  <!-- One item lit and ringed for review -->
+  <circle cx="832" cy="315" r="7" fill="#FFFFFF" stroke="#CC785C" stroke-width="2"/>
+  <circle cx="832" cy="315" r="12.5" fill="none" stroke="#CC785C" stroke-opacity="0.7" stroke-width="1.5"/>
+
+  <!-- The confirmation gate -->
+  <circle cx="905" cy="315" r="62" fill="#CC785C" opacity="0.14"/>
+  <circle cx="905" cy="315" r="44" fill="none" stroke="url(#smcp-og-gate)" stroke-width="11"/>
+  <path d="M866.9 293 A44 44 0 0 1 890 273.6" fill="none" stroke="#FBE7D6" stroke-opacity="0.85" stroke-width="4.5" stroke-linecap="round"/>
+
+  <!-- Checkout arcs beyond the gate, deliberately unlit -->
+  <g fill="none" stroke="#3D3929">
+    <path d="M945.2 257.7 A70 70 0 0 1 945.2 372.3" stroke-opacity="0.16" stroke-width="2.5"/>
+    <path d="M994.2 234.7 A120 120 0 0 1 994.2 395.3" stroke-opacity="0.11" stroke-width="2.5"/>
+    <path d="M1047.6 222.4 A170 170 0 0 1 1047.6 407.6" stroke-opacity="0.08" stroke-width="1.5"/>
+  </g>
+  <g fill="#FFFFFF" stroke="#3D3929" stroke-width="1.5">
+    <circle cx="971" cy="291" r="6"/>
+    <circle cx="1018" cy="376" r="5.5"/>
+    <circle cx="1073" cy="286" r="5"/>
+  </g>
+
+  <text x="1120" y="600" class="sans" font-size="13" fill="#8B7E6F" letter-spacing="2px" text-anchor="end">Live · 2026</text>
+</svg>

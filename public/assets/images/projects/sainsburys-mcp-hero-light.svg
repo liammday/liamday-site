@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 800" role="img" aria-labelledby="smcp-hero-title-l smcp-hero-desc-l" preserveAspectRatio="xMidYMid slice">
+  <title id="smcp-hero-title-l">Sainsbury's Groceries MCP</title>
+  <desc id="smcp-hero-desc-l">A shopping list on a warm-light field feeds a stream of grocery items toward a glowing ember confirmation gate. One item just before the gate is lit and ringed for review, and the checkout arcs beyond the gate are left deliberately unlit.</desc>
+
+  <defs>
+    <radialGradient id="smcp-hero-bg-l" cx="46%" cy="50%" r="78%">
+      <stop offset="0%" stop-color="#faf6f0"/>
+      <stop offset="58%" stop-color="#f3ede3"/>
+      <stop offset="100%" stop-color="#ece2d2"/>
+    </radialGradient>
+    <radialGradient id="smcp-hero-glow-l" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#cc785c" stop-opacity="0.20"/>
+      <stop offset="60%" stop-color="#cc785c" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#cc785c" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="smcp-hero-gate-l" cx="38%" cy="34%" r="72%">
+      <stop offset="0%" stop-color="#f7d2b2"/>
+      <stop offset="44%" stop-color="#e08a63"/>
+      <stop offset="100%" stop-color="#a85c44"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Warm light field -->
+  <rect width="1600" height="800" fill="url(#smcp-hero-bg-l)"/>
+  <circle cx="860" cy="400" r="360" fill="url(#smcp-hero-glow-l)"/>
+
+  <!-- The shopping list -->
+  <g fill="#6b5f52" opacity="0.55">
+    <rect x="96" y="338" width="168" height="7" rx="3.5"/>
+    <rect x="96" y="362" width="204" height="7" rx="3.5"/>
+    <rect x="96" y="386" width="146" height="7" rx="3.5"/>
+    <rect x="96" y="410" width="212" height="7" rx="3.5"/>
+    <rect x="96" y="434" width="158" height="7" rx="3.5"/>
+    <rect x="96" y="458" width="188" height="7" rx="3.5"/>
+  </g>
+  <g stroke="#b5613f" stroke-opacity="0.4" stroke-width="1.5" fill="none">
+    <path d="M312 360 Q360 378 392 394"/>
+    <path d="M320 414 Q356 408 392 402"/>
+    <path d="M300 452 Q356 434 392 410"/>
+  </g>
+
+  <!-- Items flowing toward the gate -->
+  <g>
+    <circle cx="404" cy="400" r="6" fill="#8b7e6f" fill-opacity="0.6"/>
+    <circle cx="456" cy="400" r="7.5" fill="#d98a63" fill-opacity="0.85"/>
+    <circle cx="510" cy="400" r="6.5" fill="#8b7e6f" fill-opacity="0.5"/>
+    <circle cx="562" cy="400" r="8" fill="#cc785c" fill-opacity="0.9"/>
+    <circle cx="702" cy="400" r="7" fill="#d98a63" fill-opacity="0.8"/>
+    <circle cx="756" cy="400" r="6" fill="#8b7e6f" fill-opacity="0.55"/>
+  </g>
+
+  <!-- One item lit and ringed for review -->
+  <circle cx="628" cy="400" r="9" fill="#ffffff" stroke="#cc785c" stroke-width="2"/>
+  <circle cx="628" cy="400" r="16" fill="none" stroke="#cc785c" stroke-opacity="0.7" stroke-width="1.5"/>
+  <circle cx="628" cy="400" r="25" fill="none" stroke="#cc785c" stroke-opacity="0.28" stroke-width="1.5"/>
+
+  <!-- The confirmation gate -->
+  <circle cx="860" cy="400" r="92" fill="#cc785c" opacity="0.14"/>
+  <circle cx="860" cy="400" r="64" fill="none" stroke="url(#smcp-hero-gate-l)" stroke-width="16"/>
+  <path d="M804.6 368 A64 64 0 0 1 838.1 339.9" fill="none" stroke="#fbe7d6" stroke-opacity="0.8" stroke-width="6" stroke-linecap="round"/>
+
+  <!-- Sparks at the gate -->
+  <g fill="#d98a63">
+    <circle cx="812" cy="302" r="2.6" opacity="0.8"/>
+    <circle cx="906" cy="290" r="2" opacity="0.65"/>
+    <circle cx="784" cy="490" r="1.8" opacity="0.55"/>
+    <circle cx="930" cy="502" r="2.2" opacity="0.7"/>
+  </g>
+
+  <!-- Checkout arcs beyond the gate, deliberately unlit -->
+  <g fill="none" stroke="#3d3929">
+    <path d="M952.4 281.8 A150 150 0 0 1 952.4 518.2" stroke-opacity="0.16" stroke-width="2"/>
+    <path d="M1043.8 245.7 A240 240 0 0 1 1043.8 554.3" stroke-opacity="0.11" stroke-width="2"/>
+    <path d="M1136.8 220.3 A330 330 0 0 1 1136.8 579.7" stroke-opacity="0.07" stroke-width="1.5"/>
+  </g>
+  <g fill="#ffffff" stroke="#3d3929" stroke-opacity="0.5" stroke-width="1.5">
+    <circle cx="1001" cy="348.7" r="6"/>
+    <circle cx="1091.8" cy="462.1" r="5.5"/>
+    <circle cx="1186.8" cy="354.1" r="5"/>
+  </g>
+</svg>
