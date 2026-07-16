@@ -1,7 +1,11 @@
-import React, { useRef, useMemo, useState, useEffect } from 'react';
+import React, { useRef, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Float, Points, PointMaterial } from '@react-three/drei';
 import * as THREE from 'three';
+import { useTacticalAccent, accentToCss } from '../lib/useTacticalAccent';
+
+/* NOTE: THREE materials cannot resolve CSS vars — colours inside <Canvas>
+   must be literals (see DefenseMap.tsx). */
 
 interface HeroStat {
   label: string;
@@ -15,7 +19,7 @@ interface DefenseHeroProps {
   stats: HeroStat[];
 }
 
-const ParticleField = () => {
+const ParticleField = ({ color }: { color: string }) => {
   const pointsRef = useRef<THREE.Points>(null);
   const particleCount = 1000;
   
@@ -38,7 +42,7 @@ const ParticleField = () => {
 
   return (
     <Points ref={pointsRef} positions={positions} stride={3} frustumCulled={false}>
-      <PointMaterial transparent color="var(--color-ember-400)" size={0.05} sizeAttenuation={true} depthWrite={false} />
+      <PointMaterial transparent color={color} size={0.05} sizeAttenuation={true} depthWrite={false} />
     </Points>
   );
 };
@@ -57,70 +61,34 @@ const AbstractCore = () => {
     <Float speed={2} rotationIntensity={1} floatIntensity={2}>
       <mesh ref={meshRef}>
         <icosahedronGeometry args={[2, 1]} />
-        <meshBasicMaterial wireframe color="var(--color-aluminum-300)" transparent opacity={0.3} />
+        <meshBasicMaterial wireframe color="#969696" transparent opacity={0.3} />
       </mesh>
       <mesh>
         <icosahedronGeometry args={[1.8, 0]} />
-        <meshStandardMaterial color="var(--color-charcoal-900)" roughness={0.1} metalness={0.8} />
+        <meshStandardMaterial color="#0a0a0a" roughness={0.1} metalness={0.8} />
       </mesh>
     </Float>
   );
 };
 
 export default function DefenseHero({ badge, profileText, stats }: DefenseHeroProps) {
-  const [accent, setAccent] = useState('0 240 255');
-  
-  useEffect(() => {
-    // Dynamic color spectrum based on time of day (sun/moon position equivalent)
-    const updateSpectrum = () => {
-      const now = new Date();
-      const hour = now.getHours() + now.getMinutes() / 60; // 0-24
-      
-      // Calculate a color mapping. We will use a tactical palette:
-      // Morning (6-12): Warm gold / orange -> 255 180 0
-      // Afternoon (12-18): Deep Ember -> 255 57 20
-      // Evening (18-22): Purple/Violet -> 180 0 255
-      // Night (22-6): Tactical Cyan -> 0 240 255
-
-      // For smoother transitions, we would normally interpolate RGB, 
-      // but for this prototype, we'll shift over a few key tactical colors.
-      let r, g, b;
-      
-      if (hour >= 6 && hour < 12) {
-        // Morning to noon (Cyan transitioning to Orange/Gold)
-        r = 255; g = 180; b = 0;
-      } else if (hour >= 12 && hour < 18) {
-        // Afternoon (Orange transitioning to Red/Ember)
-        r = 255; g = 57; b = 20;
-      } else if (hour >= 18 && hour < 22) {
-        // Evening (Red transitioning to Purple)
-        r = 180; g = 0; b = 255;
-      } else {
-        // Night (Cyan)
-        r = 0; g = 240; b = 255;
-      }
-
-      setAccent(`${r} ${g} ${b}`);
-    };
-
-    updateSpectrum();
-    const interval = setInterval(updateSpectrum, 60000); // Check every minute
-    return () => clearInterval(interval);
-  }, []);
+  const accent = useTacticalAccent();
+  const accentCss = accentToCss(accent);
 
   return (
-    <section 
+    <section
+      data-tactical
       className="relative w-full min-h-screen overflow-hidden bg-charcoal-900"
       style={{ '--accent': accent } as React.CSSProperties}
     >
       {/* 3D Canvas Background */}
-      <div className="absolute inset-0 z-0 opacity-80">
+      <div className="absolute inset-0 z-0 opacity-80" aria-hidden="true">
         <Canvas camera={{ position: [0, 0, 8], fov: 45 }}>
           <ambientLight intensity={0.5} />
-          <directionalLight position={[10, 10, 5]} intensity={2} color={`rgb(${accent})`} />
-          <pointLight position={[-10, -10, -5]} intensity={1} color="rgb(var(--color-aluminum-200))" />
-          
-          <ParticleField />
+          <directionalLight position={[10, 10, 5]} intensity={2} color={accentCss} />
+          <pointLight position={[-10, -10, -5]} intensity={1} color="#c8c8c8" />
+
+          <ParticleField color={accentCss} />
           <AbstractCore />
         </Canvas>
       </div>

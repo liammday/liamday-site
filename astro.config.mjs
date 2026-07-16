@@ -9,6 +9,9 @@ import yaml from '@rollup/plugin-yaml';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://www.liamday.co.uk',
+  // Honour a harness/CI-assigned port (Astro ignores PORT by default). Local
+  // `npm run dev` behaviour is unchanged — defaults to 4321 when PORT is unset.
+  server: process.env.PORT ? { port: Number(process.env.PORT) } : {},
   // Jekyll used pretty permalinks (/projects/name/); keep trailing slashes so
   // existing canonical URLs and inbound links resolve identically.
   trailingSlash: 'always',

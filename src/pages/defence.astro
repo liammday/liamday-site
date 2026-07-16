@@ -1,0 +1,49 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import DefenseStory from '../components/DefenseStory.tsx';
+import { cv } from '../data/cv';
+import { withExperienceYears } from '../lib/experience';
+
+const profileText = withExperienceYears(cv.profile);
+---
+
+<BaseLayout
+  title="Defence Tech Prototype"
+  description="A tactical-brutalism design exploration for defence and deep tech."
+>
+  <main class="w-full bg-charcoal-900" data-tactical>
+    <DefenseStory client:load badge={cv.hero_badge} profileText={profileText} />
+  </main>
+</BaseLayout>
+
+<style is:global>
+  /* ── Tactical Brutalism palette — scoped to this exploration ──────────────
+     Overrides the runtime theme channels only beneath [data-tactical], so the
+     rest of the site keeps the standard theme. The page pins the same dark
+     palette in BOTH site themes — a radar console has no light mode. --accent
+     is the time-of-day spectrum, set inline by the React island; the static
+     value here is the pre-hydration fallback. */
+  [data-tactical] {
+    --accent: 0 240 255; /* tactical cyan */
+
+    --charcoal-900: 5 5 5; /* pitch black */
+    --charcoal-950: 0 0 0;
+    --graphite-600: 20 20 20;
+    --graphite-700: 17 17 17;
+    --graphite-800: 10 10 10;
+    --aluminum-100: 243 243 243; /* main text */
+    --aluminum-200: 200 200 200;
+    --aluminum-300: 150 150 150;
+    --aluminum-400: 100 100 100;
+    --aluminum-500: 51 51 51; /* borders */
+
+    --ember-200: var(--accent);
+    --ember-300: var(--accent);
+    --ember-400: var(--accent);
+    --ember-500: var(--accent);
+    --ember-600: var(--accent);
+
+    --spotlight-glow-center: rgb(var(--accent) / 0.22);
+    --spotlight-glow-mid: rgb(var(--accent) / 0.08);
+  }
+</style>
