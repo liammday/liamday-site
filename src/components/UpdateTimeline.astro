@@ -14,9 +14,13 @@ interface Props {
   updates: Update[];
   collapsible?: boolean;
   label?: string;
+  /** Standalone pages link each entry title to its #id anchor. Embedded
+      contexts (the /defence dossier viewer, where the URL hash drives the
+      modal) pass false to render plain subheadings instead. */
+  linkTitles?: boolean;
 }
 
-const { updates, collapsible = false, label = 'Updates' } = Astro.props;
+const { updates, collapsible = false, label = 'Updates', linkTitles = true } = Astro.props;
 
 // Oldest to newest, so updates read chronologically down the page after the main body.
 const sorted = [...updates].sort((a, b) => (a.date?.getTime() ?? 0) - (b.date?.getTime() ?? 0));
@@ -45,7 +49,7 @@ const rendered = sorted.map((u) => ({
             </p>
           )}
           <h3 class="mt-2 type-subheading">
-            {u.id ? (
+            {linkTitles && u.id ? (
               <a class="underline-offset-4 hover:text-ember-300 hover:underline" href={`#${u.id}`}>
                 {u.title}
               </a>

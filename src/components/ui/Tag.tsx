@@ -1,7 +1,8 @@
-import type { ElementType, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 interface TagProps {
-  as?: ElementType;
+  /** Concrete tag union rather than ElementType — see SurfacePanel. */
+  as?: 'span' | 'li' | 'div';
   className?: string;
   children: ReactNode;
 }

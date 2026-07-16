@@ -1,0 +1,38 @@
+---
+/**
+ * Dossier partial — the full case-study body for one project, served bare
+ * (no doctype/head/layout) for the /defence briefing-takeover viewer to
+ * fetch on demand. Composes the SAME pieces the standalone project pages
+ * use (MDX body, screenshot gallery, update timeline), so content is never
+ * duplicated; the viewer supplies its own chrome (title, chips, close).
+ * All components here are CSS-only — injected HTML can't run <script>s.
+ */
+import { getCollection, render } from 'astro:content';
+import UpdateTimeline from '../../../components/UpdateTimeline.astro';
+import AppScreenshotGallery from '../../../components/ui/AppScreenshotGallery.astro';
+
+export const partial = true;
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map((project) => ({
+    params: { slug: project.id },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+const data = project.data;
+
+const screenshots = Array.isArray(data.screenshots) ? data.screenshots : [];
+const updates = Array.isArray(data.updates) ? data.updates : [];
+---
+
+<article class="dossier-article">
+  {screenshots.length > 0 && <AppScreenshotGallery screenshots={screenshots} title={data.title} />}
+  <div class="detail-content prose prose-invert">
+    <Content />
+  </div>
+  {updates.length > 0 && <UpdateTimeline updates={updates} collapsible label="Development log" linkTitles={false} />}
+</article>

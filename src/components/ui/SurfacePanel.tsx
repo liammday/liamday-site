@@ -1,8 +1,10 @@
-import type { ElementType, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 interface SurfacePanelProps {
-  /** Element/tag to render. Defaults to a div. */
-  as?: ElementType;
+  /** HTML tag to render. Defaults to a div. Kept to a concrete tag union
+      (not ElementType) so @react-three/fiber's JSX augmentation — loaded
+      anywhere in the project — can't collapse the children type to never. */
+  as?: 'div' | 'section' | 'article' | 'aside' | 'li' | 'span';
   className?: string;
   children?: ReactNode;
   /** Forwarded so GSAP reveal hooks (data-animate) and ids pass through. */
