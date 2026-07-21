@@ -37,6 +37,7 @@ export interface GeoPoint {
 
 export interface ConsoleRole {
   title: string;
+  appointment?: string;
   company: string;
   location: string;
   period: string;
@@ -1242,7 +1243,12 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
                         02.{i + 1} | {role.period.toUpperCase()}
                       </p>
                       <h3 className="t-heading mt-4 text-2xl md:text-3xl">{role.title}</h3>
-                      <p className="mt-2 text-aluminum-300">
+                      {role.appointment && (
+                        <p className="mt-1 text-lg font-medium text-aluminum-200 md:text-xl">
+                          {role.appointment}
+                        </p>
+                      )}
+                      <p className="mt-3 text-aluminum-300">
                         {role.company}
                         <span className="mx-2 text-aluminum-400">·</span>
                         {role.location}

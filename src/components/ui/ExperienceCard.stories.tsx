@@ -21,3 +21,17 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
+
+export const MilitaryRole: Story = {
+  args: {
+    title: 'Technical Coordinator',
+    appointment: 'Regimental Signals Officer',
+    company: "British Army - 1st Bn Duke of Lancaster's Regiment",
+    location: 'Chester, UK',
+    period: 'Jul 2018 – Jul 2020',
+    highlights: [
+      'Coordinated secure communications infrastructure across a regiment of 500+ personnel.',
+      'Increased trained communication specialists from 2 to 8 per 30-person team.',
+    ],
+  },
+};
