@@ -11,6 +11,8 @@ export interface Competency {
 }
 export interface Role {
   title: string;
+  /** Military appointment name, rendered as a second heading tier under the functional title. */
+  appointment?: string;
   company: string;
   location: string;
   period: string;
