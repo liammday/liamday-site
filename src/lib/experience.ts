@@ -14,7 +14,9 @@ export function experienceYearsText(now: Date = new Date()): string {
   return text;
 }
 
-/** Replace the [[experience_years]] placeholder used in cv.yml copy. */
-export function withExperienceYears(text: string, now: Date = new Date()): string {
-  return text.replace(/\[\[experience_years\]\]/g, experienceYearsText(now));
+/** Replace the [[experience_years]] placeholder used in cv.yml copy. Takes the
+    figure rather than a date so the caller decides which clock it came from —
+    the build's, or the viewer's (see useExperienceYears). */
+export function withExperienceYears(text: string, years: string = experienceYearsText()): string {
+  return text.replace(/\[\[experience_years\]\]/g, years);
 }

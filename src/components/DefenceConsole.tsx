@@ -15,6 +15,8 @@ import {
 } from './DefenceGlobe';
 import { DefenceLedger, slugFromLink, designationChip, type LedgerProject } from './DefenceLedger';
 import { useTacticalAccent, accentToCss } from '../lib/useTacticalAccent';
+import { useExperienceYears } from '../lib/useExperienceYears';
+import { withExperienceYears } from '../lib/experience';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -68,8 +70,13 @@ export interface ConsoleStat {
 
 export interface DefenceConsoleProps {
   badge: string;
+  /** Both of these still carry the raw [[experience_years]] placeholder — the
+      island substitutes it against the viewer's clock, not the build's. */
   profileText: string;
   stats: ConsoleStat[];
+  /** Build-time years figure: the first render's value, before the effect in
+      useExperienceYears corrects it to the viewer's own. */
+  experienceYears: string;
   roles: ConsoleRole[];
   competencies: ConsoleCompetency[];
   education: ConsoleQualification[];
@@ -766,8 +773,25 @@ const Half = ({ children }: { children: React.ReactNode }) => (
 /* ── Page ────────────────────────────────────────────────────────────────── */
 
 export default function DefenceConsole(props: DefenceConsoleProps) {
-  const { badge, profileText, stats, roles, competencies, education, certifications, projects, homeGeo, contact } =
-    props;
+  const {
+    badge,
+    profileText: rawProfile,
+    stats: rawStats,
+    experienceYears: buildYears,
+    roles,
+    competencies,
+    education,
+    certifications,
+    projects,
+    homeGeo,
+    contact,
+  } = props;
+  const years = useExperienceYears(buildYears);
+  const profileText = withExperienceYears(rawProfile, years);
+  const stats = useMemo(
+    () => rawStats.map((s) => ({ ...s, value: withExperienceYears(s.value, years) })),
+    [rawStats, years],
+  );
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasWrapRef = useRef<HTMLDivElement>(null);
   const coordsRef = useRef<HTMLSpanElement>(null);
