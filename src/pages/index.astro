@@ -4,11 +4,13 @@ import DefenceConsole from '../components/DefenceConsole.tsx';
 import { cv } from '../data/cv';
 import { appProjects } from '../data/projects';
 import { site } from '../data/site';
-import { withExperienceYears } from '../lib/experience';
+import { experienceYearsText } from '../lib/experience';
 import { geoEmployment, geoEducation, HOME_GEO } from '../data/defence';
 
-const profileText = withExperienceYears(cv.profile);
-const stats = cv.hero_stats.map((s) => ({ ...s, value: withExperienceYears(s.value) }));
+// Copy keeps its [[experience_years]] placeholder all the way into the island,
+// which substitutes against the viewer's clock. This is the build-time figure
+// it renders first, so the server markup and the first client render agree.
+const experienceYears = experienceYearsText();
 
 // Keep the island bundle lean: only the fields the ledger renders/sorts.
 const projects = appProjects.map((p) => ({
@@ -29,8 +31,9 @@ const projects = appProjects.map((p) => ({
     <DefenceConsole
       client:load
       badge={cv.hero_badge}
-      profileText={profileText}
-      stats={stats}
+      profileText={cv.profile}
+      stats={cv.hero_stats}
+      experienceYears={experienceYears}
       roles={geoEmployment}
       competencies={cv.competencies}
       education={geoEducation}
