@@ -52,10 +52,15 @@ competencies:
     description: Translate between technical specialists and non-technical stakeholders using plain language, map overlays and conceptual diagrams. Specialism in audience-span communication from engineer to senior executive.
 
 employment:
+  - title: Technical Project Manager
+    company: Oxford Dynamics
+    location: RAL Science Campus, Harwell, UK
+    period: Aug 2026 – Present
+
   - title: Technical Product Specialist
     company: Outdooractive
     location: Remote (UK · Immenstadt, Germany)
-    period: Sep 2023 – Present
+    period: Sep 2023 – Jul 2026
     highlights:
       - Contributed to product roadmap prioritisation across consumer-facing (B2C) and partner-facing product areas, providing structured input using RICE and MoSCoW frameworks to align delivery with business OKRs.
       - Reduced feature request support tickets by 59% through structured discovery, stakeholder interviews and user research that surfaced root causes and informed iterative product improvements.
