@@ -43,6 +43,9 @@ export interface ConsoleRole {
   period: string;
   highlights?: string[];
   geo: GeoPoint;
+  /** Hybrid/remote posting — drawn with an animated link back to home, and
+      framed so both ends of that link sit in view. */
+  hybrid?: boolean;
 }
 
 export interface ConsoleQualification {
@@ -102,10 +105,28 @@ interface GlobeState {
   focus: Focus;
 }
 
-/** Per-role framing: role 0 frames home↔posting together (both in view);
-    Mediterranean postings sit wider; UK postings tighter. */
-function roleFraming(role: ConsoleRole, index: number, home: GeoPoint) {
-  if (index === 0) {
+/** Not a career site. London anchors the domestic hybrid frame, where the
+    home↔posting pair alone spans barely half a degree. */
+const CONTEXT_LONDON = { lat: 51.5074, lng: -0.1278 };
+
+/** Per-role framing: hybrid postings frame home↔posting together (both ends of
+    the link in view); Mediterranean postings sit wider; UK postings tighter. */
+function roleFraming(role: ConsoleRole, home: GeoPoint) {
+  if (role.hybrid) {
+    const domestic =
+      Math.abs(role.geo.lat - home.lat) < 3 && Math.abs(role.geo.lng - home.lng) < 3;
+    if (domestic) {
+      // Home and posting sit half a degree apart, so the link only reads at
+      // county scale. Frame the home–posting–London triangle: London is there
+      // purely so the coast and estuary give the eye something to hold at a
+      // zoom where national outlines have left the frame.
+      const pts = [home, role.geo, CONTEXT_LONDON];
+      return {
+        lat: pts.reduce((sum, p) => sum + p.lat, 0) / pts.length,
+        lng: pts.reduce((sum, p) => sum + p.lng, 0) / pts.length,
+        camZ: 5.6,
+      };
+    }
     return {
       lat: (role.geo.lat + home.lat) / 2,
       lng: (role.geo.lng + home.lng) / 2,
@@ -255,8 +276,10 @@ const CareerPath = ({
   );
 };
 
-/** Role-01 remote-work link: an animated dashed arc between the posting and
-    home — marching dashes illustrate the recurring movement between the two. */
+/** Hybrid-posting link: an animated dashed arc between the posting and home —
+    marching dashes illustrate the recurring movement between the two. Lift,
+    dash pitch and march speed all scale with the hop, so a cross-continent
+    link and a county-scale one read identically at their own zoom levels. */
 const RemoteLink = ({
   from,
   to,
@@ -274,18 +297,25 @@ const RemoteLink = ({
 }) => {
   const lineRef = useRef<Line2>(null);
 
-  const points = useMemo(
-    () =>
-      greatCircleArcPoints(from, to, RADIUS * MARKER_ALTITUDE, 0.1).map(
-        (p) => [p.x, p.y, p.z] as [number, number, number],
-      ),
-    [from, to],
-  );
+  const { points, arcLength } = useMemo(() => {
+    const separation = latLongToVector3(from.lat, from.lng, 1).angleTo(
+      latLongToVector3(to.lat, to.lng, 1),
+    );
+    // The ballistic profile carries a floor that keeps short hops visible at
+    // continental zoom; on a domestic hop that floor is taller than the arc is
+    // long, so cap the lift at the separation itself.
+    const arc = greatCircleArcPoints(from, to, RADIUS * MARKER_ALTITUDE, Math.min(0.1, separation));
+    return {
+      points: arc.map((p) => [p.x, p.y, p.z] as [number, number, number]),
+      arcLength: separation * RADIUS,
+    };
+  }, [from, to]);
 
   useFrame((_, delta) => {
     const mat = lineRef.current?.material as { dashOffset?: number } | undefined;
     if (active && !reducedMotion && !muted && mat && typeof mat.dashOffset === 'number') {
-      mat.dashOffset -= delta * 0.4; // dashes flow from home toward the posting
+      // Flows from home toward the posting, at ~2 dash cycles/sec whatever the span.
+      mat.dashOffset -= delta * arcLength * 0.63;
     }
   });
 
@@ -302,8 +332,8 @@ const RemoteLink = ({
       color={color}
       lineWidth={1.6}
       dashed
-      dashSize={0.12}
-      gapSize={0.08}
+      dashSize={arcLength / 5}
+      gapSize={arcLength / 7.5}
       transparent
       opacity={0}
       depthWrite={false}
@@ -610,11 +640,14 @@ const Scene = ({
     return [...seen.values()];
   }, [roles]);
 
-  const markerScale = Math.min(1, Math.max(0.3, (state.camZ - RADIUS) / 5));
+  // Counter-scales markers against zoom. The floor has to clear the domestic
+  // hybrid frame (camZ 5.6): at anything above ~0.15 the two pins and their
+  // pulse rings merge into one blob at half a degree apart.
+  const markerScale = Math.min(1, Math.max(0.12, (state.camZ - RADIUS) / 5));
   const { focus } = state;
   const activeRole = typeof focus === 'number' ? focus : null;
-  // Role 0 is the remote posting: its focus lights BOTH ends of the link.
-  const homeActive = focus === 'home' || focus === 0;
+  // A hybrid posting's focus lights BOTH ends of its link.
+  const homeActive = focus === 'home' || (activeRole !== null && Boolean(roles[activeRole]?.hybrid));
   // Mobile: content sits over the globe everywhere, so accent elements
   // soften and pulses/labels stop — backdrop, never foreground.
   const muted = !isDesktop;
@@ -635,14 +668,19 @@ const Scene = ({
         {/* Geography layer — markers and arcs exist only in map mode */}
         <group visible={state.mode === 'map'}>
           <CareerPath color={accentCss} stations={stations} emphasised={activeRole !== null} muted={muted} />
-          <RemoteLink
-            from={homeGeo}
-            to={roles[0].geo}
-            color={accentCss}
-            active={focus === 0}
-            reducedMotion={reducedMotion}
-            muted={muted}
-          />
+          {roles.map((role, i) =>
+            role.hybrid ? (
+              <RemoteLink
+                key={role.geo.label}
+                from={homeGeo}
+                to={role.geo}
+                color={accentCss}
+                active={focus === i}
+                reducedMotion={reducedMotion}
+                muted={muted}
+              />
+            ) : null,
+          )}
           {sites.map(({ geo, roleIndices }) => {
             const pos = latLongToVector3(geo.lat, geo.lng, RADIUS).multiplyScalar(MARKER_ALTITUDE);
             const isActive = activeRole !== null && roleIndices.includes(activeRole);
@@ -1067,7 +1105,7 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
       // creation order, and the section state must win those collisions.
       gsap.utils.toArray<HTMLElement>('[data-role-index]').forEach((el) => {
         const i = Number(el.dataset.roleIndex);
-        const framing = roleFraming(roles[i], i, homeGeo);
+        const framing = roleFraming(roles[i], homeGeo);
         const state: Partial<GlobeState> = {
           // Decimalised sub-clause: the roles are clauses 02.1 … 02.5 of /02.
           designation: `SEC /02.${i + 1} — EXPERIENCE`,
