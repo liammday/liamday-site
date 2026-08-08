@@ -7,6 +7,7 @@ import { Button } from '../components/ui/Button';
 import { resolveThemedPair } from '../lib/themed-image';
 import { appProjects } from '../data/projects';
 import { formatMonth } from '../lib/format';
+import { getProjectUpdates } from '../lib/updates';
 
 const { project } = Astro.props;
 const data = project.data;
@@ -30,7 +31,8 @@ const finished = app?.date_finished ? formatMonth(app.date_finished) : '';
 const screenshots = data.screenshots ?? [];
 const hasScreenshots = screenshots.length > 0;
 const hasFeatures = features.length > 0;
-const hasUpdates = (data.updates?.length ?? 0) > 0;
+const updates = await getProjectUpdates(project.id);
+const hasUpdates = updates.length > 0;
 
 const ctas = [
   data.testflight_url && { href: data.testflight_url, label: 'Beta test on TestFlight', variant: 'primary' as const },
@@ -148,6 +150,6 @@ const navLink =
       )
     }
 
-    {hasUpdates && <UpdateTimeline updates={data.updates} collapsible label="Development log" />}
+    {hasUpdates && <UpdateTimeline updates={updates} collapsible label="Development log" />}
   </article>
 </BaseLayout>
