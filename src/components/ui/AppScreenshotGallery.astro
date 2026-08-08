@@ -29,10 +29,13 @@ const items = screenshots
 
 <section id="screenshots" class="py-8">
   <h2 class="sr-only">Screenshots</h2>
-  {/* Full-bleed scroll: the track spans the viewport while `page-nav-bleed` keeps the
-      first item aligned to the column (same pattern as the sticky sub-nav). The vertical
-      padding gives the image drop-shadow room so `overflow-x-auto` doesn't clip it. */}
-  <ul class="app-gallery page-nav-bleed flex gap-4 overflow-x-auto pt-2 pb-8" aria-label={`${title} screenshots`}>
+  {/* Full-bleed scroll: the track spans whatever width it is given — the viewport on a
+      project page, the sheet inside the /defence dossier — with only a page gutter, so
+      wide screens show more shots rather than padding them into the text column. The
+      track centres itself when the row fits (`safe center` degrades to flex-start once
+      it overflows, keeping the first item reachable). The vertical padding gives the
+      image drop-shadow room so `overflow-x-auto` doesn't clip it. */}
+  <ul class="app-gallery flex gap-4 overflow-x-auto px-6 pt-2 pb-8" aria-label={`${title} screenshots`}>
     {
       items.map((it, i) => (
         <li class="app-gallery__item shrink-0">

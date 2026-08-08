@@ -1533,6 +1533,12 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
           >
             <div
               ref={panelContentRef}
+              // The mode drives the screenshot carousel's breakout: in half
+              // mode the reading column is left-anchored inside a wider sheet,
+              // so the strip reclaims the dead space to its right (see
+              // .app-gallery in global.css). Expanded mode is centred and has
+              // none to reclaim.
+              data-dossier-width={expanded ? 'full' : 'half'}
               className={`w-full px-6 py-20 transition-all duration-300 ${
                 expanded ? 'md:mx-auto md:max-w-3xl' : 'md:max-w-xl md:pl-14'
               }`}

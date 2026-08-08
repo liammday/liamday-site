@@ -477,6 +477,14 @@
   /* ── App screenshot gallery (horizontal scroll with snap) ─────────────────── */
   .app-gallery {
     scroll-snap-type: x proximity;
+    /* Use the width on offer: centre the row while it fits, and fall back to
+       flex-start the moment it overflows. Plain `center` would push the first
+       item past the scroll origin and make it unreachable; `safe` is what
+       makes centring usable inside a scroll container. */
+    justify-content: safe center;
+    /* Snapping ignores padding, so without this the first shot lands flush to
+       the container edge instead of on the page gutter it was laid out on. */
+    scroll-padding-inline: 1.5rem;
     /* Hide the scrollbar to match the sticky sub-nav ([data-nav-scroll]); the
        scroll mechanism (wheel, touch, drag) still works, just no visible bar. */
     scrollbar-width: none;
