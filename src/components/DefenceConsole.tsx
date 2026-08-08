@@ -1003,24 +1003,49 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
     };
   }, [openSlug, dossiers, openProject, projects]);
 
-  // While the dossier is open: snap the ledger into view, then keep page
-  // scroll LIVE but confined to the projects section — the list scrolls,
-  // the rest of the console stays out of reach. Plus ESC + focus.
+  // While the dossier is open: snap the ledger into view, then HARD-LOCK page
+  // scroll. The ledger docks to the viewport and scrolls its own rows
+  // (overscroll-contain), so navigating between assets stays live while the
+  // rest of the console is out of reach. Page scroll used to stay live and get
+  // clamped back on every scroll event — that fought inertial/momentum scroll
+  // (each snap-back re-fires scroll) and read as jitter. Freezing the scroller
+  // never rubber-bands, because there is nothing to correct.
   useEffect(() => {
     if (openProject === null) return;
     document.querySelector('[data-ledger]')?.scrollIntoView({ block: 'start' });
-    closeBtnRef.current?.focus();
 
-    const section = document.querySelector<HTMLElement>('[data-sec="projects"]');
-    const clamp = () => {
-      if (!section) return;
-      const min = section.getBoundingClientRect().top + window.scrollY;
-      const max = Math.max(min, min + section.offsetHeight - window.innerHeight);
-      const y = window.scrollY;
-      if (y < min) window.scrollTo(0, min);
-      else if (y > max) window.scrollTo(0, max);
+    // Positional lock, not just overflow:hidden. Hiding overflow stops the
+    // USER scrolling, but programmatic jumps (focus, a hash change, a
+    // ScrollTrigger refresh) still move the page — silently, since a hidden
+    // scroller fires no scroll event to correct from. Offsetting a fixed body
+    // by the locked distance leaves nothing to move: the ledger simply cannot
+    // drift off station while the dossier is open.
+    const html = document.documentElement;
+    const body = document.body;
+    const lockedY = window.scrollY;
+    const prev = {
+      htmlOverflow: html.style.overflow,
+      htmlPad: html.style.paddingRight,
+      position: body.style.position,
+      top: body.style.top,
+      left: body.style.left,
+      right: body.style.right,
+      width: body.style.width,
     };
-    window.addEventListener('scroll', clamp, { passive: true });
+    // Classic (non-overlay) scrollbars reserve width; replace it with padding
+    // so locking the scroller doesn't shift the layout sideways.
+    const gutter = window.innerWidth - html.clientWidth;
+    html.style.overflow = 'hidden';
+    if (gutter > 0) html.style.paddingRight = `${gutter}px`;
+    body.style.position = 'fixed';
+    body.style.top = `${-lockedY}px`;
+    body.style.left = '0';
+    body.style.right = '0';
+    body.style.width = '100%';
+
+    // Focus after the lock, with preventScroll — moving focus into the fixed
+    // panel is exactly the kind of jump that used to shift the page.
+    closeBtnRef.current?.focus({ preventScroll: true });
 
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') closeDossier();
@@ -1029,8 +1054,17 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
     };
     window.addEventListener('keydown', onKey);
     return () => {
-      window.removeEventListener('scroll', clamp);
+      html.style.overflow = prev.htmlOverflow;
+      html.style.paddingRight = prev.htmlPad;
+      body.style.position = prev.position;
+      body.style.top = prev.top;
+      body.style.left = prev.left;
+      body.style.right = prev.right;
+      body.style.width = prev.width;
       window.removeEventListener('keydown', onKey);
+      // Release on the position the lock held — the ledger stays exactly where
+      // it was, rather than snapping to wherever the frozen scroller sat.
+      window.scrollTo(0, lockedY);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openProject]);
@@ -1493,7 +1527,10 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
           aria-label={`${projects[displayProject].name} — project dossier`}
         >
           {/* Reading panel — rides the centre split from the right */}
-          <div ref={panelRef} className="h-full overflow-y-auto border-l border-aluminum-500 bg-charcoal-900">
+          <div
+            ref={panelRef}
+            className="h-full overflow-y-auto overscroll-contain border-l border-aluminum-500 bg-charcoal-900"
+          >
             <div
               ref={panelContentRef}
               className={`w-full px-6 py-20 transition-all duration-300 ${
