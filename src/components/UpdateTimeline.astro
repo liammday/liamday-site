@@ -22,8 +22,38 @@ interface Props {
 
 const { updates, collapsible = false, label = 'Updates', linkTitles = true } = Astro.props;
 
-// Oldest to newest, so updates read chronologically down the page after the main body.
-const sorted = [...updates].sort((a, b) => (a.date?.getTime() ?? 0) - (b.date?.getTime() ?? 0));
+/** "v1.12" / "v2.0.0" → [1, 12, 0] — numeric per segment, so v1.10 > v1.9. */
+function versionParts(version?: string): number[] {
+  if (!version) return [];
+  return version
+    .replace(/^v/i, '')
+    .split('.')
+    .map((s) => parseInt(s, 10) || 0);
+}
+
+function compareVersions(a?: string, b?: string): number {
+  // Unversioned entries (narrative posts) sort before versioned ones the same
+  // day: a release is the day's conclusion, not its opening.
+  if (!a || !b) return (a ? 1 : 0) - (b ? 1 : 0);
+  const pa = versionParts(a);
+  const pb = versionParts(b);
+  for (let i = 0; i < Math.max(pa.length, pb.length); i++) {
+    const diff = (pa[i] ?? 0) - (pb[i] ?? 0);
+    if (diff !== 0) return diff;
+  }
+  return 0;
+}
+
+// Oldest to newest, so updates read chronologically down the page after the main
+// body. Two releases can share a date (v1.12 and v1.13 both landed 2026-08-08),
+// so version breaks the tie rather than leaving it to file order, and the id
+// settles anything still equal — the order is deliberate, not incidental.
+const sorted = [...updates].sort(
+  (a, b) =>
+    (a.date?.getTime() ?? 0) - (b.date?.getTime() ?? 0) ||
+    compareVersions(a.version, b.version) ||
+    (a.id ?? '').localeCompare(b.id ?? ''),
+);
 
 function fmt(d?: Date): string {
   return d ? d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
