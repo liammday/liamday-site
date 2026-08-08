@@ -4,6 +4,7 @@ import { MetaList } from '../components/ui/MetaList';
 import UpdateTimeline from '../components/UpdateTimeline.astro';
 import ThemedImage from '../components/ui/ThemedImage.astro';
 import { resolveThemedPair } from '../lib/themed-image';
+import { getProjectUpdates } from '../lib/updates';
 
 const { project } = Astro.props;
 const data = project.data;
@@ -31,7 +32,8 @@ if (data.location) items.push({ label: 'Location', value: data.location });
 if (data.outcome) items.push({ label: 'Outcome', value: data.outcome });
 
 const navItems = data.nav ?? [];
-const hasUpdates = (data.updates?.length ?? 0) > 0;
+const updates = await getProjectUpdates(project.id);
+const hasUpdates = updates.length > 0;
 ---
 
 <BaseLayout title={data.title} description={data.description} type="article" image={data.image}>
@@ -112,7 +114,7 @@ const hasUpdates = (data.updates?.length ?? 0) > 0;
       </div>
     </div>
 
-    {hasUpdates && <UpdateTimeline updates={data.updates} />}
+    {hasUpdates && <UpdateTimeline updates={updates} />}
 
     {
       data.links && (

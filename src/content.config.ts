@@ -52,18 +52,24 @@ const projects = defineCollection({
         }),
       )
       .optional(),
-    updates: z
-      .array(
-        z.object({
-          date: z.coerce.date().optional(),
-          id: z.string().optional(),
-          title: z.string(),
-          summary: z.string().optional(),
-          content: z.string().optional(),
-          version: z.string().optional(),
-        }),
-      )
-      .optional(),
+  }),
+});
+
+// One file per release/update, machine-appendable: a new entry is a new file at
+// src/content/updates/<app>/<slug>.md — no hand-written frontmatter to rewrite.
+// `app` matches the project entry's id (e.g. "peaking"). The body is the entry
+// prose (rendered through the same marked pipeline as before via entry.body).
+// `anchor` is the HTML anchor id; when omitted it is derived from the version
+// (v1.11 -> v1-11), so versioned entries rarely need it.
+const updates = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/updates' }),
+  schema: z.object({
+    app: z.string(),
+    version: z.string().optional(),
+    date: z.coerce.date(),
+    title: z.string(),
+    summary: z.string().optional(),
+    anchor: z.string().optional(),
   }),
 });
 
@@ -76,4 +82,4 @@ const posts = defineCollection({
   }),
 });
 
-export const collections = { projects, posts };
+export const collections = { projects, posts, updates };

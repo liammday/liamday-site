@@ -10,6 +10,7 @@
 import { getCollection, render } from 'astro:content';
 import UpdateTimeline from '../../../components/UpdateTimeline.astro';
 import AppScreenshotGallery from '../../../components/ui/AppScreenshotGallery.astro';
+import { getProjectUpdates } from '../../../lib/updates';
 
 export const partial = true;
 
@@ -26,7 +27,7 @@ const { Content } = await render(project);
 const data = project.data;
 
 const screenshots = Array.isArray(data.screenshots) ? data.screenshots : [];
-const updates = Array.isArray(data.updates) ? data.updates : [];
+const updates = await getProjectUpdates(project.id);
 ---
 
 <article class="dossier-article">
