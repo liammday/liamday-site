@@ -157,10 +157,27 @@ const projects = appProjects.map((p) => ({
     padding-right: 0;
     margin-top: 3.5rem;
   }
-  /* Gallery bleed helper is tuned for the standalone page's centred column;
-     inside the panel just pad it like the rest of the content. */
-  [data-tactical] .dossier-article .page-nav-bleed {
-    padding-left: 0;
-    padding-right: 0;
+  /* Screenshots are device captures, not case-study figures: they keep the
+     iPhone's own display radius (26px at the 440px render height, #134) rather
+     than squaring off with the rest of the injected content. Without this the
+     rule above strips the very thing that makes them read as a phone. */
+  [data-tactical] .dossier-article .app-gallery img {
+    border-radius: 26px;
+  }
+
+  /* The strip spans the whole sheet, not the reading column it is nested in.
+     Half mode: the column is left-anchored (pl-14) inside a 50vw sheet, so
+     reclaim that inset plus the dead space to its right. Expanded mode: the
+     column is centred in a full-width sheet, so reclaim both sides equally.
+     Either way the sheet keeps its own 1.5rem gutter, and `max()` collapses
+     the breakout to nothing once the sheet is no wider than the column. */
+  @media (min-width: 768px) {
+    [data-dossier-width='half'] .app-gallery {
+      margin-left: -2rem; /* pl-14 (3.5rem) back to the 1.5rem gutter */
+      margin-right: calc(-1 * max(0px, 50vw - 36rem));
+    }
+    [data-dossier-width='full'] .app-gallery {
+      margin-inline: calc(-1 * max(0px, (100vw - 48rem) / 2));
+    }
   }
 </style>
