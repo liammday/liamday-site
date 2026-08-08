@@ -138,11 +138,17 @@ export function DefenceLedger({ projects, onActiveProject, onOpenProject, openIn
   const toggleFilter = (key: string) =>
     setActiveFilters((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]));
 
+  // With a dossier open the console freezes page scroll and snaps this block
+  // to the top of the viewport, so the ledger becomes its own scroll region:
+  // a fixed-height column whose rows scroll internally. That is what keeps the
+  // asset index navigable without the page trying to scroll underneath it.
+  const docked = openIndex !== null;
+
   return (
-    <div data-ledger>
+    <div data-ledger className={docked ? 'flex h-screen flex-col' : undefined}>
       {/* ── Bracket chip rail — kept inside the left half so it stays fully
              visible (and usable) while a dossier panel covers the right ── */}
-      <div className="mt-10 space-y-3 md:w-1/2 md:pr-12">
+      <div className={`mt-10 space-y-3 md:w-1/2 md:pr-12 ${docked ? 'shrink-0' : ''}`}>
         <div className="flex flex-wrap items-baseline gap-x-4 gap-y-2">
           <span className="t-kicker w-12">SORT</span>
           {SORTS.map((s) => (
@@ -169,7 +175,11 @@ export function DefenceLedger({ projects, onActiveProject, onOpenProject, openIn
 
       {/* ── Ledger rows. The two-half grid puts the title column's end on the
              viewport centre line — exactly the dossier panel's edge. ── */}
-      <div className="mt-8">
+      <div
+        className={`mt-8 ${
+          docked ? 'min-h-0 flex-1 overflow-y-auto overscroll-contain pb-16 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden' : ''
+        }`}
+      >
         {visible.map(({ p, originalIndex }) => {
           const slug = slugFromLink(p.link);
           const isOpen = openIndex === originalIndex;
