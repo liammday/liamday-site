@@ -745,6 +745,18 @@ const Scene = ({
 
 /* ── HUD chrome ──────────────────────────────────────────────────────────── */
 
+/** The console's clause list, in page order — the section index unrolled from
+    the live readout. Clause numbers match the /0N kickers and the readout's
+    own designation, so the index reads as the same document, not a new one. */
+const SECTION_INDEX: Array<{ clause: number; label: string; sel: string }> = [
+  { clause: 1, label: 'INDEX', sel: '[data-sec="hero"]' },
+  { clause: 2, label: 'EXPERIENCE', sel: '[data-sec="experience"]' },
+  { clause: 3, label: 'CAPABILITIES', sel: '[data-sec="capabilities"]' },
+  { clause: 4, label: 'EDUCATION', sel: '[data-sec="education"]' },
+  { clause: 5, label: 'SHIPPED WORK', sel: '[data-sec="projects"]' },
+  { clause: 6, label: 'CONTACT', sel: '[data-sec="contact"]' },
+];
+
 function formatCoords(lat: number, lng: number): string {
   const ns = lat >= 0 ? 'N' : 'S';
   const ew = lng >= 0 ? 'E' : 'W';
@@ -807,6 +819,8 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
   const [displayProject, setDisplayProject] = useState<number | null>(null);
   // Desktop reading-width toggle: half-panel ↔ full width (← / → arrows).
   const [expanded, setExpanded] = useState(false);
+  // Section index unrolled from the bottom-left readout.
+  const [navOpen, setNavOpen] = useState(false);
   const [dossiers, setDossiers] = useState<Record<string, string>>({});
   const closeBtnRef = useRef<HTMLButtonElement>(null);
   const panelWrapRef = useRef<HTMLDivElement>(null);
@@ -976,6 +990,47 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
     history.pushState(null, '', window.location.pathname + window.location.search);
     setOpenProject(null);
   };
+
+  /* ── Section index ─────────────────────────────────────────────────────── */
+
+  // Which clause the readout is currently reporting — a dossier is a /05
+  // sub-clause, a lit capability row a /03 one, otherwise parse the
+  // designation the scroll triggers set ("SEC /04 — EDUCATION" → 4).
+  const currentClause =
+    openProject !== null
+      ? 5
+      : globeState.mode === 'matrix' && activeCapability >= 0
+        ? 3
+        : Number(globeState.designation.match(/SEC \/(\d+)/)?.[1] ?? 0);
+
+  const goToSection = (sel: string) => {
+    setNavOpen(false);
+    const scroll = () =>
+      document.querySelector(sel)?.scrollIntoView({
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+        block: 'start',
+      });
+    if (openProject === null) {
+      scroll();
+      return;
+    }
+    // A dossier holds the page in a scroll lock. Close it first and scroll on
+    // the other side of the unlock — otherwise the release scrolls back to the
+    // position the lock was holding and undoes the jump.
+    closeDossier();
+    requestAnimationFrame(() => requestAnimationFrame(scroll));
+  };
+
+  // Escape closes the index (the dossier's own handler owns Escape while a
+  // dossier is open, and closing that is the more important escape).
+  useEffect(() => {
+    if (!navOpen || openProject !== null) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setNavOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [navOpen, openProject]);
 
   const openSlug = openProject !== null ? slugFromLink(projects[openProject].link) : null;
   const displaySlug = displayProject !== null ? slugFromLink(projects[displayProject].link) : null;
@@ -1271,20 +1326,82 @@ export default function DefenceConsole(props: DefenceConsoleProps) {
         ></div>
       </div>
 
-      {/* ── Live readout: real coordinates, real section state ── */}
-      <div className="fixed bottom-6 left-6 z-20 hidden md:block t-readout select-none" aria-hidden="true">
-        <p className="text-aluminum-400">
-          {/* Dossier and capabilities sub-clauses track the focused item live */}
-          {openProject !== null
-            ? `SEC /05.${openProject + 1} — DOSSIER · ${projects[openProject].name.toUpperCase()}`
-            : globeState.mode === 'matrix' && activeCapability >= 0
-              ? `SEC /03.${activeCapability + 1} — CAPABILITIES`
-              : globeState.designation}
-        </p>
-        <p className="text-aluminum-300">
+      {/* ── Live readout / section index. The readout already names the clause
+             you are standing in, so it is the honest place to change clause
+             from: hovering (or tapping) unrolls it upward into the full index.
+             The panel carries its own blur so it stays legible wherever it
+             lands over the content — which is the whole story on mobile,
+             where it sits directly on top of the reading column. ── */}
+      <nav
+        className="fixed bottom-6 left-6 z-20 t-readout select-none"
+        aria-label="Section index"
+        onMouseEnter={() => setNavOpen(true)}
+        onMouseLeave={() => setNavOpen(false)}
+        onBlur={(e) => {
+          if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setNavOpen(false);
+        }}
+      >
+        <ul
+          id="section-index"
+          className={`mb-2 border border-aluminum-500 bg-charcoal-900/85 backdrop-blur-md transition-all duration-200 ${
+            navOpen
+              ? 'pointer-events-auto translate-y-0 opacity-100'
+              : 'pointer-events-none translate-y-2 opacity-0 motion-reduce:translate-y-0'
+          }`}
+          // `inert`, not `hidden`: the closed index stays out of the focus
+          // order and the a11y tree, but keeps rendering, so it can actually
+          // play the unroll instead of appearing fully formed.
+          inert={!navOpen}
+        >
+          {SECTION_INDEX.map((s, i) => {
+            const isCurrent = s.clause === currentClause;
+            return (
+              <li key={s.sel} className="border-b border-aluminum-500/40 last:border-b-0">
+                <button
+                  type="button"
+                  onClick={() => goToSection(s.sel)}
+                  aria-current={isCurrent ? 'true' : undefined}
+                  // Rows step in from the left as the index unrolls — the same
+                  // 75ms mechanical cadence as the dossier's header blocks.
+                  style={{ transitionDelay: navOpen ? `${i * 40}ms` : '0ms' }}
+                  className={`flex w-full cursor-pointer items-baseline gap-3 px-4 py-2.5 text-left transition-[color,background-color,transform] duration-150 hover:bg-ember-500/10 hover:text-ember-300 focus-visible:bg-ember-500/10 focus-visible:text-ember-300 focus-visible:outline-none ${
+                    isCurrent ? 'text-ember-300' : 'text-aluminum-300'
+                  }`}
+                >
+                  <span className={isCurrent ? 'text-ember-400' : 'text-aluminum-400'}>
+                    {isCurrent ? '▸' : ' '} /{String(s.clause).padStart(2, '0')}
+                  </span>
+                  <span className="whitespace-nowrap">{s.label}</span>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+
+        <button
+          type="button"
+          aria-expanded={navOpen}
+          aria-controls="section-index"
+          onClick={() => setNavOpen((o) => !o)}
+          className="block cursor-pointer text-left transition-colors duration-150 hover:text-ember-300 focus-visible:text-ember-300 focus-visible:outline-none"
+        >
+          <span className="sr-only">Section index — </span>
+          <span className={`block ${navOpen ? 'text-ember-300' : 'text-aluminum-400'}`}>
+            {/* Dossier and capabilities sub-clauses track the focused item live */}
+            {openProject !== null
+              ? `SEC /05.${openProject + 1} — DOSSIER · ${projects[openProject].name.toUpperCase()}`
+              : globeState.mode === 'matrix' && activeCapability >= 0
+                ? `SEC /03.${activeCapability + 1} — CAPABILITIES`
+                : globeState.designation}
+            <span aria-hidden="true" className="ml-2 inline-block text-aluminum-500">
+              {navOpen ? '▾' : '▴'}
+            </span>
+          </span>
+        </button>
+        <p className="text-aluminum-300" aria-hidden="true">
           <span ref={coordsRef}>{formatCoords(homeGeo.lat, homeGeo.lng)}</span>
         </p>
-      </div>
+      </nav>
 
       {/* ── Content. While a dossier is open everything fades EXCEPT the
              ledger, which morphs (Flip) into the asset index in the left
