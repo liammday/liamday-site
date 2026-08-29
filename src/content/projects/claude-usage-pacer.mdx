@@ -113,6 +113,6 @@ The five-hour window has a cap of its own that the model does not yet enforce as
 
 Overnight harvest only fires while the desktop app is open. The always-on machine covers it, but it is a dependency worth naming rather than hiding.
 
-The surface is a Python menu bar app today. A native rewrite would buy lock-screen and Watch widgets, and the data and brain layers would carry over unchanged.
+The native rewrite that this section originally called for is done, and the surface has since spread to the phone and the iPad with widgets on both screens. What has not moved is the engine: it is still Python, still tied to the one Mac that holds the credential, and the Pi that now serves every other device only ever relays what that Mac has already worked out. Porting the engine to Swift would remove the last single point of failure in the chain.
 
 I put this together in an afternoon, but the part worth keeping is not the speed. It is that I instrument the things I rely on, check the number against its source rather than trusting the dial, and write the failure mode down next to the feature. The pacer earns its place in the menu bar precisely because it would rather show nothing than show me something false. That is the standard I bring to systems other people depend on, not just my own.
