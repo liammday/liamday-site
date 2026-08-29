@@ -1,7 +1,7 @@
 ---
 title: LifeOS
-description: An architecture case study on LifeOS, a personal Claude-and-MCP operating system. One spine, eight domains, one daily ingestion pipeline. Documents one architectural failure-and-fix that cut sweep time from minutes to under 90 seconds.
-summary: A unified Cowork project that replaces nine standalone admin workspaces with a tiered, self-maintaining personal-operations system. Eight domains, one spine, one ingestion path.
+description: An architecture case study on LifeOS, a personal Claude-and-MCP operating system, across three generations. Documents two corrections made on evidence, a failure-and-fix that cut sweep time from minutes to under 90 seconds, and the later subtraction that retired the automation for an agentic division of labour.
+summary: A personal-operations system in three generations. Nine workspaces unified into one spine, migrated onto Apple's canonical stores, then right-sized until routine capture needs no machinery at all. The record of what was built, measured, and deliberately deleted.
 role: Architect, operator, and engineer (AI-paired)
 year: 2026 – Present
 client: Personal applied-AI build
@@ -26,6 +26,8 @@ nav:
     label: Per-domain answers
   - id: failure
     label: Failure and fix
+  - id: subtraction
+    label: The subtraction
   - id: open
     label: Open work
 ---
@@ -163,12 +165,61 @@ The five per-domain monitor tasks were retired the same day.
 
 The trade-off honest enough to put in print: the orchestrator is now a single point of failure. If `daily-ingestion` fails, no domain ingestion happens that day. That is the right trade against four redundant pipelines, because the failure is loud (the ingestion log shows no rows) and recoverable (the next run picks up the missing window). It is the wrong trade for any system where silent gaps matter more than redundant cost; this is not that system.
 
+<h2 id="subtraction" class="scroll-mt-32">The second fix was subtraction</h2>
+
+The April architecture assumed one thing without ever writing it down: that the daily surface of the system was Claude reading files. By late August that assumption had quietly inverted. The phone had won. On 26 August, Apple Notes and Reminders became the canonical stores, with the git vault demoted to archive and provenance and a nightly export keeping the exit honest. The domain structure survived the move intact, folders mirroring lists, the ontology still discovered from the stores rather than prescribed. A Raspberry Pi took over the one capability the ecosystem could not offer: a read-only mirror of the whole mailbox, fifteen years and fifty-seven thousand messages, searchable in about a millisecond from any Claude session with every computer in the house asleep.
+
+Migration reopened the ingestion question, and honestly. The 05:30 sweep's premise was that everything inbound deserved processing, and that premise was wrong: most of what arrives is noise, and a classifier that reads everything spends most of its judgement on things nobody chose to care about. The replacement principle inverted it. Nothing is processed unless I elect it. Flag an email, from any device, and it is chosen; spam never enters the system because spam is never chosen.
+
+Then one evening of building the elected pipeline killed five transport designs in sequence, each by measurement rather than taste. The unattended Email trigger demands a filter that cannot say "any email". Shortcuts' flag filters return zero at runtime, silently, in every serialisation I could construct, and reading a property off a mail entity kills a run with no error at all. A Mac-side sweep of Mail's own index worked end to end but chained the phone to the Mac being awake, which was the dependence the migration existed to remove. Writing reminders over CalDAV turned out to be impossible for everyone, not just me: upgraded iCloud Reminders left that protocol in 2019, and only frozen pre-upgrade lists remain visible to any third-party client. The final design, the Pi writing elected mail into a dedicated iCloud calendar, proved its server half live within the hour, then died at the Mac's door on a single Calendars permission that a headless runner can neither display nor register. Every run parked forever on a consent sheet that did not exist.
+
+Behind all five corpses sat a decision I had already made: processing is attended. Nothing files itself; I confirm everything. And if a person is present at the moment of processing anyway, the platform now ships an attended agent in the right-click menu of Mail itself. So the fix was not a sixth transport. It was subtraction. Routine capture went to Siri, engaged directly. The flag itself is the queue, and it needs no machinery at all: it syncs server-side on its own, the Flagged smart mailbox shows it on every device, and its badge is the nudge. Claude keeps the work that needs reasoning, reading and writing the same stores, with a weekly pass whose briefing now ends by recording what Siri misfiled or refused that week. The same evening the sweep timer was disabled, the queue calendar deleted, six shortcuts released and two launch agents removed. Twelve architecture decision records and a register of platform landmines make sure none of that ground gets retrod by enthusiasm.
+
+<aside class="surface-panel my-8 p-6">
+  <p class="text-xs font-semibold uppercase tracking-[0.3em] text-aluminum-400">Measured, the day the machinery left</p>
+  <div class="mt-4 overflow-x-auto">
+    <table class="w-full min-w-[640px] text-left text-sm leading-relaxed text-aluminum-300">
+      <thead class="text-xs uppercase tracking-wider text-aluminum-400">
+        <tr>
+          <th class="pr-4 pb-3 font-semibold">Metric</th>
+          <th class="pr-4 pb-3 font-semibold">Before, the automated pipeline</th>
+          <th class="pb-3 font-semibold">After, Siri-direct</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-aluminum-500/15">
+        <tr>
+          <td class="py-3 pr-4 text-aluminum-200">Moving parts in the routine capture path</td>
+          <td class="py-3 pr-4">A Pi timer, an iCloud queue calendar, three shortcuts, two launch agents</td>
+          <td class="py-3">A mail flag</td>
+        </tr>
+        <tr>
+          <td class="py-3 pr-4 text-aluminum-200">Capture latency with every computer asleep</td>
+          <td class="py-3 pr-4">Under six minutes, pipeline running</td>
+          <td class="py-3">The moment I ask</td>
+        </tr>
+        <tr>
+          <td class="py-3 pr-4 text-aluminum-200">Scheduled jobs to monitor, with their permission grants</td>
+          <td class="py-3 pr-4">Five across two machines</td>
+          <td class="py-3">Two, both read-or-repair: the mail mirror and a disk guard</td>
+        </tr>
+        <tr>
+          <td class="py-3 pr-4 text-aluminum-200">Path back if the bet fails</td>
+          <td class="py-3 pr-4">n/a</td>
+          <td class="py-3">One command on the Pi; the whole pipeline stays in the repo</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</aside>
+
+The trade-off honest enough to put in print, again: filing consistency now rests on an on-device model and how I phrase a request, rather than on a deterministic rulebook that measured well. That is the right trade here because election already made the volume small, the record of every decision lands in the stores either way, and the weekly pass audits the misses on evidence. It would be the wrong trade for a system where capture volume is high and attention is the bottleneck; this is no longer that system, by design.
+
 <h2 id="open" class="scroll-mt-32">Open work</h2>
 
-The Cowork artefact bridge returns HTTP 400 on every `callMcpTool`. The dashboard is snapshot-driven as a result, with refresh routed through the user-clicked scheduled-task path. The shape is right; the live-read path is waiting on a desktop-app fix.
+The Siri-direct contract is on trial until mid-September. The weekly review, now in its third revision, ends every briefing with a telemetry section recording what Siri misfiled, misdated or refused, and the verdict, keep it, tune it, or resume the pipeline, gets made on those notes rather than on impressions.
 
-The weekly review skill exists as a scheduled task but the underlying `SKILL.md` was missing on first run. Created since; needs one more pass for completeness.
+The scanned-document lane is the next candidate for the election pattern: a watched folder as the flag, the same attended confirmation as the gate. It gets built only if the paper volume earns it, which is the test every piece of machinery now has to pass.
 
-Quarterly compaction is scheduled but has not run yet; the ingestion log is approaching ten times its target size and is the next compaction target.
+And one eye stays on Siri itself. If user-definable routines arrive over App Intents, the elected design maps straight onto them, and the landmine register records exactly which of today's walls each new capability would have to remove before it deserves another attempt.
 
-LifeOS exists because I am not a tidy person by default. The reason it works is that I treat a mess I produced as a system to model rather than a chore to grind. The same shape applies to the work I take on at scale: a small ambient spine, lazy-loaded depth, a single ingestion path, an honest audit trail, and a documented trade-off whenever the obvious approach turns out to be the slower one.
+LifeOS exists because I am not a tidy person by default. The reason it works is that I treat a mess I produced as a system to model rather than a chore to grind. The same shape applies to the work I take on at scale: a small ambient spine, lazy-loaded depth, a single ingestion path, an honest audit trail, a documented trade-off whenever the obvious approach turns out to be the slower one, and the discipline to delete the machinery once the platform will do the same job with none.
