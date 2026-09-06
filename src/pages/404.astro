@@ -1,17 +1,24 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { ContourBackdrop } from '../components/ContourBackdrop';
 ---
 
 <BaseLayout title="Page not found">
-  <section class="flex min-h-[70vh] flex-col items-center justify-center bg-charcoal-900 px-6 text-center">
-    <p class="eyebrow text-ember-200">404</p>
-    <h1 class="mt-6 type-title">Page not found</h1>
-    <p class="mt-4 max-w-md text-lg text-aluminum-300">
-      The page you're looking for doesn't exist or has moved.
-    </p>
-    <a
-      class="mt-10 inline-flex items-center justify-center rounded-full bg-ember-400 px-6 py-3 text-sm font-semibold text-charcoal-950 transition texture-noise hover:bg-ember-300"
-      href="/">Back to portfolio</a
-    >
+  <section class="relative flex min-h-[70vh] flex-col items-center justify-center overflow-hidden bg-charcoal-900 px-6 text-center">
+    {/* WebGPU-only contour terrain (vgpu). Renders nothing where WebGPU is
+        absent, so the section is identical to before on those browsers. */}
+    <ContourBackdrop client:only="react" className="absolute inset-0 z-0" />
+    <div class="relative z-10 flex flex-col items-center">
+      <p class="eyebrow text-ember-200">404</p>
+      <h1 class="mt-6 type-title">Page not found</h1>
+      <p class="mt-4 max-w-md text-lg text-aluminum-300">
+        The page you're looking for doesn't exist or has moved.
+      </p>
+      <p class="t-readout mt-6 text-aluminum-400">[ NO FIX · OFF THE CHART ]</p>
+      <a
+        class="mt-10 inline-flex items-center justify-center rounded-full bg-ember-400 px-6 py-3 text-sm font-semibold text-charcoal-950 transition texture-noise hover:bg-ember-300"
+        href="/">Back to portfolio</a
+      >
+    </div>
   </section>
 </BaseLayout>

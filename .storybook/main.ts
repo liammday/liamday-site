@@ -11,8 +11,9 @@ const config: StorybookConfig = {
   staticDirs: ['../public'],
   async viteFinal(viteConfig) {
     const { default: tailwindcss } = await import('@tailwindcss/vite');
+    const { wgslVitePlugin } = await import('@vgpu/wgsl/loader-vite');
     viteConfig.plugins ??= [];
-    viteConfig.plugins.push(tailwindcss());
+    viteConfig.plugins.push(tailwindcss(), wgslVitePlugin({ minify: true }));
     return viteConfig;
   },
 };

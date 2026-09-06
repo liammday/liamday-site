@@ -5,6 +5,7 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import yaml from '@rollup/plugin-yaml';
+import { wgslVitePlugin } from '@vgpu/wgsl/loader-vite';
 
 // https://astro.build/config
 export default defineConfig({
@@ -64,6 +65,8 @@ export default defineConfig({
   ],
   integrations: [react(), mdx(), sitemap()],
   vite: {
-    plugins: [yaml(), tailwindcss()],
+    // wgslVitePlugin: `.wgsl` files import/export like modules (vgpu); resolved,
+    // dead-code-eliminated and minified at build into one ShaderSource each.
+    plugins: [yaml(), tailwindcss(), wgslVitePlugin({ minify: true })],
   },
 });
