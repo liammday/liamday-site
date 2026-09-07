@@ -1,0 +1,145 @@
+---
+// Preview route for the Sec /06 unroll (see the vgpu upgrade branch).
+// Disposable: nothing links here, it is excluded from the sitemap, and it
+// exists only so the effect can be judged in the real palette, type and
+// land geometry before deciding whether it earns a place in the console.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { UnrollField } from '../../components/UnrollField';
+import { HOME_GEO } from '../../data/defence';
+import { site } from '../../data/site';
+---
+
+<BaseLayout title="Lab · Sec /06 unroll" footer={false}>
+  <main class="w-full bg-charcoal-900" data-tactical>
+    <!-- Scroll runway: the unroll is driven by the section's travel through
+         the viewport, exactly as it would be by the console's state machine. -->
+    <section class="flex min-h-[70vh] flex-col justify-end px-6 pb-16 md:px-14">
+      <p class="t-readout text-aluminum-400">Lab · not linked · disposable</p>
+      <h1 class="t-display mt-4 max-w-[22ch] text-3xl md:text-5xl">
+        Sec /06 — the instrument unrolls.
+      </h1>
+      <p class="mt-6 max-w-[60ch] text-aluminum-300">
+        Scroll on. The globe's dot matrix is the same land geometry the console draws, and it
+        flattens into plate carrée as the closing clause settles. Winchester stays lit.
+      </p>
+      <p class="t-readout mt-8 text-aluminum-400">↓ Scroll</p>
+    </section>
+
+    <!-- The candidate: the console's real /06, with the field behind it. -->
+    <section
+      data-sec="contact"
+      class="relative min-h-screen overflow-hidden border-t border-aluminum-500"
+      id="stage">
+      <div class="absolute inset-0 z-0">
+        <UnrollField client:only="react" home={[HOME_GEO.lng, HOME_GEO.lat]} />
+      </div>
+
+      <div class="relative z-10 md:grid md:grid-cols-2">
+        <div class="md:flex md:justify-end">
+          <div class="w-full px-6 md:max-w-xl md:pr-14">
+            <div class="flex min-h-screen flex-col justify-center py-24">
+              <p class="t-kicker">/06 &nbsp;Contact</p>
+              <h2 class="t-display mt-8 text-4xl md:text-5xl">Available for the hard problems.</h2>
+              <div class="mt-12 flex flex-wrap items-center gap-6">
+                <a
+                  href={`mailto:${site.contact.email}`}
+                  class="t-readout inline-block border border-aluminum-100 px-8 py-4 text-aluminum-100 no-underline transition-colors duration-150 hover:border-ember-400 hover:text-ember-300"
+                  >GET IN TOUCH »</a
+                >
+                <a href={site.social.linkedin} class="t-readout text-aluminum-300 no-underline hover:text-ember-300">LINKEDIN ↗</a>
+              </div>
+              <p class="t-readout mt-16 text-aluminum-400">
+                HOME · <span class="text-ember-400">{HOME_GEO.label}</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preview-only control: hold a frame to judge a specific blend. -->
+      <div class="absolute inset-x-0 bottom-0 z-20 flex flex-wrap items-center gap-4 border-t border-aluminum-500 bg-charcoal-950/80 px-6 py-3">
+        <label class="t-readout flex items-center gap-3 text-aluminum-400">
+          Sphere
+          <input id="hold" type="range" min="0" max="1000" value="0" class="w-40 accent-ember-400" aria-label="Hold projection" />
+          Plane
+        </label>
+        <button id="release" class="t-readout border border-aluminum-500 px-3 py-1 text-aluminum-300">Back to scroll</button>
+        <span class="t-readout text-aluminum-400" id="mode">Scroll-driven</span>
+      </div>
+    </section>
+
+    <section class="flex min-h-[60vh] items-start px-6 pt-16 md:px-14">
+      <p class="t-readout max-w-[60ch] text-aluminum-400">
+        Runway below the stage, so the unroll can be scrolled back and forth.
+      </p>
+    </section>
+  </main>
+</BaseLayout>
+
+<script>
+  // Preview control only — the shipped version takes unroll from the console's
+  // scroll state machine, with no slider anywhere near it.
+  const slider = document.getElementById('hold') as HTMLInputElement | null;
+  const release = document.getElementById('release');
+  const mode = document.getElementById('mode');
+  const canvas = () => document.querySelector('#stage canvas') as HTMLCanvasElement | null;
+
+  slider?.addEventListener('input', () => {
+    const c = canvas();
+    if (c) c.dataset.hold = String(Number(slider.value) / 1000);
+    if (mode) mode.textContent = `Held at ${(Number(slider.value) / 10).toFixed(0)}%`;
+  });
+  release?.addEventListener('click', () => {
+    const c = canvas();
+    if (c) delete c.dataset.hold;
+    if (mode) mode.textContent = 'Scroll-driven';
+  });
+</script>
+
+<style is:global>
+  /* Tactical palette, mirroring [data-tactical] in src/pages/index.astro so the
+     candidate is judged in the console's real colours and type. Duplicated
+     rather than extracted because this route is disposable. */
+  [data-tactical] {
+    --accent: 96 150 255;
+    --charcoal-900: 22 23 29;
+    --charcoal-950: 16 17 22;
+    --graphite-600: 30 33 36;
+    --graphite-700: 26 28 33;
+    --graphite-800: 24 25 30;
+    --aluminum-100: 233 234 240;
+    --aluminum-200: 200 201 210;
+    --aluminum-300: 163 164 175;
+    --aluminum-400: 113 114 125;
+    --aluminum-500: 38 39 47;
+    --ember-200: var(--accent);
+    --ember-300: var(--accent);
+    --ember-400: var(--accent);
+    --ember-500: var(--accent);
+    --ember-600: var(--accent);
+  }
+  [data-tactical] .t-display,
+  [data-tactical] h1,
+  [data-tactical] h2 {
+    font-family: var(--ff-body, ui-sans-serif, system-ui, sans-serif);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 0.98;
+    color: rgb(var(--aluminum-100));
+  }
+  [data-tactical] .t-kicker,
+  [data-tactical] .t-readout {
+    font-family: var(--ff-mono, ui-monospace, monospace);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-feature-settings: 'zero' on;
+    font-variant-numeric: tabular-nums slashed-zero;
+  }
+  [data-tactical] a,
+  [data-tactical] button,
+  [data-tactical] input {
+    border-radius: 0;
+  }
+</style>
