@@ -1,0 +1,105 @@
+---
+// Preview route for the day/night layer on the console globe.
+// Disposable: nothing links here and it is excluded from the sitemap. It exists
+// so the terminator can be judged on the real globe, in the real palette,
+// before deciding which section transition it belongs to.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { TerminatorPreview } from '../../components/lab/TerminatorPreview';
+import { site } from '../../data/site';
+---
+
+<BaseLayout title="Lab · day/night terminator" footer={false}>
+  <main class="w-full bg-charcoal-900" data-tactical>
+    <section class="flex min-h-[70vh] flex-col justify-end px-6 pb-16 md:px-14">
+      <p class="t-readout text-aluminum-400">Lab · not linked · disposable</p>
+      <h1 class="t-display mt-4 max-w-[24ch] text-3xl md:text-5xl">
+        The globe learns what time it is.
+      </h1>
+      <p class="mt-6 max-w-[62ch] text-aluminum-300">
+        Scroll on. The same sphere that already sits under the wireframe to write depth is painted
+        with the real terminator instead of flat charcoal: lit hemisphere, city lights on the dark
+        side, and a thin accent band on the line between them. The vector map is untouched and still
+        draws on top.
+      </p>
+      <p class="t-readout mt-8 text-aluminum-400">↓ Scroll</p>
+    </section>
+
+    <section class="relative min-h-screen overflow-hidden border-t border-aluminum-500" id="stage">
+      <TerminatorPreview client:only="react" />
+
+      <div class="pointer-events-none relative z-10 md:grid md:grid-cols-2">
+        <div class="md:flex md:justify-end">
+          <div class="pointer-events-auto w-full px-6 md:max-w-xl md:pr-14">
+            <div class="flex min-h-screen flex-col justify-center py-24">
+              <p class="t-kicker">/06 &nbsp;Contact</p>
+              <h2 class="t-display mt-8 text-4xl md:text-5xl">Available for the hard problems.</h2>
+              <div class="mt-12 flex flex-wrap items-center gap-6">
+                <a
+                  href={`mailto:${site.contact.email}`}
+                  class="t-readout inline-block border border-aluminum-100 px-8 py-4 text-aluminum-100 no-underline transition-colors duration-150 hover:border-ember-400 hover:text-ember-300"
+                  >GET IN TOUCH »</a
+                >
+                <a href={site.social.linkedin} class="t-readout text-aluminum-300 no-underline hover:text-ember-300">LINKEDIN ↗</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="flex min-h-[60vh] items-start px-6 pt-16 md:px-14">
+      <p class="t-readout max-w-[62ch] text-aluminum-400">
+        Runway below the stage, so the transition can be scrolled back and forth. City lights are
+        baked from GeoNames cities15000 (CC BY 4.0).
+      </p>
+    </section>
+  </main>
+</BaseLayout>
+
+<style is:global>
+  /* Tactical palette, mirroring [data-tactical] in src/pages/index.astro so the
+     candidate is judged in the console's real colours and type. Duplicated
+     rather than extracted because this route is disposable. */
+  [data-tactical] {
+    --accent: 96 150 255;
+    --charcoal-900: 22 23 29;
+    --charcoal-950: 16 17 22;
+    --graphite-600: 30 33 36;
+    --graphite-700: 26 28 33;
+    --graphite-800: 24 25 30;
+    --aluminum-100: 233 234 240;
+    --aluminum-200: 200 201 210;
+    --aluminum-300: 163 164 175;
+    --aluminum-400: 113 114 125;
+    --aluminum-500: 38 39 47;
+    --ember-200: var(--accent);
+    --ember-300: var(--accent);
+    --ember-400: var(--accent);
+    --ember-500: var(--accent);
+    --ember-600: var(--accent);
+  }
+  [data-tactical] .t-display,
+  [data-tactical] h1,
+  [data-tactical] h2 {
+    font-family: var(--ff-body, ui-sans-serif, system-ui, sans-serif);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 0.98;
+    color: rgb(var(--aluminum-100));
+  }
+  [data-tactical] .t-kicker,
+  [data-tactical] .t-readout {
+    font-family: var(--ff-mono, ui-monospace, monospace);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-feature-settings: 'zero' on;
+    font-variant-numeric: tabular-nums slashed-zero;
+  }
+  [data-tactical] a,
+  [data-tactical] button,
+  [data-tactical] input {
+    border-radius: 0;
+  }
+</style>

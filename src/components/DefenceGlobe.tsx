@@ -4,6 +4,7 @@ import { Line } from '@react-three/drei';
 import type { Line2 } from 'three-stdlib';
 import gsap from 'gsap';
 import countriesGeoJSON from '../data/countries.geo.json';
+import { NightSphere } from './DefenceNightSphere';
 
 /* NOTE: THREE materials never see CSS custom properties — THREE.Color cannot
    resolve `var(...)`, it silently falls back to white. Every colour crossing
@@ -173,6 +174,13 @@ interface GlobeMapProps {
   graticuleOpacity?: number;
   /** Stroke width in PIXELS (drei fat lines), not world units. */
   lineWidth?: number;
+  /** Subsolar direction in object space (lib/solar.ts). Supplying it swaps the
+      inner depth sphere for the day/night layer; omitting it changes nothing. */
+  sunDirection?: [number, number, number] | null;
+  /** 0 = flat sphere, 1 = full day/night — ramp it on a section transition. */
+  nightMix?: number;
+  /** Terminator band colour. THREE-parseable literal, never a CSS var. */
+  nightAccent?: string;
 }
 
 export const GlobeMap: React.FC<GlobeMapProps> = ({
@@ -185,6 +193,9 @@ export const GlobeMap: React.FC<GlobeMapProps> = ({
   dotOpacity = 0.55,
   graticuleOpacity = 0.35,
   lineWidth = 1.1,
+  sunDirection = null,
+  nightMix = 1,
+  nightAccent = '#6096ff',
 }) => {
   const lineRef = useRef<Line2>(null);
   const hiResRef = useRef<Line2>(null);
@@ -283,11 +294,17 @@ export const GlobeMap: React.FC<GlobeMapProps> = ({
         />
       </points>
       {/* Opaque near-black sphere just under the wireframe: writes depth so the
-          far hemisphere's lines self-occlude and the globe reads as solid. */}
-      <mesh>
-        <sphereGeometry args={[radius * 0.99, 48, 48]} />
-        <meshBasicMaterial color="#101116" />
-      </mesh>
+          far hemisphere's lines self-occlude and the globe reads as solid.
+          With a sun direction it becomes the day/night layer instead — same
+          sphere, same depth behaviour, just lit rather than flat. */}
+      {sunDirection ? (
+        <NightSphere radius={radius} sun={sunDirection} mix={nightMix} accent={nightAccent} />
+      ) : (
+        <mesh>
+          <sphereGeometry args={[radius * 0.99, 48, 48]} />
+          <meshBasicMaterial color="#101116" />
+        </mesh>
+      )}
     </group>
   );
 };
