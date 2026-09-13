@@ -63,8 +63,7 @@ export default defineConfig({
       fallbacks: ['SF Mono', 'Menlo', 'Consolas', 'monospace'],
     },
   ],
-    // /lab/* are disposable preview routes for work in progress — never indexed.
-  integrations: [react(), mdx(), sitemap({ filter: (page) => !page.includes('/lab/') })],
+  integrations: [react(), mdx(), sitemap()],
   vite: {
     // wgslVitePlugin: `.wgsl` files import/export like modules (vgpu); resolved,
     // dead-code-eliminated and minified at build into one ShaderSource each.
