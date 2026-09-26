@@ -26,7 +26,7 @@ When you grant HealthKit access, Peaking reads workouts and route data from your
 
 When you connect your Strava account, Peaking uses Strava's OAuth flow to request a short-lived access token and a refresh token. These tokens are stored on your device and are never transmitted to us. With those tokens, Peaking fetches your Strava activity list, GPS streams and activity metadata directly from Strava's API to your device. This data is used on-device to reconstruct routes and attribute summits. It is retained on your device (and in your private iCloud mirror) for as long as you use the app.
 
-You can disconnect Strava at any time from **Settings → Integrations**; doing so deletes the tokens and stops future syncs. You can delete all Strava-sourced data at any time from **Settings → Integrations → Delete Strava data**.
+You can disconnect Strava at any time from **Settings → Permissions & Connected Services → Strava Sync Status → Disconnect Strava**; doing so deletes the tokens and stops future syncs. You can delete all Strava-sourced data at any time from **Settings → Permissions & Connected Services → Strava Sync Status → Remove all Strava data**.
 
 Peaking follows Strava's brand guidelines and links back to Strava for every Strava-sourced activity. Your relationship with Strava remains governed by [Strava's own Privacy Policy](https://www.strava.com/legal/privacy).
 
