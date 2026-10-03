@@ -2,7 +2,7 @@
 layout: ../../layouts/PostLayout.astro
 title: Peaking — Privacy Policy
 description: How Peaking handles your data.
-date: 2026-04-21
+date: 2026-10-02
 ---
 
 **Controller:** Liam Day (sole trader), United Kingdom.
@@ -24,7 +24,9 @@ When you grant HealthKit access, Peaking reads workouts and route data from your
 
 ### Strava data
 
-When you connect your Strava account, Peaking uses Strava's OAuth flow to request a short-lived access token and a refresh token. These tokens are stored on your device and are never transmitted to us. With those tokens, Peaking fetches your Strava activity list, GPS streams and activity metadata directly from Strava's API to your device. This data is used on-device to reconstruct routes and attribute summits. It is retained on your device (and in your private iCloud mirror) for as long as you use the app.
+When you connect your Strava account, Peaking uses Strava's OAuth flow to request a short-lived access token and a refresh token. These tokens are stored on your device and are never transmitted to us. With those tokens, Peaking fetches your Strava activity list, GPS tracks and activity details directly from Strava's API to your device, where they are used to reconstruct routes and attribute summits. Peaking keeps raw Strava data, such as an activity's GPS track, on your device only and for no more than seven days, as Strava's API terms require. It is never copied to iCloud. After seven days Peaking fetches a track from Strava again only when you open that route, or when Peaking re-checks your routes for summits (for example after an update to its peak list), and only within Strava's usage limits. What Peaking works out from your Strava activities, such as the summits you reached and a route's date, distance, elevation and its start and end points, is your own record and is kept on your device and in your private iCloud mirror for as long as you use the app.
+
+If you share with friends in Peaking, what they see can include summits Peaking found on your Strava activities, and achievement progress that those summits count towards. For each summit, only the summit and when you reached it are shared, never a Strava track or any other route geometry. Strava may collect usage data about Peaking's use of the Strava API, as described in Strava's API Agreement.
 
 You can disconnect Strava at any time from **Settings → Permissions & Connected Services → Strava Sync Status → Disconnect Strava**. Disconnecting stops future syncs, revokes Peaking's access to your Strava account and deletes the tokens. It also deletes the Strava data Peaking holds: routes imported only from Strava, and summits found only on those routes. Routes that Apple Health also recorded are kept, as are summits you logged yourself or that a photo or another route supports. To delete every piece of Strava-sourced data without disconnecting, use **Settings → Permissions & Connected Services → Strava Sync Status → Remove all Strava data**.
 
@@ -50,11 +52,11 @@ Peaking has no analytics, no crash-reporting SDK, no advertising identifiers, no
 
 - **On your device.** All data the app uses day-to-day is stored locally on your iPhone.
 - **In your private iCloud.** If you are signed in to iCloud and have iCloud for this app enabled, iOS mirrors the app's data to your own iCloud account. Apple is the data processor for that mirror; we have no access to it.
-- **On Strava's servers.** If you connect Strava, your relationship with Strava is governed by Strava's policies. Peaking only holds a copy of the activities you have already pulled from Strava.
+- **On Strava's servers.** If you connect Strava, your relationship with Strava is governed by Strava's policies. Peaking holds raw Strava data on your device for at most seven days; see *Strava data* above.
 
 ## Data retention
 
-Peaking keeps data for as long as you have the app installed. Deleting the app, or signing out of iCloud, removes the local and mirrored copies. You can also delete individual routes, activities and integrations from within the app.
+Peaking keeps data for as long as you have the app installed, except raw Strava data such as GPS tracks, which it keeps for at most seven days (see *Strava data* above). Deleting the app, or signing out of iCloud, removes the local and mirrored copies. You can also delete individual routes, activities and integrations from within the app.
 
 ## Your rights (UK GDPR)
 
