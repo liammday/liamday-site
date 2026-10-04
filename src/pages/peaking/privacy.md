@@ -13,7 +13,7 @@ Peaking is an iOS app for walkers, runners and cyclists that visualises mountain
 ## Summary
 
 - Peaking does not run a server. Your data is stored on your device and, if you are signed in to iCloud, in your own private iCloud account.
-- The app connects to third-party services (Apple HealthKit, Strava, Apple Photos, OpenStreetMap, Apple Weather) only with your explicit consent and only to fetch data you have asked for.
+- Peaking reads Apple Health and your photo library only with your permission, and only on your device. It goes online only to reach Apple's maps, weather and iCloud services, Strava if you connect it, and Wikipedia, Wikimedia Commons and the Mountain Weather Information Service for details about a peak.
 - We do not sell your data. We do not use advertising trackers. We do not share your data with anyone except where necessary to deliver the features you have turned on.
 
 ## Data we handle
@@ -40,9 +40,13 @@ If you grant Photos access, Peaking reads photos that have location metadata so 
 
 Peaking requests Location access to centre the map on you and to match your current position to nearby peaks. Location data is not logged or transmitted off-device.
 
-### Map and weather data
+### Maps, weather and peak details
 
-Peaking loads map tiles from OpenStreetMap and weather forecasts from Apple's WeatherKit service when you open a peak. These requests are made directly from your device to those services. We do not log or proxy them.
+Peaking draws its maps with Apple Maps, which loads map tiles and place names from Apple. When you open a peak, Peaking fetches its weather forecast from Apple's WeatherKit service and, for UK mountain areas, the forecast from the Mountain Weather Information Service (MWIS). Where a peak has one, Peaking also fetches a summary from Wikipedia and an openly licensed photo from Wikimedia Commons.
+
+These requests go directly from your device to those services, and we do not log or proxy them. They carry the peak or map area you are looking at, not who you are, although like any web request they show the service your device's IP address.
+
+The database of peaks and hills is built into the app from OpenStreetMap and the Database of British and Irish Hills, and matching your routes against it happens on your device. Links to OpenStreetMap, Wikidata or Strava in the app open in your browser only when you tap them.
 
 ## Data we do not collect
 
@@ -50,7 +54,7 @@ Peaking has no analytics, no crash-reporting SDK, no advertising identifiers, no
 
 ## Where your data lives
 
-- **On your device.** All data the app uses day-to-day is stored locally on your iPhone.
+- **On your device.** All data the app uses day-to-day is stored locally on your iPhone or iPad.
 - **In your private iCloud.** If you are signed in to iCloud and have iCloud for this app enabled, iOS mirrors the app's data to your own iCloud account. Apple is the data processor for that mirror; we have no access to it.
 - **On Strava's servers.** If you connect Strava, your relationship with Strava is governed by Strava's policies. Peaking holds raw Strava data on your device for at most seven days; see *Strava data* above.
 
