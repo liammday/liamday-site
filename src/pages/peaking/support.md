@@ -33,6 +33,10 @@ Connect or disconnect Strava from Settings, then Permissions & Connected Service
 
 Delete routes, summits and connections from inside the app. Deleting the app removes the copy on that device. To remove the iCloud copy too, open the Settings app, tap your name, then iCloud, then Manage Storage, then Peaking.
 
+## Try it without a recorded walk
+
+Download [a sample walk up Snowdon](/peaking/snowdon-llanberis.gpx) on your iPhone or iPad, then in Peaking go to Routes, tap +, choose Import file and pick it. Peaking finds Snowdon (Yr Wyddfa) on the route and logs the summit.
+
 ## Privacy
 
 See the [Peaking privacy policy](/peaking/privacy/).
