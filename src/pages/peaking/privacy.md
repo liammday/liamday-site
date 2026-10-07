@@ -2,7 +2,7 @@
 layout: ../../layouts/PostLayout.astro
 title: Peaking — Privacy Policy
 description: How Peaking handles your data.
-date: 2026-10-02
+date: 2026-10-07
 ---
 
 **Controller:** Liam Day (sole trader), United Kingdom.
@@ -20,7 +20,7 @@ Peaking is an iOS app for walkers, runners and cyclists that visualises mountain
 
 ### Health and activity data (HealthKit)
 
-When you grant HealthKit access, Peaking reads workouts and route data from your Apple Health store so it can match them against mountains and summits. This data is read into memory and stored on your device (and mirrored to your private iCloud account if iCloud is enabled). It is never sent to us or to any third party.
+When you grant HealthKit access, Peaking reads workouts and route data from your Apple Health store so it can match them against mountains and summits. Peaking never writes to Apple Health. A workout's GPS route stays on the device that read it and is never copied to iCloud. What Peaking works out from a workout, such as the summits you reached and the route's date, activity type, distance, duration, elevation and its start and end points, is kept on your device and, if iCloud is enabled, in your private iCloud account, so your route list appears on your other devices. None of it is sent to us or to any third party.
 
 ### Strava data
 
@@ -31,6 +31,10 @@ If you share with friends in Peaking, what they see can include summits Peaking 
 You can disconnect Strava at any time from **Settings → Permissions & Connected Services → Strava Sync Status → Disconnect Strava**. Disconnecting stops future syncs, revokes Peaking's access to your Strava account and deletes the tokens. It also deletes the Strava data Peaking holds: routes imported only from Strava, and summits found only on those routes. Routes that Apple Health also recorded are kept, as are summits you logged yourself or that a photo or another route supports. To delete every piece of Strava-sourced data without disconnecting, use **Settings → Permissions & Connected Services → Strava Sync Status → Remove all Strava data**.
 
 Peaking follows Strava's brand guidelines and links back to Strava for every Strava-sourced activity. Your relationship with Strava remains governed by [Strava's own Privacy Policy](https://www.strava.com/legal/privacy).
+
+### Friends
+
+Friends is optional. If you add a friend, Peaking shares your display name, profile photo if you set one, the summits you have reached and when, your achievement progress and personal records such as your highest summit. It does this through a private iCloud share that only you and that friend can open. Each invite link or code works once, for one person. GPS routes and Apple Health samples are never shared. Removing a friend deletes the share, and they can no longer see anything new from you.
 
 ### Photos
 
@@ -60,7 +64,7 @@ Peaking has no analytics, no crash-reporting SDK, no advertising identifiers, no
 
 ## Data retention
 
-Peaking keeps data for as long as you have the app installed, except raw Strava data such as GPS tracks, which it keeps for at most seven days (see *Strava data* above). Deleting the app, or signing out of iCloud, removes the local and mirrored copies. You can also delete individual routes, activities and integrations from within the app.
+Peaking keeps data for as long as you have the app installed, except raw Strava data such as GPS tracks, which it keeps for at most seven days (see *Strava data* above). Deleting the app removes the copy on that device. The copy in your private iCloud stays in your account until you delete it, which you can do in the Settings app under your name, then iCloud, then Manage Storage, then Peaking. You can also delete individual routes, activities and integrations from within the app.
 
 ## Your rights (UK GDPR)
 
