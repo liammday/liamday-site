@@ -35,7 +35,7 @@ Delete routes, summits and connections from inside the app. Deleting the app rem
 
 ## Try it without a recorded walk
 
-Download [a sample walk up Snowdon](/peaking/snowdon-llanberis.gpx) on your iPhone or iPad, then in Peaking go to Routes, tap +, choose Import file and pick it. Peaking finds Snowdon (Yr Wyddfa) on the route and logs the summit.
+Download [a sample walk up Snowdon](/peaking/snowdon-llanberis.gpx) on your iPhone or iPad, then in Peaking open Settings, then Permissions & Connected Services, tap Import GPX, TCX or FIT file and pick it. You can also tap the file in Files, tap Share and choose Peaking. Peaking finds Snowdon (Yr Wyddfa) on the route and logs the summit.
 
 ## Privacy
 
