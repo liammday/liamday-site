@@ -1,40 +1,40 @@
 ---
 layout: ../layouts/PostLayout.astro
 title: Peaking
-description: An iOS app for walkers, runners and cyclists that turns your GPS history into a map of the peaks you've climbed.
-date: 2026-04-21
+description: A peak-bagging app for iPhone and iPad. It goes out with you, comes home, and tells you which named peaks you actually crossed.
+date: 2026-10-07
 ---
 
-Peaking is an iOS app in private beta. It takes your activity history from Apple HealthKit or Strava and plots it against the mountain peaks, summits and ridges you actually crossed — turning your Strava feed into a map of the high ground you've covered.
+Peaking matches the walks, runs and rides you record against more than 700,000 peaks and hills worldwide, and keeps a record of every summit. It is free, with no ads, no account and no tracking.
+
+[Download Peaking on the App Store](https://apps.apple.com/app/id6747201323)
 
 ## What it does
 
-- Matches your GPS routes to peaks, summits and named high points across the UK and Ireland.
-- Shows you what you've climbed, what's near, and what's next — on a clean, fast map.
-- Pulls route data from **Apple HealthKit** or **Strava**, with your permission. Everything is stored on your device and, if you use iCloud, in your own private iCloud account. No server. No analytics. No ads.
+- Finds the named peaks on every route you record, using a peak database built from OpenStreetMap that lives inside the app. UK and Ireland coverage is the deepest, with hill lists from the Database of British and Irish Hills.
+- Tracks your progress through the Munros, Corbetts, Wainwrights, Marilyns, Hewitts, HuMPs and other published lists, or lists you build yourself.
+- Shows how much of each long-distance trail you have walked, including the National Trails and Scotland's Great Trails.
+- Unlocks achievements as you complete a list or a trail, and keeps personal records such as your highest summit and biggest day of climbing.
+- Lets you share summits and achievement progress with friends through iCloud. Your routes are never shared.
 
-## Which devices and apps work?
+## Where your walks come from
 
-Peaking matches your walks against peaks using the GPS route attached to each workout in Apple Health. Not every fitness device writes that route, so it's worth knowing before you sign up.
+- **Apple Watch**, and any app that saves a GPS route to Apple Health.
+- **Strava.** Peaking is compatible with Strava: connect your account and it finds the peaks on your Strava activities.
+- **GPX, TCX and FIT files** from Garmin, Suunto, COROS, Wahoo or any other device.
+- **Geotagged photos.** A photo taken on a summit is logged as that summit.
+- **Manual logging**, for the day you forgot to start the workout.
 
-**Works today (route flows through to Peaking):**
-
-- **Apple Watch** — outdoor walking, running, hiking and cycling workouts. The canonical happy path.
-- **Third-party iOS recording apps** that write routes to Apple Health — Strava (when you record in Strava itself), Nike Run Club, Footpath, WorkOutDoors and similar.
-- **Photos with location** — geotagged photos are suggested as Photo Summits automatically.
-
-**Doesn't work directly (the route doesn't reach Apple Health):**
-
-Garmin Connect, COROS, Polar Flow, Suunto, Wahoo, Fitbit, AllTrails, Komoot. Each vendor's Apple Health integration is summary-only — distance, time, heart rate — but no GPS route.
-
-**Rescue path for Garmin / Polar / Suunto users:** the iOS bridge apps **HealthFit** and **RunGap** pull the original workout file from your vendor's cloud and rewrite it into Apple Health with the route intact. Peaking can then match those exactly like an Apple Watch workout.
-
-Direct Strava OAuth (independent of Apple Health) is in development and gated on Strava API approval.
+Garmin, Polar, Suunto, COROS and Wahoo send workouts to Apple Health without the GPS route. If you record on one of those, connect Strava or import the file instead.
 
 ## Privacy
 
-See the [Peaking privacy policy](/peaking/privacy/) for full detail on what data the app handles, where it lives, and how to delete it.
+Peaking has no server. Your data stays on your device and, if you use iCloud, in your own private iCloud account. The [privacy policy](/peaking/privacy/) sets out exactly what the app handles and how to delete it.
 
-## Beta access
+## Support
 
-Peaking is in TestFlight beta. If you'd like early access, email [liam@liamday.co.uk](mailto:liam@liamday.co.uk).
+
+
+## Support
+
+Questions, bugs and suggestions: see [Peaking support](/peaking/support/).
